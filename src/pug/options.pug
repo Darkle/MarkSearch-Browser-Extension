@@ -1,0 +1,98 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    title MarkSearch Extension Options
+  body
+    #optionsPanel
+      nav
+        ol
+          li.selected(data-show-hide-div-id='#lookAndBehaviour') Look & Behaviour
+          li(data-show-hide-div-id='#setup') Setup
+          li(data-show-hide-div-id='#helpAbout') Help/About
+      #settings
+        section#lookAndBehaviour
+          h3 Enable Integrated Searches With The Following Search Engines
+          .flexrow#integratedSearches
+            .checkbox
+              label
+                input(type='checkbox', name='googleSearchCheckbox', id='googleSearchCheckbox', data-setting-key='runOnGoogleSearch')
+                span Google
+            .checkbox
+              label
+                input(type='checkbox', name='bingSearchCheckbox', id='bingSearchCheckbox', data-setting-key='runOnBingSearch')
+                span Bing
+            .checkbox
+              label
+                input(type='checkbox', name='duckduckgoSearchCheckbox', id='duckduckgoSearchCheckbox', data-setting-key='runOnDuckduckgoSearch')
+                span DuckDuckGo
+            .checkbox
+              label
+                input(type='checkbox', name='baiduSearchCheckbox', id='baiduSearchCheckbox', data-setting-key='runOnBaiduSearch')
+                span Baidu
+          .moreInfo
+            a(href='https://github.com/Darkle/MarkSearch#helpMenuExtensionIntegratedSearches', target='_blank', rel='noopener') More Info
+          //- h3 Content
+          //- .checkbox
+          //-   label
+          //-     input#badge_counter(type='checkbox')
+          //-     span Show the number of flash players in the toolbar icon
+          //- .checkbox
+          //-   label
+          //-     input#menu_indicator(type='checkbox')
+          //-     span Show a green toolbar icon for 'allowed' sites
+          //- .checkbox
+          //-   label
+          //-     input#player_reblock(type='checkbox')
+          //-     span Add a 'Close' button to each flash player
+          //- .settings-row
+          //-   span Placeholder icon:
+          //-   select#placeholder_icon
+          //-     option(value='pluginlogo.svg') Plugin logo
+          //-     option(value='flashlogo.svg') Flash logo
+          //-     option(value='') None
+          //- .settings-row
+          //-   span Placeholder color:
+          //-   input#placeholder_color(type='color')
+          //- h3 Tools
+          //- .checkbox
+          //-   label
+          //-     input#context_menu(type='checkbox')
+          //-     span Add commands to context menu
+          //- .checkbox
+          //-   label
+          //-     input#devtools_panel(type='checkbox')
+          //-     span Integrate with Chrome DevTools
+        section#setup
+          h3 MarkSearch Extension Token
+          .input-box
+            input#extensionToken(type='text', spellcheck='false', data-setting-key='extensionToken')
+          div (You can get the extension token from the MarkSearch desktop app settings. The MarkSearch desktop app 
+              | settings can be accessed by right-clicking on the MarkSearch icon in the system tray on Windows & Linux, or 
+              | by clicking the MarkSearch icon in the menu bar on OSX)
+        section#helpAbout
+          div#help
+            h3 Help
+            div
+              | Help for the extension is available here: 
+              a(href='https://github.com/Darkle/MarkSearch#helpMenuExtention', target='_blank', rel='noopener') https://github.com/Darkle/MarkSearch#helpMenuExtention
+            div
+              | Help for the desktop app is available here: 
+              a(href='https://github.com/Darkle/MarkSearch#helpMenuMarkSearch', target='_blank', rel='noopener') https://github.com/Darkle/MarkSearch#helpMenuMarkSearch
+          div#about
+            h3 About
+            div#marksearchVersionNumber MarkSearch Version: 
+            div
+              | MarkSearch Chrome Extension Repo: 
+              a(href='https://github.com/Darkle/MarkSearch-Chrome-Extension2', target='_blank', rel='noopener') https://github.com/Darkle/MarkSearch-Chrome-Extension2
+            div
+              | MarkSearch Desktop App Repo:  
+              a(href='https://github.com/Darkle/MarkSearch', target='_blank', rel='noopener') https://github.com/Darkle/MarkSearch
+          div#bugs
+            h3 Bugs
+            div
+              | You can report any bugs for the extension here:  
+              a(target='_blank', href='https://github.com/Darkle/MarkSearch-Chrome-Extension2/issues', rel='noopener') https://github.com/Darkle/MarkSearch-Chrome-Extension2/issues
+              br
+              | You can report any bugs for the desktop app here:  
+              a(target='_blank', href='https://github.com/Darkle/MarkSearch/issues', rel='noopener') https://github.com/Darkle/MarkSearch/issues
