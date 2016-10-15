@@ -110,6 +110,10 @@ chrome.runtime.onInstalled.addListener(({reason}) => {
 chrome.tabs.onActivated.addListener(checkIfPageIsSaved)
 
 chrome.tabs.onUpdated.addListener((tabId, {status}) => {
+  /*****
+  * Start it early so by the time its loaded we've hopefully already got the response from
+  * the MarkSearch searver.
+  */
   if(status === 'loading'){
     checkIfPageIsSaved()
   }
