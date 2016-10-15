@@ -4,10 +4,10 @@ import got from 'got'
 
 const extensionOptionsDefaultValues = {
   isFirstRun: true,
-  runOnBaiduSearch: true,
-  runOnDuckduckgoSearch: true,
-  runOnBingSearch: true,
-  runOnGoogleSearch: true,
+  integrateWithBaiduSearch: true,
+  integrateWithDuckduckgoSearch: true,
+  integrateWithBingSearch: true,
+  integrateWithGoogleSearch: true,
   extensionToken: ''
 }
 let marksearchServerAddress = null
@@ -111,8 +111,8 @@ chrome.tabs.onActivated.addListener(checkIfPageIsSaved)
 
 chrome.tabs.onUpdated.addListener((tabId, {status}) => {
   /*****
-  * Start it early so by the time its loaded we've hopefully already got the response from
-  * the MarkSearch searver.
+  * Start it early so by the time its loaded we have (hopefully) received a response from
+  * the MarkSearch server and the icon has been changed to reflect its status as saved/not saved.
   */
   if(status === 'loading'){
     checkIfPageIsSaved()

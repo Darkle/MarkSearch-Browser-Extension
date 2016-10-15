@@ -41,10 +41,10 @@ function saveOptions(DOMoptionElements) {
 function setInitialDOMoptionValues(options, DOMoptionElements) {
   console.log('setInitialDOMoptionValues options: ', options)
   DOMoptionElements.extTokenInput$.val(options.extensionToken)
-  DOMoptionElements.googleSearchCheckbox$[0].checked = options.runOnGoogleSearch
-  DOMoptionElements.bingSearchCheckbox$[0].checked = options.runOnBingSearch
-  DOMoptionElements.duckduckgoSearchCheckbox$[0].checked = options.runOnDuckduckgoSearch
-  DOMoptionElements.baiduSearchCheckbox$[0].checked = options.runOnBaiduSearch
+  DOMoptionElements.googleSearchCheckbox$[0].checked = options.integrateWithGoogleSearch
+  DOMoptionElements.bingSearchCheckbox$[0].checked = options.integrateWithBingSearch
+  DOMoptionElements.duckduckgoSearchCheckbox$[0].checked = options.integrateWithDuckduckgoSearch
+  DOMoptionElements.baiduSearchCheckbox$[0].checked = options.integrateWithBaiduSearch
 }
 
 function setUpHelpAboutPage() {
