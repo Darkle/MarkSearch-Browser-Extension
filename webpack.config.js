@@ -42,7 +42,6 @@ module.exports = {
     popup: path.join(paths.srcJS, 'popup.js'),
     vendor: [
       'jquery',
-      'lodash'
     ]
   },
   devtool: 'source-map',
@@ -62,6 +61,17 @@ module.exports = {
       }
     ],
     loaders: [
+      /*****
+      * The json loader is becuase of got library and this: http://bit.ly/2eftCF4
+      */
+      {
+        test: /\.json$/,
+        loader: 'json-loader',
+        include: [
+          /node_modules/
+        ],
+        ignore: path.join(paths.src, 'manifest.json')
+      },
       {
         test: /\.js$/,
         include: [
@@ -120,7 +130,6 @@ module.exports = {
       $: 'jquery',
       jQuery: 'jquery',
       'window.jQuery': 'jquery',
-      _: 'lodash'
     }),
 
     /****

@@ -6,10 +6,11 @@
   "icons": {
     "128": "MSlargeIcon.png"
   },
-  "homepage_url": "https://github.com/Darkle/MarkSearch-Chrome-Extension2",
+  "homepage_url": "https://github.com/Darkle/MarkSearch-Chrome-Extension",
   "permissions": [
     "http://127.0.0.1/*",
-    "storage"
+    "storage",
+    "tabs"
   ],
   "incognito": "split",
   "background": {
@@ -17,8 +18,18 @@
     "run_at": "document_end",
     "scripts": ["vendor.build.js", "background.build.js"]
   },
+  "browser_action": {
+    "default_icon": "MSlargeIcon.png",
+    "default_popup": "popup.html",
+    "default_title": "Save To MarkSearch"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "chrome_style": true
+  },
   "content_scripts": [
     {
+      "js": ["vendor.build.js", "contentScript.build.js"],
       "matches": [
         "https://encrypted.google.com/*",
         "https://www.google.ad/*",
@@ -233,17 +244,7 @@
         "https://www.google.vn/*",
         "https://www.google.vu/*",
         "https://www.google.ws/*"
-      ],
-      "js": ["vendor.build.js", "contentScript.build.js"]
+      ]
     }
-  ],
-  "browser_action": {
-    /*"default_icon": "icon_19.png",*/
-    "default_popup": "popup.html",
-    "default_title": "Save To MarkSearch"
-  },
-  "options_ui": {
-    "page": "options.html",
-    "chrome_style": true
-  }
+  ]
 }

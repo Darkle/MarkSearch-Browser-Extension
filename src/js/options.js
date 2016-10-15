@@ -16,9 +16,10 @@ function firstRunCheck(isFirstRun){
 
 function saveOptions(DOMoptionElements) {
   chrome.storage.local.set(
-    _.reduce(
-      DOMoptionElements,
-      (settingsObj, optionElement$) => {
+    Object
+      .keys(DOMoptionElements)
+      .reduce((settingsObj, keyname) => {
+        const optionElement$ = DOMoptionElements[keyname]
         let optionElemValue = optionElement$.val()
         if(optionElemValue === 'true'){
           optionElemValue = true
@@ -83,7 +84,7 @@ function optionsPageInit() {
   chrome.storage.local.get(
     /*****
     * Pass in null to get the entire contents of storage: http://bit.ly/2dokoIX
-    */ 
+    */
     null,
     (options) => {
       setInitialDOMoptionValues(options, DOMoptionElements)
