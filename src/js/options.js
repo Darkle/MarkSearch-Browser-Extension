@@ -1,11 +1,10 @@
 import '../styles/commonStyles.styl'
 import '../styles/options.styl'
 
-function firstRunCheck(isFirstRun){
+function firstRunCheck(extensionToken){
   const navListElems$ = $('#optionsPanel nav li')
   let tabToDisplay = navListElems$[0]
-  if(isFirstRun){
-    chrome.storage.local.set({isFirstRun: false})
+  if(extensionToken.indexOf(',') === -1){
     /*****
     * navListElems$[1] is the setup tab - show that if its the first run
     */
@@ -114,7 +113,7 @@ function optionsPageInit() {
     null,
     (options) => {
       setInitialDOMoptionValues(options, DOMoptionElements)
-      settingsTabsBehaviour(firstRunCheck(options.isFirstRun))
+      settingsTabsBehaviour(firstRunCheck(options.extensionToken))
       setUpHelpAboutPage()
       setUpEventListeners(DOMoptionElements)
     }

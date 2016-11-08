@@ -3,7 +3,6 @@ require('file?name=manifest.[ext]!../manifest.json')
 import got from 'got'
 
 const extensionOptionsDefaultValues = {
-  isFirstRun: true,
   integrateWithBaiduSearch: true,
   integrateWithDuckduckgoSearch: true,
   integrateWithBingSearch: true,
@@ -15,24 +14,21 @@ let marksearchApiToken = null
 let urlThatWasLastChecked = null
 
 function assignServerAddressAndToken(extensionTokenString){
-  const splitExtensionToken = extensionTokenString.split(',')
-  marksearchServerAddress = splitExtensionToken[0]
-  marksearchApiToken = splitExtensionToken[1]
+  if(typeof extensionTokenString === 'string' && extensionTokenString.indexOf(',') > 1){
+    const splitExtensionToken = extensionTokenString.split(',')
+    marksearchServerAddress = splitExtensionToken[0]
+    marksearchApiToken = splitExtensionToken[1]
+  }
 }
 
 /*****
-* This sets up the default settings on first install or assigns the marksearchApiToken
-* & marksearchServerAddress values on chrome startup.
+* This assigns the marksearchApiToken & marksearchServerAddress values on chrome startup.
 *
 * Using chrome.storage.local rather than storage.sync in case they have MarkSearch
 * set up on a different network and have different settings there (e.g. different
 * port number that MarkSearch is running on)
 */
-chrome.storage.local.get(extensionOptionsDefaultValues, ({extensionToken}) => {
-  if(extensionToken.length && extensionToken.indexOf(',') > 1){
-    assignServerAddressAndToken(extensionToken.newValue)
-  }
-})
+chrome.storage.local.get(null, ({extensionToken}) => assignServerAddressAndToken) // eslint-disable-line no-unused-vars
 
 /*****
 * Check if the web page is saved in MarkSearch
@@ -114,32 +110,21 @@ checkIfPageIsSaved()
 */
 
 chrome.runtime.onInstalled.addListener(({reason}) => {
-  if(reason !== 'install'){
-    return
+  if(reason === 'install'){
+    chrome.storage.local.get(null, options => {
+      if(!options.extensionToken){
+        /*****
+        * Set up the default settings on first install.
+        */
+        chrome.storage.local.set(
+          extensionOptionsDefaultValues,
+          () => {
+            chrome.runtime.openOptionsPage()
+          }
+        )
+      }
+    })
   }
-
-  chrome.storage.local.get('isFirstRun', ({isFirstRun}) => {
-    /*****
-    * If isFirstRun is undefined, it is most likely the first run
-    * of the extension.
-    */
-    if(typeof isFirstRun === 'undefined'){
-      console.log('First Run')
-      /*****
-      * Set the default values for extension options
-      */
-      chrome.storage.local.set(
-        extensionOptionsDefaultValues,
-        () => {
-          /*****
-          * Once the options page has loaded for the first time, the options.js then sets the
-          * chrome.storage.local value for isFirstRun to false.
-          */
-          chrome.runtime.openOptionsPage()
-        }
-      )
-    }
-  })
 })
 
 chrome.tabs.onActivated.addListener(checkIfPageIsSaved)
@@ -160,11 +145,7 @@ chrome.windows.onFocusChanged.addListener(checkIfPageIsSaved)
 * If user changes the token, update the reference for server address and server api token
 */
 chrome.storage.onChanged.addListener(({extensionToken}, storageAreaName) => {
-  if(storageAreaName === 'local' &&
-    extensionToken &&
-    extensionToken.newValue &&
-    extensionToken.newValue.includes(',')
-  ){
+  if(storageAreaName === 'local' && extensionToken){
     assignServerAddressAndToken(extensionToken.newValue)
   }
 })
