@@ -9,8 +9,8 @@
   "homepage_url": "https://github.com/Darkle/MarkSearch-Chrome-Extension",
   "permissions": [
     "http://127.0.0.1/*",
-    "storage",
-    "tabs"
+    "https://127.0.0.1/*",
+    "storage"
   ],
   "incognito": "split",
   "background": {

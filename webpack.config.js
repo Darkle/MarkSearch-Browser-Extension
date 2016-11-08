@@ -124,7 +124,7 @@ module.exports = {
     ),
 
     /****
-    * Need to set up $/balalaika as a global
+    * Need to set up $/jquery as a global
     */
     new webpack.ProvidePlugin({
       $: 'jquery',

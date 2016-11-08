@@ -15,6 +15,28 @@ function firstRunCheck(isFirstRun){
 }
 
 function saveOptions(DOMoptionElements) {
+  // console.log('saving options')
+  // console.log('saved settingsObj',
+  //   Object
+  //     .keys(DOMoptionElements)
+  //     .reduce((settingsObj, keyname) => {
+  //       const optionElement$ = DOMoptionElements[keyname]
+  //       let optionElemValue = optionElement$.val()
+  //       if(optionElemValue === 'true'){
+  //         optionElemValue = true
+  //       }
+  //       if(optionElemValue === 'false'){
+  //         optionElemValue = false
+  //       }
+  //       if(optionElement$.is('input[type="checkbox"]')){
+  //         optionElemValue = optionElement$[0].checked
+  //       }
+  //       settingsObj[optionElement$.data('settingKey')] = optionElemValue
+  //       return settingsObj
+  //     },
+  //     {}
+  //   )
+  // )
   chrome.storage.local.set(
     Object
       .keys(DOMoptionElements)
@@ -69,6 +91,10 @@ function settingsTabsBehaviour(selectedListElement) {
 function setUpEventListeners(DOMoptionElements) {
   $('#optionsPanel nav').on('click', evt => settingsTabsBehaviour(evt.target))
   $('input').on('change', () => saveOptions(DOMoptionElements))
+  /*****
+  * Also need .on('input' for extTokenInput$ as $('input').on('change' only fires for text input
+  * change once it loses focus, so using .on('input' as well so it saves straight away on paste.
+  */
   DOMoptionElements.extTokenInput$.on('input', () => saveOptions(DOMoptionElements))
 }
 
