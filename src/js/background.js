@@ -14,6 +14,25 @@ let marksearchServerAddress = null
 let marksearchApiToken = null
 let urlThatWasLastChecked = null
 
+function assignServerAddressAndToken(extensionTokenString){
+  const splitExtensionToken = extensionTokenString.split(',')
+  marksearchServerAddress = splitExtensionToken[0]
+  marksearchApiToken = splitExtensionToken[1]
+}
+
+/*****
+* This sets up the default settings on first install or assigns the marksearchApiToken
+* & marksearchServerAddress values on chrome startup.
+*
+* Using chrome.storage.local rather than storage.sync in case they have MarkSearch
+* set up on a different network and have different settings there (e.g. different
+* port number that MarkSearch is running on)
+*/
+chrome.storage.local.get(extensionOptionsDefaultValues, ({extensionToken}) => {
+  if(extensionToken.length && extensionToken.indexOf(',') > 1){
+    assignServerAddressAndToken(extensionToken.newValue)
+  }
+})
 
 /*****
 * Check if the web page is saved in MarkSearch
@@ -40,28 +59,48 @@ function checkIfPageIsSaved(){
       const currentTab = tabs[0]
       const currentUrl = currentTab.url
       console.log('urlThatWasLastChecked', urlThatWasLastChecked)
-      if(currentUrl === urlThatWasLastChecked){
+      if(currentUrl === urlThatWasLastChecked || !/^(http|https):\/\//.test(currentUrl)){
         return
       }
       console.log('chrome.tabs.query callback')
       /* eslint-disable */
-      got
-        .post(
-          marksearchServerAddress,
-          {
-            headers: {
-              Authorization: marksearchApiToken
-            }
-          }
-        )
-        .then(response => {
-          console.log('got.post success')
-          urlThatWasLastChecked = currentUrl
-          console.log(response.body)
-        })
-        .catch(error => {
-          console.log('got.post error')
-          console.error(error)
+      // got
+      //   .post(
+      //     marksearchServerAddress + '/api/get/' + encodeURIComponent(currentUrl),
+      //     {
+      //       headers: {
+      //         Authorization: marksearchApiToken
+      //       }
+      //     }
+      //   )
+      //   .then(response => {
+      //     console.log('got.post success')
+      //     urlThatWasLastChecked = currentUrl
+      //     console.log(response.body)
+      //   })
+      //   .catch(error => {
+      //     console.log('got.post error')
+      //     console.error(error)
+      //   })
+        // got('http://127.0.0.1', {port: 8080})
+        // // got('http://www.bom.gov.au/products/IDR023.loop.shtml#skip')
+        //   .then(response => {
+        //     console.log('got.post success')
+        //     urlThatWasLastChecked = currentUrl
+        //     console.log(response.body)
+        //   })
+        //   .catch(error => {
+        //     console.log('got.post error')
+        //     console.error(error)
+        //   })
+        fetch('http://127.0.0.1:8080', {
+          method: 'get'
+        }).then(function(response) {
+            console.log('fetch success')
+            console.log(response)
+        }).catch(function(err) {
+          console.log('fetch success')
+          console.error(err)
         })
         /* eslint-enable */
     }
@@ -78,11 +117,7 @@ chrome.runtime.onInstalled.addListener(({reason}) => {
   if(reason !== 'install'){
     return
   }
-  /*****
-  * Using chrome.storage.local rather than storage.sync in case they have MarkSearch
-  * set up on a different network and have different settings there (e.g. different
-  * port number that MarkSearch is running on)
-  */
+
   chrome.storage.local.get('isFirstRun', ({isFirstRun}) => {
     /*****
     * If isFirstRun is undefined, it is most likely the first run
@@ -124,13 +159,12 @@ chrome.windows.onFocusChanged.addListener(checkIfPageIsSaved)
 /*****
 * If user changes the token, update the reference for server address and server api token
 */
-chrome.storage.onChanged.addListener((changedOptions, storageAreaName) => {
+chrome.storage.onChanged.addListener(({extensionToken}, storageAreaName) => {
   if(storageAreaName === 'local' &&
-    changedOptions.extensionToken &&
-    changedOptions.extensionToken.includes(',')
+    extensionToken &&
+    extensionToken.newValue &&
+    extensionToken.newValue.includes(',')
   ){
-    const splitExtensionToken = changedOptions.extensionToken.split(',')
-    marksearchServerAddress = splitExtensionToken[0]
-    marksearchApiToken = splitExtensionToken[1]
+    assignServerAddressAndToken(extensionToken.newValue)
   }
 })
