@@ -115,7 +115,6 @@ chrome.windows.onFocusChanged.addListener(() => {
     if(window && Array.isArray(window.tabs)) {
       for(const tab of window.tabs) {
         if(tab.highlighted) {
-          console.log('onFocusChanged highlighted')
           checkIfPageIsSaved(tab.id)
         }
       }
