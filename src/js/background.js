@@ -30,107 +30,55 @@ function assignServerAddressAndToken(extensionTokenString){
 */
 chrome.storage.local.get(null, ({extensionToken}) => assignServerAddressAndToken) // eslint-disable-line no-unused-vars
 
-// function updateIcon(){
-//
-// }
+function updateIcon(pageIsSavedInMarkSearch, tabId){
+  let title = 'Page Not Yet Saved To MarkSearch'
+  let text = ''
+  if(pageIsSavedInMarkSearch){
+    title = 'Saved To MarkSearch'
+    text = 'Saved'
+  }
+  // chrome.browserAction.setBadgeBackgroundColor({color: '#66cc33'})
+  chrome.browserAction.getBadgeBackgroundColor({tabId}, color => {
+    console.log('getBadgeBackgroundColor', color)
+    chrome.browserAction.setBadgeBackgroundColor({color})
+  })
+  chrome.browserAction.setTitle({title, tabId})
+  chrome.browserAction.setBadgeText({text, tabId})
+}
 
 /*****
 * Check if the web page is saved in MarkSearch
 */
 function checkIfPageIsSaved(tabId){
-  console.log('***********************===============================********************')
-  console.log('checkIfPageIsSaved 1')
-  console.log(Date.now())
-
   if(!marksearchServerAddress || !marksearchApiToken){
     return
   }
-  // console.log('checkIfPageIsSaved 2')
-  // console.log(marksearchApiToken)
-  // console.log(marksearchServerAddress)
+
   chrome.tabs.get(tabId, tab => {
-    console.log('tab', tab)
     if(!tab.url || !isBookmarkable(tab.url)){
       return
     }
-    console.log('tab.url', tab.url)
+
     const fetchUrl = `${ marksearchServerAddress }/api/get/${ encodeURIComponent(tab.url) }`
     const request = new Request(fetchUrl, {
       headers: new Headers({
         'Authorization': marksearchApiToken
       })
     })
+
     fetch(request)
       .then( ({ status }) => {
-        console.log('fetch success')
-        console.log('status', status)
-      }).catch(function(err) {
-        console.log('fetch error')
+        if(status === 200){
+          updateIcon(true, tabId)
+        }
+        if(status === 404){
+          updateIcon(false, tabId)
+        }
+      }).catch( err => {
+        console.log('checkIfPageIsSaved fetch error')
         console.error(err)
       })
   })
-  // chrome.tabs.query(
-  //   {
-  //     active: true,
-  //     currentWindow: true,
-  //     windowType: 'normal'
-  //   },
-  //   tabs => {
-  //     console.log('tabs', tabs)
-  //     if(!tabs[0] || !tabs[0].url){
-  //       return
-  //     }
-  //     const currentTab = tabs[0]
-  //     const currentUrl = currentTab.url
-  //     console.log('currentTab', currentTab)
-  //     console.log('currentUrl', currentUrl)
-  //
-  //     if(!/^(http|https):\/\//.test(currentUrl)){
-  //       return
-  //     }
-  //     console.log('chrome.tabs.query callback')
-  //     /* eslint-disable */
-  //     got
-  //       .post(
-  //         marksearchServerAddress + '/api/get/' + encodeURIComponent(currentUrl),
-  //         {
-  //           headers: {
-  //             Authorization: marksearchApiToken
-  //           }
-  //         }
-  //       )
-  //       .then(response => {
-  //         console.log('got.post success')
-  //         urlThatWasLastChecked = currentUrl
-  //         console.log(response.body)
-  //       })
-  //       .catch(error => {
-  //         console.log('got.post error')
-  //         console.error(error)
-  //       })
-  //       got('http://127.0.0.1', {port: 8080})
-  //       // got('http://www.bom.gov.au/products/IDR023.loop.shtml#skip')
-  //         .then(response => {
-  //           console.log('got.post success')
-  //           urlThatWasLastChecked = currentUrl
-  //           console.log(response.body)
-  //         })
-  //         .catch(error => {
-  //           console.log('got.post error')
-  //           console.error(error)
-  //         })
-  //       fetch('http://127.0.0.1:8080', {
-  //         method: 'get'
-  //       }).then(function(response) {
-  //           console.log('fetch success')
-  //           console.log(response)
-  //       }).catch(function(err) {
-  //         console.log('fetch success')
-  //         console.error(err)
-  //       })
-  //       /* eslint-enable */
-  //   }
-  // )
 }
 
 /*****
@@ -154,18 +102,6 @@ chrome.runtime.onInstalled.addListener(({reason}) => {
     })
   }
 })
-
-// chrome.tabs.onActivated.addListener(() => checkIfPageIsSaved)
-// chrome.tabs.onUpdated.addListener((tabId, {status}) => {
-//   /*****
-//   * Start it early so by the time its loaded we have (hopefully) received a response from
-//   * the MarkSearch server and the icon has been changed to reflect its status as saved/not saved.
-//   */
-//   if(status === 'loading'){
-//     checkIfPageIsSaved()
-//   }
-// })
-// chrome.windows.onFocusChanged.addListener(() => checkIfPageIsSaved)
 
 chrome.tabs.onActivated.addListener(({tabId}) => {
   checkIfPageIsSaved(tabId)
