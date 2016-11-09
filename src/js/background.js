@@ -11,7 +11,6 @@ const extensionOptionsDefaultValues = {
 }
 let marksearchServerAddress = null
 let marksearchApiToken = null
-// let urlThatWasLastChecked = null
 
 function assignServerAddressAndToken(extensionTokenString){
   if(typeof extensionTokenString === 'string' && extensionTokenString.indexOf(',') > 1){
@@ -102,8 +101,8 @@ chrome.tabs.onActivated.addListener(({tabId}) => {
   checkIfPageIsSaved(tabId)
 })
 
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if(tab.highlighted) {
+chrome.tabs.onUpdated.addListener((tabId, {status}, tab) => {
+  if(tab.highlighted && status === 'complete') {
     checkIfPageIsSaved(tabId)
   }
 })
