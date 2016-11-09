@@ -1,6 +1,6 @@
 require('file?name=manifest.[ext]!../manifest.json')
 
-// import got from 'got'
+import { isBookmarkable } from './utils'
 
 const extensionOptionsDefaultValues = {
   integrateWithBaiduSearch: true,
@@ -40,6 +40,7 @@ chrome.storage.local.get(null, ({extensionToken}) => assignServerAddressAndToken
 function checkIfPageIsSaved(tabId){
   console.log('***********************===============================********************')
   console.log('checkIfPageIsSaved 1')
+  console.log(Date.now())
 
   if(!marksearchServerAddress || !marksearchApiToken){
     return
@@ -48,19 +49,25 @@ function checkIfPageIsSaved(tabId){
   // console.log(marksearchApiToken)
   // console.log(marksearchServerAddress)
   chrome.tabs.get(tabId, tab => {
-    if(!/^(http|https):\/\//.test(tab.url)){
+    console.log('tab', tab)
+    if(!tab.url || !isBookmarkable(tab.url)){
       return
     }
     console.log('tab.url', tab.url)
-    fetch('http://127.0.0.1:8080', {
-      method: 'get'
-    }).then(function(response) {
-      console.log('fetch success')
-      console.log(response)
-    }).catch(function(err) {
-      console.log('fetch success')
-      console.error(err)
+    const fetchUrl = `${ marksearchServerAddress }/api/get/${ encodeURIComponent(tab.url) }`
+    const request = new Request(fetchUrl, {
+      headers: new Headers({
+        'Authorization': marksearchApiToken
+      })
     })
+    fetch(request)
+      .then( ({ status }) => {
+        console.log('fetch success')
+        console.log('status', status)
+      }).catch(function(err) {
+        console.log('fetch error')
+        console.error(err)
+      })
   })
   // chrome.tabs.query(
   //   {
@@ -160,7 +167,9 @@ chrome.runtime.onInstalled.addListener(({reason}) => {
 // })
 // chrome.windows.onFocusChanged.addListener(() => checkIfPageIsSaved)
 
-chrome.tabs.onActivated.addListener(({tabId}) => checkIfPageIsSaved) // eslint-disable-line no-unused-vars
+chrome.tabs.onActivated.addListener(({tabId}) => {
+  checkIfPageIsSaved(tabId)
+})
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if(tab.highlighted) {
