@@ -34,14 +34,9 @@ function updateIcon(pageIsSavedInMarkSearch, tabId){
   let title = 'Page Not Yet Saved To MarkSearch'
   let text = ''
   if(pageIsSavedInMarkSearch){
-    title = 'Saved To MarkSearch'
+    title = 'Page Saved To MarkSearch'
     text = 'Saved'
   }
-  // chrome.browserAction.setBadgeBackgroundColor({color: '#66cc33'})
-  chrome.browserAction.getBadgeBackgroundColor({tabId}, color => {
-    console.log('getBadgeBackgroundColor', color)
-    chrome.browserAction.setBadgeBackgroundColor({color})
-  })
   chrome.browserAction.setTitle({title, tabId})
   chrome.browserAction.setBadgeText({text, tabId})
 }
