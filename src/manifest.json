@@ -8,10 +8,10 @@
   },
   "homepage_url": "https://github.com/Darkle/MarkSearch-Chrome-Extension",
   "permissions": [
-    "http://127.0.0.1/*",
-    "https://127.0.0.1/*",
+    "http://*/*",
     "storage",
-    "tabs"
+    "tabs",
+    "activeTab"
   ],
   "incognito": "split",
   "background": {
@@ -21,7 +21,6 @@
   },
   "browser_action": {
     "default_icon": "MSlargeIcon.png",
-    "default_popup": "popup.html",
     "default_title": "Save To MarkSearch"
   },
   "options_ui": {
@@ -30,7 +29,8 @@
   },
   "content_scripts": [
     {
-      "js": ["vendor.build.js", "contentScript.build.js"],
+      "js": ["vendor.build.js", "search_ContentScript.build.js"],
+      "run_at": "document_end",
       "matches": [
         "https://encrypted.google.com/*",
         "https://www.google.ad/*",

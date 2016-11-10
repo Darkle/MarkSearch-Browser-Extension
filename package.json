@@ -48,6 +48,7 @@
     "write-json-webpack-plugin": "^1.0.0"
   },
   "dependencies": {
-    "jquery": "^3.1.1"
+    "jquery": "^3.1.1",
+    "valid-url": "^1.0.9"
   }
 }

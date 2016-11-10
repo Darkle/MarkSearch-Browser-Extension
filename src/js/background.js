@@ -1,6 +1,17 @@
 require('file?name=manifest.[ext]!../manifest.json')
 
-import { isBookmarkable } from './utils'
+import { assignServerAddressAndToken } from './serverAddressAndToken'
+import { checkIfPageIsSaved } from './checkIfPageIsSaved'
+import { updateIcon } from './updateIcon'
+// import { savePageToMarkSearch } from './savePageToMarkSearch'
+import { removePageFromMarkSearch } from './removePageFromMarkSearch'
+import { errorHandler } from './errorHandler'
+
+/*****
+* Note: using chrome.storage.local rather than storage.sync in case they have MarkSearch
+* set up on a different network and have different settings there (e.g. different
+* port number that MarkSearch is running on)
+*/
 
 const extensionOptionsDefaultValues = {
   integrateWithBaiduSearch: true,
@@ -9,76 +20,23 @@ const extensionOptionsDefaultValues = {
   integrateWithGoogleSearch: true,
   extensionToken: ''
 }
-let marksearchServerAddress = null
-let marksearchApiToken = null
 
-function assignServerAddressAndToken(extensionTokenString){
-  if(typeof extensionTokenString === 'string' && extensionTokenString.indexOf(',') > 1){
-    const splitExtensionToken = extensionTokenString.split(',')
-    marksearchServerAddress = splitExtensionToken[0]
-    marksearchApiToken = splitExtensionToken[1]
-  }
+function checkIfPageIsSavedAndUpdateIcon(tabId){
+  checkIfPageIsSaved(tabId)
+    .then( pageIsSavedInMarkSearch => updateIcon(pageIsSavedInMarkSearch, tabId))
+    .catch(errorHandler)
 }
 
 /*****
 * This assigns the marksearchApiToken & marksearchServerAddress values on chrome startup.
-*
-* Using chrome.storage.local rather than storage.sync in case they have MarkSearch
-* set up on a different network and have different settings there (e.g. different
-* port number that MarkSearch is running on)
 */
-chrome.storage.local.get(null, ({extensionToken}) => assignServerAddressAndToken) // eslint-disable-line no-unused-vars
-
-function updateIcon(pageIsSavedInMarkSearch, tabId){
-  let title = 'Page Not Yet Saved To MarkSearch'
-  let text = ''
-  if(pageIsSavedInMarkSearch){
-    title = 'Page Saved To MarkSearch'
-    text = 'Saved'
-  }
-  chrome.browserAction.setTitle({title, tabId})
-  chrome.browserAction.setBadgeText({text, tabId})
-}
-
-/*****
-* Check if the web page is saved in MarkSearch
-*/
-function checkIfPageIsSaved(tabId){
-  if(!marksearchServerAddress || !marksearchApiToken){
-    return
-  }
-
-  chrome.tabs.get(tabId, tab => {
-    if(!tab.url || !isBookmarkable(tab.url)){
-      return
-    }
-
-    const fetchUrl = `${ marksearchServerAddress }/api/get/${ encodeURIComponent(tab.url) }`
-    const request = new Request(fetchUrl, {
-      headers: new Headers({
-        'Authorization': marksearchApiToken
-      })
-    })
-
-    fetch(request)
-      .then( ({ status }) => {
-        if(status === 200){
-          updateIcon(true, tabId)
-        }
-        if(status === 404){
-          updateIcon(false, tabId)
-        }
-      }).catch( err => {
-        console.log('checkIfPageIsSaved fetch error')
-        console.error(err)
-      })
-  })
-}
+chrome.storage.local.get(null, ({extensionToken}) => {
+  assignServerAddressAndToken(extensionToken)
+})
 
 /*****
 * Event listeners
 */
-
 chrome.runtime.onInstalled.addListener(({reason}) => {
   if(reason === 'install'){
     chrome.storage.local.get(null, options => {
@@ -98,12 +56,12 @@ chrome.runtime.onInstalled.addListener(({reason}) => {
 })
 
 chrome.tabs.onActivated.addListener(({tabId}) => {
-  checkIfPageIsSaved(tabId)
+  checkIfPageIsSavedAndUpdateIcon(tabId)
 })
 
 chrome.tabs.onUpdated.addListener((tabId, {status}, tab) => {
   if(tab.highlighted && status === 'complete') {
-    checkIfPageIsSaved(tabId)
+    checkIfPageIsSavedAndUpdateIcon(tabId)
   }
 })
 
@@ -115,7 +73,7 @@ chrome.windows.onFocusChanged.addListener(() => {
     if(window && Array.isArray(window.tabs)) {
       for(const tab of window.tabs) {
         if(tab.highlighted) {
-          checkIfPageIsSaved(tab.id)
+          checkIfPageIsSavedAndUpdateIcon(tab.id)
         }
       }
     }
@@ -130,3 +88,29 @@ chrome.storage.onChanged.addListener(({extensionToken}, storageAreaName) => {
     assignServerAddressAndToken(extensionToken.newValue)
   }
 })
+
+chrome.browserAction.onClicked.addListener( tab => {
+  checkIfPageIsSaved(tab.id)
+    .then( pageIsSavedInMarkSearch => {
+      /*****
+      * If they have clicked on the button and the page is already saved, remove it.
+      */
+      if(pageIsSavedInMarkSearch){
+        return removePageFromMarkSearch(tab.url)
+          .then(() => updateIcon(false, tab.id))
+
+      }
+      else{ // eslint-disable-line no-else-return
+        chrome.tabs.executeScript(
+          null,
+          {
+            file: 'savePageAndNotify_ContentScript.build.js',
+            runAt: 'document_end'
+          }
+        )
+      }
+    })
+    .catch(errorHandler)
+})
+
+//Add message listener here that calls savePageToMarkSearch with the details sent by savePageAndNotifyContentScript

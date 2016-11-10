@@ -37,9 +37,9 @@ const paths = {
 module.exports = {
   entry: {
     background: path.join(paths.srcJS, 'background.js'),
-    contentScript: path.join(paths.srcJS, 'contentScript.js'),
+    search_ContentScript: path.join(paths.srcJS, 'search_ContentScript.js'),
+    savePageAndNotify_ContentScript: path.join(paths.srcJS, 'savePageAndNotify_ContentScript.js'),
     options: path.join(paths.srcJS, 'options.js'),
-    popup: path.join(paths.srcJS, 'popup.js'),
     vendor: [
       'jquery',
     ]
@@ -153,17 +153,17 @@ module.exports = {
     // new ExtractTextPlugin('[name].[chunkhash].css'),
 
     // https://github.com/ampedandwired/html-webpack-plugin#configuration
-    new HtmlWebpackPlugin({
-      filename: 'popup.html',
-      template: path.join(paths.srcPug, 'popup.pug'),
-      // inject: false,
-      // showErrors: false,
-      // hash: true,
-      chunks: [
-        'vendor',
-        'popup'
-      ]
-    }),
+    // new HtmlWebpackPlugin({
+    //   filename: 'popup.html',
+    //   template: path.join(paths.srcPug, 'popup.pug'),
+    //   // inject: false,
+    //   // showErrors: false,
+    //   // hash: true,
+    //   chunks: [
+    //     'vendor',
+    //     'popup'
+    //   ]
+    // }),
     new HtmlWebpackPlugin({
       filename: 'options.html',
       template: path.join(paths.srcPug, 'options.pug'),
