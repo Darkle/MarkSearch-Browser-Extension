@@ -98,7 +98,6 @@ chrome.browserAction.onClicked.addListener( tab => {
       if(pageIsSavedInMarkSearch){
         return removePageFromMarkSearch(tab.url)
           .then(() => updateIcon(false, tab.id))
-
       }
       else{ // eslint-disable-line no-else-return
         chrome.tabs.executeScript(

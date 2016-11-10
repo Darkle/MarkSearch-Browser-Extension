@@ -2,6 +2,7 @@
 import { isWebUri } from 'valid-url'
 
 import { marksearchServerAddress, marksearchApiToken } from './serverAddressAndToken'
+import { bookmarkedURLs } from './checkIfPageIsSaved'
 
 function removePageFromMarkSearch(urlToRemove){
   return new Promise( (resolve, reject) => {
@@ -16,7 +17,14 @@ function removePageFromMarkSearch(urlToRemove){
       method: 'DELETE'
     })
 
-    return resolve(fetch(request))
+    return resolve(
+      fetch(request)
+        .then(
+          () => {
+            bookmarkedURLs.delete(urlToRemove)
+          }
+        )
+      );  // eslint-disable-line
   })
 }
 
