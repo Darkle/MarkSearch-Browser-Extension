@@ -3,7 +3,7 @@ require('file?name=manifest.[ext]!../manifest.json')
 import { assignServerAddressAndToken } from './serverAddressAndToken'
 import { checkIfPageIsSaved } from './checkIfPageIsSaved'
 import { updateIcon } from './updateIcon'
-// import { savePageToMarkSearch } from './savePageToMarkSearch'
+import { savePageToMarkSearch } from './savePageToMarkSearch'
 import { removePageFromMarkSearch } from './removePageFromMarkSearch'
 import { errorHandler } from './errorHandler'
 
@@ -112,4 +112,9 @@ chrome.browserAction.onClicked.addListener( tab => {
     .catch(errorHandler)
 })
 
-//Add message listener here that calls savePageToMarkSearch with the details sent by savePageAndNotifyContentScript
+chrome.runtime.onMessage.addListener( (request, sender, sendResponse) => {
+  savePageToMarkSearch(request)
+    .then(() => {
+      sendResponse({pageSaved: true})
+    })
+})

@@ -4,7 +4,8 @@ import { isWebUri } from 'valid-url'
 import { marksearchServerAddress, marksearchApiToken } from './serverAddressAndToken'
 
 /*****
-* Check if the web page is saved in MarkSearch
+* Note: not doing any caching of bookmarkedUrls like http://bit.ly/2fEPFpu because the bookmark could have
+* been deleted on the MarkSearch server webpage and our cache in this extension would not match up.
 */
 function checkIfPageIsSaved(tabId){
   return new Promise( (resolve, reject) => {

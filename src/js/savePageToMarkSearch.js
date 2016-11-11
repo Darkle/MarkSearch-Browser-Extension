@@ -2,21 +2,29 @@
 import { isWebUri } from 'valid-url'
 
 import { marksearchServerAddress, marksearchApiToken } from './serverAddressAndToken'
+import { pageDataSchema } from './pageDataSchema'
 
-function savePageToMarkSearch(url, asd,asdasd){
+function savePageToMarkSearch(pageData){
   return new Promise( (resolve, reject) => {
-    if(!urlToRemove || !isWebUri(urlToRemove)){
-      return reject()
-    }
-    const fetchUrl = `${ marksearchServerAddress }/api/remove/${ encodeURIComponent(urlToRemove) }`
-    const request = new Request(fetchUrl, {
-      headers: new Headers({
-        'Authorization': marksearchApiToken
-      }),
-      method: 'DELETE'
-    })
+    /*****
+    * validate will throw and the promise will exit if it fails validation
+    */
+    validate(pageData, pageDataSchema)
 
-    return resolve(fetch(request))
+
+
+    // if(!urlToRemove || !isWebUri(urlToRemove)){
+    //   return reject()
+    // }
+    // const fetchUrl = `${ marksearchServerAddress }/api/remove/${ encodeURIComponent(urlToRemove) }`
+    // const request = new Request(fetchUrl, {
+    //   headers: new Headers({
+    //     'Authorization': marksearchApiToken
+    //   }),
+    //   method: 'DELETE'
+    // })
+    //
+    // return resolve(fetch(request))
   })
 }
 

@@ -1,6 +1,6 @@
 
 function updateIcon(pageIsSavedInMarkSearch, tabId){
-  let title = 'Page Not Yet Saved To MarkSearch'
+  let title = 'Save To MarkSearch'
   let text = ''
   if(pageIsSavedInMarkSearch){
     title = 'Page Saved To MarkSearch'
