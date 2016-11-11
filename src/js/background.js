@@ -117,4 +117,5 @@ chrome.runtime.onMessage.addListener( (request, sender, sendResponse) => {
     .then(() => {
       sendResponse({pageSaved: true})
     })
+    .catch(errorHandler)
 })

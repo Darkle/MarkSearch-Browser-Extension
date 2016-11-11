@@ -1,4 +1,3 @@
-import { Type, Presence } from 'sculp'
 import { isWebUri } from 'valid-url'
 
 /*****
@@ -8,26 +7,26 @@ import { isWebUri } from 'valid-url'
 
 const pageDataSchema = {
   type: 'object',
+  strict: true,
   properties: {
     pageTitle: {
-      type: 'Type.STRING',
-      $presence: Presence.REQUIRED
+      type: 'string'
     },
     pageText: {
-      type: Type.STRING,
-      $presence: Presence.REQUIRED
+      type: 'string'
     },
     pageDescription: {
-      type: Type.STRING,
-      $presence: Presence.REQUIRED
+      type: 'string'
     },
     url: {
-      type: Type.STRING,
-      $lengthmin: 4,
-      $presence: Presence.REQUIRED,
-      // $regexp: new RegExp('^(http|https)://', 'i'),
-      $lengthmax: 2000,
-      $custom: fa => !isWebUri(fa()) ? undefined : 'String is not a valid web url' // eslint-disable-line
+      type: 'string',
+      minLength: 4,
+      maxLength: 2000,
+      exec(scheme, post) {
+        if(!isWebUri(post)){
+          this.report('url passed to pageDataSchema.js is not a valid web url!')
+        }
+      }
     }
   }
 }
