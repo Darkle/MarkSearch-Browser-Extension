@@ -16,7 +16,7 @@ function checkIfPageIsSaved(tabId){
 // console.log('marksearchServerAddress', marksearchServerAddress)
 // console.log('marksearchApiToken', marksearchApiToken)
     chrome.tabs.get(tabId, tab => {
-      if(!tab.url || !isWebUri(tab.url)){
+      if(!isWebUri(tab.url)){
         return reject()
       }
 // console.log('checkIfPageIsSaved chrome.tabs.get')

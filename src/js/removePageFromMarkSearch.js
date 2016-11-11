@@ -5,7 +5,7 @@ import { marksearchServerAddress, marksearchApiToken } from './serverAddressAndT
 
 function removePageFromMarkSearch(urlToRemove){
   return new Promise( (resolve, reject) => {
-    if(!urlToRemove || !isWebUri(urlToRemove)){
+    if(!isWebUri(urlToRemove)){
       return reject()
     }
     const fetchUrl = `${ marksearchServerAddress }/api/remove/${ encodeURIComponent(urlToRemove) }`

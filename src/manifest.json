@@ -17,7 +17,7 @@
   "background": {
     "persistent": false,
     "run_at": "document_end",
-    "scripts": ["vendor.build.js", "background.build.js"]
+    "scripts": ["background.build.js"]
   },
   "browser_action": {
     "default_icon": "MSlargeIcon.png",
