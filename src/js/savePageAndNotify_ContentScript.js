@@ -1,8 +1,9 @@
 
 import '../styles/savePageAndNotify_ContentScript.styl'
 
-function showNotification(){
-  //
+function showNotification(pageSuccessfullySaved){
+  console.log('pageSuccessfullySaved')
+  console.log(pageSuccessfullySaved)
 }
 
 let description = ''
@@ -34,9 +35,12 @@ chrome.runtime.sendMessage(
     pageDescription: description,
     url: window.location.href
   },
-  response => {
-    console.log('response in savepage content script')
-    console.log(response)
-    showNotification()
-  }
+  ({pageSaved}) => showNotification(pageSaved)
 )
+
+chrome.runtime.onMessage.addListener( ({pageSaved}) => {
+  if(typeof pageSaved === 'undefined'){
+    return
+  }
+  showNotification(pageSaved)
+})

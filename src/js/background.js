@@ -99,23 +99,51 @@ chrome.browserAction.onClicked.addListener( tab => {
         return removePageFromMarkSearch(tab.url)
           .then(() => updateIcon(false, tab.id))
       }
-      else{ // eslint-disable-line no-else-return
-        chrome.tabs.executeScript(
-          null,
-          {
-            file: 'savePageAndNotify_ContentScript.build.js',
-            runAt: 'document_end'
-          }
-        )
-      }
+      /*****
+      * If it's not saved, run the content script to save it.
+      */
+      chrome.tabs.executeScript(
+        null,
+        {
+          file: 'savePageAndNotify_ContentScript.build.js',
+          runAt: 'document_end'
+        }
+      )
     })
-    .catch(errorHandler)
+    .catch(error => {
+      errorHandler(error)
+      /*****
+      * If we get here then checkIfPageIsSaved or removePageFromMarkSearch didn't work. We should
+      * notify the user, so send a message to savePageAndNotify_ContentScript so it can inform the user.
+      */
+      chrome.tabs.query(
+        {
+          active: true,
+          currentWindow: true
+        },
+        tabs => {
+          chrome.tabs.sendMessage(tabs[0].id, {pageSaved: false})
+        }
+      )
+    })
 })
 
 chrome.runtime.onMessage.addListener( (request, sender, sendResponse) => {
+  if(!request.url){
+    sendResponse({pageSaved: false})
+    return
+  }
   savePageToMarkSearch(request)
     .then(() => {
       sendResponse({pageSaved: true})
     })
-    .catch(errorHandler)
+    .catch(error => {
+      errorHandler(error)
+      sendResponse({pageSaved: false})
+    })
+  /*****
+  * Gotta return true here to make sendResponse be called asynchronously - http://bit.ly/2eOulQT
+  * ¯\_(ツ)_/¯
+  */
+  return true
 })
