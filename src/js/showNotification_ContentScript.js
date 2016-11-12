@@ -41,10 +41,6 @@ chrome.runtime.onMessage.addListener(
       sendResponse({scriptAlreadyInserted: true})
       return
     }
-    console.log('chrome.runtime.onMessage in showNotification_ContentScript called')
-    console.log('action', action)
-    console.log('actionSucceeded', actionSucceeded)
-    console.log('errorMessage', errorMessage)
     if(typeof actionSucceeded !== 'undefined'){
       showNotification(action, actionSucceeded, errorMessage)
     }

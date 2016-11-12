@@ -31,7 +31,20 @@ function browserActionEventHandler(tab){
       if(pageIsSavedInMarkSearch){
         action = 'removePage'
         return removePageFromMarkSearch(tab.url)
-          .then(() => updateIcon(false, tab.id))
+          .then(() => {
+            /*****
+            * now that removePageFromMarkSearch succeded it is not saved any more on the server,
+            * so pageIsSavedInMarkSearch = false
+            */
+            pageIsSavedInMarkSearch = false // eslint-disable-line no-param-reassign
+            updateIcon(pageIsSavedInMarkSearch, tab.id)
+            return sendMessageToNotifyContentScript(
+              {
+                action,
+                actionSucceeded: true
+              }
+            )
+          })
       }
       /*****
       * If it's not saved, run the content script to save it.
