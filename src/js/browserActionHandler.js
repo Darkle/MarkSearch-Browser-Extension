@@ -48,9 +48,7 @@ function browserActionEventHandler(tab){
         sendMessageToNotifyContentScript({noTokens: true})
         throw new Error('token not saved in extension settings')
       }
-      return checkIfPageIsSaved(this.tab.id)
-    })
-    .then(function() {
+
       return checkIfPageIsSaved(this.tab.id)
     })
     .then(function(pageIsSavedInMarkSearch){
