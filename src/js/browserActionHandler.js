@@ -14,7 +14,7 @@ function browserActionEventHandler(tab){
   * Need to check first if it is already running on the page as it has a message listener & multiple
   * showNotification_ContentScript scripts will mean multiple listeners and multiple notifications.
   *
-  * Using bluebird here so that can use .bind for 'action' and 'tab' so it doesn't get overwritten if another
+  * Using bluebird here so that can use .bind for 'action',  'tab' et.al. so they don't get overwritten if another
   * browserActionEventHandler runs before this finishes. (need to use non-arrow functions where using this.
   * so the this context isnt messed up)
   */
