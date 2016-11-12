@@ -31,17 +31,15 @@ function browserActionEventHandler(tab){
     })
     .then(function() {
       /*****
-      * If they havent yet saved the MarkSearch token to the extension settings page, then notify them and throw.
+      * If they havent yet saved the MarkSearch token to the extension settings page, then throw.
       * We need to wait untill the showNotification_ContentScript is inserted before we check the tokens are saved
       * as we will need that content script to inform the user that they haven't saved the them.
+      * We send the error info with sendMessageToNotifyContentScript in the catch at the end of the promise
+      * chain below.
       */
       if(!marksearchServerAddress || !marksearchApiToken){
-        /*****
-        * Dont need to wait for sendMessageToNotifyContentScript to finish.
-        */
         this.noToken = true
-        sendMessageToNotifyContentScript({noTokens: true})
-        throw new Error('token not saved in extension settings')
+        throw new Error('Token not saved in extension settings')
       }
 
       return checkIfPageIsSaved(this.tab.id)
@@ -87,20 +85,14 @@ function browserActionEventHandler(tab){
       * token saved in the settings. We should notify the user.
       */
       errorLogger(error)
-      /*****
-      * If the error is that there is no token saved in the settings, then return early as we have already
-      * sent a message via sendMessageToNotifyContentScript above.
-      */
-      if(this.noToken){
-        return
-      }
       const errorMessage = `There was an error ${ this.action } this page from MarkSearch.
                             ${ (error && error.message) ? error.message : '' }`
       sendMessageToNotifyContentScript(
         {
           action: this.action,
           actionSucceeded: false,
-          errorMessage
+          errorMessage,
+          noTokens: this.noToken
         }
       )
     })
