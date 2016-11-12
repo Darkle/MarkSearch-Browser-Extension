@@ -3,9 +3,8 @@ require('file?name=manifest.[ext]!../manifest.json')
 import { assignServerAddressAndToken } from './serverAddressAndToken'
 import { checkIfPageIsSaved } from './checkIfPageIsSaved'
 import { updateIcon } from './updateIcon'
-import { savePageToMarkSearch } from './savePageToMarkSearch'
-import { errorHandler } from './errorHandler'
 import { browserActionEventHandler } from './browserActionHandler'
+import { backgroundMessageHandler } from './backgroundMessageHandler'
 
 /*****
 * Note: using chrome.storage.local rather than storage.sync in case they have MarkSearch
@@ -24,7 +23,7 @@ const extensionOptionsDefaultValues = {
 function checkIfPageIsSavedAndUpdateIcon(tabId){
   checkIfPageIsSaved(tabId)
     .then( pageIsSavedInMarkSearch => updateIcon(pageIsSavedInMarkSearch, tabId))
-    .catch(errorHandler)
+    .catch(err => console.error(err))
 }
 
 /*****
@@ -91,22 +90,4 @@ chrome.storage.onChanged.addListener(({extensionToken}, storageAreaName) => {
 
 chrome.browserAction.onClicked.addListener(browserActionEventHandler)
 
-chrome.runtime.onMessage.addListener( (request, sender, sendResponse) => {
-  if(!request.url){
-    sendResponse({pageSaved: false})
-    return
-  }
-  savePageToMarkSearch(request)
-    .then(() => {
-      sendResponse({pageSaved: true})
-    })
-    .catch(error => {
-      errorHandler(error)
-      sendResponse({pageSaved: false})
-    })
-  /*****
-  * Gotta return true here to make sendResponse be called asynchronously - http://bit.ly/2eOulQT
-  * ¯\_(ツ)_/¯
-  */
-  return true
-})
+chrome.runtime.onMessage.addListener(backgroundMessageHandler)

@@ -2,42 +2,73 @@
 import { removePageFromMarkSearch } from './removePageFromMarkSearch'
 import { checkIfPageIsSaved } from './checkIfPageIsSaved'
 import { updateIcon } from './updateIcon'
-import { errorHandler } from './errorHandler'
+import { sendMessageToNotifyContentScript } from './sendMessageToNotifyContentScript'
 
 function browserActionEventHandler(tab){
-  checkIfPageIsSaved(tab.id)
+  /*****
+  * Put showNotification_ContentScript script in straight away so we can notify user of success/failure.
+  * Need to check first if it is already running on the page as it has a message listener & multiple
+  * showNotification_ContentScript scripts will mean multiple listeners and multiple notifications.
+  */
+  let action = ''
+  sendMessageToNotifyContentScript({notifyScriptRunningCheck: true})
+    .then( response => {
+      if(!response || !response.scriptAlreadyInserted){
+        chrome.tabs.executeScript(
+          null,
+          {
+            file: 'showNotification_ContentScript.build.js',
+            runAt: 'document_end'
+          }
+        )
+      }
+    })
+    .then(() => checkIfPageIsSaved(tab.id))
     .then( pageIsSavedInMarkSearch => {
       /*****
       * If they have clicked on the button and the page is already saved, remove it.
       */
       if(pageIsSavedInMarkSearch){
+        action = 'removePage'
         return removePageFromMarkSearch(tab.url)
           .then(() => updateIcon(false, tab.id))
       }
       /*****
       * If it's not saved, run the content script to save it.
+      * Note: dont' have to worry about multiple sendPageData_ContentScript's being on the page as
+      * it doesn't have any message/event listeners and just sends a single message straight away.
       */
-      chrome.tabs.executeScript(
-        null,
-        {
-          file: 'savePageAndNotify_ContentScript.build.js',
-          runAt: 'document_end'
-        }
-      )
+      else{ // eslint-disable-line no-else-return
+        action = 'savePage'
+        chrome.tabs.executeScript(
+          null,
+          {
+            file: 'sendPageData_ContentScript.build.js',
+            runAt: 'document_end'
+          }
+        )
+      }
     })
     .catch(error => {
-      errorHandler(error)
+      console.error(error)
       /*****
       * If we get here then checkIfPageIsSaved or removePageFromMarkSearch didn't work. We should
-      * notify the user, so send a message to savePageAndNotify_ContentScript so it can inform the user.
+      * notify the user.
+      * If checkIfPageIsSaved errors, then we wont know if we were going to save or remove the page, so
+      * have a 'saving or removing' as the backup.
       */
-      chrome.tabs.query(
+      let actionAttempted = 'saving or removing'
+      if(action === 'savePage'){
+        actionAttempted = 'saving'
+      }
+      if(action === 'removePage'){
+        actionAttempted = 'removing'
+      }
+      sendMessageToNotifyContentScript(
         {
-          active: true,
-          currentWindow: true
-        },
-        tabs => {
-          chrome.tabs.sendMessage(tabs[0].id, {pageSaved: false})
+          action,
+          actionSucceeded: false,
+          errorMessage: `There was an error ${ actionAttempted } this page from MarkSearch.`
         }
       )
     })

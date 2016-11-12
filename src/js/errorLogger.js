@@ -1,7 +1,7 @@
 
-function errorHandler(error){
+function errorLogger(error){
   console.log('handle error called')
   console.error(error)
 }
 
-export { errorHandler }
+export { errorLogger }

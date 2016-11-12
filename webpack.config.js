@@ -38,7 +38,8 @@ module.exports = {
   entry: {
     background: path.join(paths.srcJS, 'background.js'),
     search_ContentScript: path.join(paths.srcJS, 'search_ContentScript.js'),
-    savePageAndNotify_ContentScript: path.join(paths.srcJS, 'savePageAndNotify_ContentScript.js'),
+    sendPageData_ContentScript: path.join(paths.srcJS, 'sendPageData_ContentScript.js'),
+    showNotification_ContentScript: path.join(paths.srcJS, 'showNotification_ContentScript.js'),
     options: path.join(paths.srcJS, 'options.js'),
     vendor: [
       'jquery',

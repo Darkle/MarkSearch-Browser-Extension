@@ -12,15 +12,11 @@ function checkIfPageIsSaved(tabId){
     if(!marksearchServerAddress || !marksearchApiToken || !tabId){
       return reject()
     }
-// console.log('checkIfPageIsSaved 1')
-// console.log('marksearchServerAddress', marksearchServerAddress)
-// console.log('marksearchApiToken', marksearchApiToken)
+
     chrome.tabs.get(tabId, tab => {
       if(!isWebUri(tab.url)){
         return reject()
       }
-// console.log('checkIfPageIsSaved chrome.tabs.get')
-// console.log('tab.url', tab.url)
 
       const fetchUrl = `${ marksearchServerAddress }/api/get/${ encodeURIComponent(tab.url) }`
       const request = new Request(fetchUrl, {
