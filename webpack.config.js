@@ -25,11 +25,13 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 // const webpackLoadPlugins = require('webpack-load-plugins')
 
 const paths = {
-  src: path.join(__dirname, 'src'),
+  srcBase: path.join(__dirname, 'src'),
   srcJS: path.join(__dirname, 'src', 'js'),
   srcPug: path.join(__dirname, 'src', 'pug'),
   srcStyles: path.join(__dirname, 'src', 'styles'),
-  build: path.join(__dirname, 'build'),
+  buildBase: path.join(__dirname, 'build'),
+  buildJS: path.join(__dirname, 'build', 'js'),
+  buildImages: path.join(__dirname, 'build', 'images'),
 }
 
 // let manifestObject = fsExtra.readJsonSync(path.join(paths.src, 'manifest.json'))
@@ -47,7 +49,7 @@ module.exports = {
   },
   devtool: 'source-map',
   output: {
-    path: paths.build,
+    path: paths.buildJS,
     filename: '[name].build.js',
     sourceMapFilename: '[file].map'
   },
@@ -115,8 +117,12 @@ module.exports = {
     new CopyWebpackPlugin(
       [
         {
-          from: path.join(paths.src, 'icons', 'MSlargeIcon.png'),
-          to: path.join(paths.build)
+          from: path.join(paths.srcBase, 'icons', 'MSlargeIcon.png'),
+          to: paths.buildImages
+        },
+        {
+          from: path.join(paths.srcBase, 'manifest.json'),
+          to: paths.buildBase
         }
       ],
       {
@@ -166,7 +172,7 @@ module.exports = {
     //   ]
     // }),
     new HtmlWebpackPlugin({
-      filename: 'options.html',
+      filename: '../html/options.html',
       template: path.join(paths.srcPug, 'options.pug'),
       // inject: false,
       // showErrors: false,

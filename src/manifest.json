@@ -4,7 +4,7 @@
   "version": "0.1",
   "description": "Chrome extension for the MarkSearch bookmarking desktop app",
   "icons": {
-    "128": "MSlargeIcon.png"
+    "128": "images/MSlargeIcon.png"
   },
   "homepage_url": "https://github.com/Darkle/MarkSearch-Chrome-Extension",
   "permissions": [
@@ -17,19 +17,19 @@
   "background": {
     "persistent": false,
     "run_at": "document_end",
-    "scripts": ["background.build.js"]
+    "scripts": ["js/background.build.js"]
   },
   "browser_action": {
-    "default_icon": "MSlargeIcon.png",
+    "default_icon": "images/MSlargeIcon.png",
     "default_title": "Save To MarkSearch"
   },
   "options_ui": {
-    "page": "options.html",
+    "page": "html/options.html",
     "chrome_style": true
   },
   "content_scripts": [
     {
-      "js": ["vendor.build.js", "search_ContentScript.build.js"],
+      "js": ["js/vendor.build.js", "js/search_ContentScript.build.js"],
       "run_at": "document_end",
       "matches": [
         "https://encrypted.google.com/*",

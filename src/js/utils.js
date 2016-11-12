@@ -1,11 +1,13 @@
 
+import path from 'path'
+
 import { isWebUri } from 'valid-url'
 
 function insertContentScript(scriptName){
   chrome.tabs.executeScript(
     null,
     {
-      file: scriptName,
+      file: path.join('js', scriptName),
       runAt: 'document_end'
     }
   )
