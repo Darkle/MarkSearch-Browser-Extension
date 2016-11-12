@@ -1,6 +1,6 @@
 
 import { marksearchServerAddress, marksearchApiToken } from './serverAddressAndToken'
-import { getCurrentTabUrl } from './getCurrentTabUrl'
+import { getCurrentTabUrl, checkIfValidUrl } from './utils'
 
 /*****
 * Note: not doing any caching of bookmarkedUrls like http://bit.ly/2fEPFpu because the bookmark could have
@@ -16,6 +16,7 @@ function checkIfPageIsSaved(tabId){
     }
 
     getCurrentTabUrl(tabId)
+      .then(checkIfValidUrl)
       .then(tabUrl => {
         const fetchUrl = `${ marksearchServerAddress }/api/get/${ encodeURIComponent(tabUrl) }`
         const request = new Request(fetchUrl, {

@@ -2,6 +2,7 @@ import { sendMessageToNotifyContentScript } from './sendMessageToNotifyContentSc
 import { savePageToMarkSearch } from './savePageToMarkSearch'
 import { updateIcon } from './updateIcon'
 import { errorLogger } from './errorLogger'
+import { getCurrentTabId } from './utils'
 
 /*****
 * This is run when the sendPageData_ContentScript sends a message with the pageData back to the
@@ -20,17 +21,10 @@ function backgroundMessageHandler(request){
         }
       )
     })
-    .then(() => {
+    .then(getCurrentTabId)
+    .then(tabId => {
       const pageIsSavedInMarkSearch = true
-      chrome.tabs.query(
-        {
-          active: true,
-          currentWindow: true
-        },
-        tabs => {
-          updateIcon(pageIsSavedInMarkSearch, tabs[0].id)
-        }
-      )
+      updateIcon(pageIsSavedInMarkSearch, tabId)
     })
     .catch(error => {
       errorLogger(error)
