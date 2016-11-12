@@ -21,7 +21,7 @@ function sendMessageToNotifyContentScript({action, actionSucceeded, errorMessage
             notifyScriptRunningCheck
           },
           /*****
-          * resolve here is for backgroundMessageHandler when it wants to check if the showNotification_ContentScript
+          * resolve here is for browserActionEventHandler when it wants to check if the showNotification_ContentScript
           * is already inserted.
           */
           resolve

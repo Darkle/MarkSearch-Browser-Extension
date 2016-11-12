@@ -10,17 +10,14 @@ import { getCurrentTabId } from './utils'
 */
 function backgroundMessageHandler(request){
   savePageToMarkSearch(request)
-    .then(() => {
-      /*****
-      * Dont need to wait for sendMessageToNotifyContentScript to resolve
-      */
+    .then(() =>
       sendMessageToNotifyContentScript(
         {
           action: 'savePage',
           actionSucceeded: true,
         }
       )
-    })
+    )
     .then(getCurrentTabId)
     .then(tabId => {
       const pageIsSavedInMarkSearch = true
