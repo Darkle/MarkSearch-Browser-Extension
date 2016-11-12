@@ -36,7 +36,7 @@ function browserActionEventHandler(tab){
     })
     .then(function() {
       /*****
-      * If they havent yet saved the MarkSearch token to the extension settings page, then notify then and throw.
+      * If they havent yet saved the MarkSearch token to the extension settings page, then notify them and throw.
       * We need to wait untill the showNotification_ContentScript is inserted before we check the tokens are saved
       * as we will need that content script to inform the user that they haven't saved the them.
       */
