@@ -1,6 +1,16 @@
 
 import { isWebUri } from 'valid-url'
 
+function insertContentScript(scriptName){
+  chrome.tabs.executeScript(
+    null,
+    {
+      file: scriptName,
+      runAt: 'document_end'
+    }
+  )
+}
+
 function getCurrentTabId(){
   return new Promise( resolve => {
     chrome.tabs.query(
@@ -29,4 +39,4 @@ function checkIfValidUrl(url){
   })
 }
 
-export { getCurrentTabId, getCurrentTabUrl, checkIfValidUrl }
+export { getCurrentTabId, getCurrentTabUrl, checkIfValidUrl, insertContentScript }

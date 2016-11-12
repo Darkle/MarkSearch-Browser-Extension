@@ -7,6 +7,7 @@ import { updateIcon } from './updateIcon'
 import { sendMessageToNotifyContentScript } from './sendMessageToNotifyContentScript'
 import { errorLogger } from './errorLogger'
 import { marksearchServerAddress, marksearchApiToken } from './serverAddressAndToken'
+import { insertContentScript } from './utils'
 
 function browserActionEventHandler(tab){
   /*****
@@ -25,13 +26,7 @@ function browserActionEventHandler(tab){
     .then(() => sendMessageToNotifyContentScript({notifyScriptRunningCheck: true}))
     .then( response => {
       if(!response || !response.scriptAlreadyInserted){
-        chrome.tabs.executeScript(
-          null,
-          {
-            file: 'showNotification_ContentScript.build.js',
-            runAt: 'document_end'
-          }
-        )
+        insertContentScript('showNotification_ContentScript.build.js')
       }
     })
     .then(function() {
@@ -67,13 +62,7 @@ function browserActionEventHandler(tab){
       * it doesn't have any message/event listeners and just sends a single message straight away.
       */
       this.action = 'savePage'
-      chrome.tabs.executeScript(
-        null,
-        {
-          file: 'sendPageData_ContentScript.build.js',
-          runAt: 'document_end'
-        }
-      )
+      insertContentScript('sendPageData_ContentScript.build.js')
       /*****
       * return false to indicate we didn't remove a page
       */
