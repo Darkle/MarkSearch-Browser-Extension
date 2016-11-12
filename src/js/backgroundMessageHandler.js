@@ -12,7 +12,7 @@ function backgroundMessageHandler(request){
   savePageToMarkSearch(request)
     .then(() => {
       /*****
-      * Dont need to wait for sendMessageToNotifyContentScript to finsish/return
+      * Dont need to wait for sendMessageToNotifyContentScript to resolve
       */
       sendMessageToNotifyContentScript(
         {
