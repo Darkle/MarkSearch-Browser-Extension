@@ -8,9 +8,9 @@ function errorLogger(error){
   }
   if(error.message === 'getCurrentTabUrl invalid url'){
     /*****
-    * 'getCurrentTabUrl invalid url' occurs when checkIfPageIsSaved calls getCurrentTabUrl and it's not a valid url.
-    * Don't need to log these errors as they aren't really errors, just an invalid url. checkIfPageIsSaved doesn't
-    * continue if getCurrentTabUrl rejects the promise.
+    * 'getCurrentTabUrl invalid url' occurs when checkIfPageIsSaved calls checkIfValidUrl and it's not a valid url.
+    * Don't need to log these errors as just saying that's it's an invalid url to check. checkIfPageIsSaved doesn't
+    * continue if checkIfValidUrl rejects the promise.
     */
     return
   }
