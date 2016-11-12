@@ -83,8 +83,8 @@ function browserActionEventHandler(tab){
     })
     .catch(function(error){
       /*****
-      * If we get here then checkIfPageIsSaved or removePageFromMarkSearch didn't work. We should
-      * notify the user.
+      * If we get here then checkIfPageIsSaved or removePageFromMarkSearch didn't work, or there was no
+      * token saved in the settings. We should notify the user.
       */
       errorLogger(error)
       /*****
