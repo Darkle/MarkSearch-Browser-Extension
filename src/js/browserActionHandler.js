@@ -41,7 +41,6 @@ function browserActionEventHandler(tab){
         this.noToken = true
         throw new Error('Token not saved in extension settings')
       }
-
       return checkIfPageIsSaved(this.tab.id)
     })
     .then(function(pageIsSavedInMarkSearch){
