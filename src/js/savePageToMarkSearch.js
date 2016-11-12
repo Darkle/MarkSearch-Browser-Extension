@@ -13,13 +13,12 @@ import { pageDataSchema } from './pageDataSchema'
 * Note: every pageData property can be an empty string, except for the pageData.url property; it must be a valid url.
 */
 function savePageToMarkSearch(pageData){
-  return new Promise( resolve => {
+  return new Promise( (resolve, reject) => {
     const validationResult = validatePageData(pageDataSchema, pageData)
     if(!validationResult.valid){
       const errorMessage = `Error, pageData did not pass validation.
                           Error(s): ${ validationResult.format() }`
-      console.error(errorMessage)
-      throw new Error(errorMessage)
+      return reject(new Error(errorMessage))
     }
 
     const pageTitle = `pageTitle=${ encodeURIComponent(pageData.pageTitle) }`
@@ -36,7 +35,16 @@ function savePageToMarkSearch(pageData){
       body
     })
 
-    return resolve(fetch(request))
+    fetch(request)
+      .then( ({ status }) => {
+        const statusIs200 = (status === 200)
+        if(!statusIs200){
+          throw new Error(`There was an error in the fetch request in savePageToMarkSearch.
+                          Status code returned from the MarkSearch server was not 200.`)
+        }
+        resolve(statusIs200)
+      })
+      .catch(reject)
   })
 }
 

@@ -1,6 +1,7 @@
 import { sendMessageToNotifyContentScript } from './sendMessageToNotifyContentScript'
 import { savePageToMarkSearch } from './savePageToMarkSearch'
 import { updateIcon } from './updateIcon'
+import { errorLogger } from './errorLogger'
 
 /*****
 * This is run when the sendPageData_ContentScript sends a message with the pageData back to the
@@ -32,7 +33,7 @@ function backgroundMessageHandler(request){
       )
     })
     .catch(error => {
-      console.error(error)
+      errorLogger(error)
       const errorMessage = `There was an error saving the page to MarkSearch.
                             ${ (error && error.message) ? error.message : '' }`
       sendMessageToNotifyContentScript(

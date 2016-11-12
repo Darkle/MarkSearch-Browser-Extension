@@ -5,6 +5,7 @@ import { checkIfPageIsSaved } from './checkIfPageIsSaved'
 import { updateIcon } from './updateIcon'
 import { browserActionEventHandler } from './browserActionHandler'
 import { backgroundMessageHandler } from './backgroundMessageHandler'
+import { errorLogger } from './errorLogger'
 
 /*****
 * Note: using chrome.storage.local rather than storage.sync in case they have MarkSearch
@@ -23,7 +24,7 @@ const extensionOptionsDefaultValues = {
 function checkIfPageIsSavedAndUpdateIcon(tabId){
   checkIfPageIsSaved(tabId)
     .then( pageIsSavedInMarkSearch => updateIcon(pageIsSavedInMarkSearch, tabId))
-    .catch(err => console.error(err))
+    .catch(errorLogger)
 }
 
 /*****

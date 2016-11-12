@@ -48,6 +48,7 @@
     "write-json-webpack-plugin": "^1.0.0"
   },
   "dependencies": {
+    "bluebird": "^3.4.6",
     "jquery": "^3.1.1",
     "notie": "^3.9.4",
     "schema-inspector": "^1.6.7",
