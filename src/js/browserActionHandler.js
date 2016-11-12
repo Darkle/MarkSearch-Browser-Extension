@@ -71,7 +71,7 @@ function browserActionEventHandler(tab){
     .then(function(successfullyRemovedPage){
       if(successfullyRemovedPage){
         this.action = 'removedPage'
-        const pageIsSavedInMarkSearch = !successfullyRemovedPage
+        const pageIsSavedInMarkSearch = false
         updateIcon(pageIsSavedInMarkSearch, this.tab.id)
         return sendMessageToNotifyContentScript(
           {
