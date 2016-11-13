@@ -6,12 +6,12 @@ function errorLogger(error){
     */
     return console.error(error)
   }
-  if(error.message === 'getCurrentTabUrl invalid url'){
-    /*****
-    * 'getCurrentTabUrl invalid url' occurs when checkIfPageIsSaved calls checkIfValidUrl and it's not a valid url.
-    * Don't need to log these errors as just saying that's it's an invalid url to check. checkIfPageIsSaved doesn't
-    * continue if checkIfValidUrl rejects the promise.
-    */
+  /*****
+  * getCurrentTabUrl_InvalidUrl is a property attached to the new Error object created when a url is determined to
+  * be an invalid web url. It is created in checkIfValidUrl in utils.js. checkIfValidUrl is called by checkIfPageIsSaved.
+  * Don't need to log those errors as just saying that's it's an invalid url to check. 
+  */
+  if(error.getCurrentTabUrl_InvalidUrl){
     return
   }
   if(!error.stack){

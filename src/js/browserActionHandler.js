@@ -7,7 +7,7 @@ import { updateIcon } from './updateIcon'
 import { sendMessageToNotifyContentScript } from './sendMessageToNotifyContentScript'
 import { errorLogger } from './errorLogger'
 import { marksearchServerAddress, marksearchApiToken } from './serverAddressAndToken'
-import { insertContentScript } from './utils'
+import { insertContentScript, createErrorMessageToShowUser } from './utils'
 
 function browserActionEventHandler(tab){
   /*****
@@ -39,7 +39,7 @@ function browserActionEventHandler(tab){
       */
       if(!marksearchServerAddress || !marksearchApiToken){
         this.noToken = true
-        throw new Error('token not saved in extension settings.')
+        throw new Error('token not saved in extension settings')
       }
       return checkIfPageIsSaved(this.tab.id)
     })
@@ -84,13 +84,12 @@ function browserActionEventHandler(tab){
       * token saved in the settings. Log error and notify the user.
       */
       errorLogger(error)
-      const errorMessage = 'There was an error ' + this.action + ' this page from MarkSearch' +   // eslint-disable-line prefer-template
-                            ((error && error.message) ? ': ' + error.message : '')    // eslint-disable-line prefer-template
+
       sendMessageToNotifyContentScript(
         {
           action: this.action,
           actionSucceeded: false,
-          errorMessage,
+          errorMessage: createErrorMessageToShowUser(error, this.action),
           noTokens: this.noToken
         }
       )

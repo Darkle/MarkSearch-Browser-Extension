@@ -16,7 +16,7 @@ function savePageToMarkSearch(pageData){
   return new Promise( (resolve, reject) => {
     const validationResult = validatePageData(pageDataSchema, pageData)
     if(!validationResult.valid){
-      const errorMessage = `Error, pageData did not pass validation.
+      const errorMessage = `pageData did not pass validation.
                           Error(s): ${ validationResult.format() }`
       return reject(new Error(errorMessage))
     }
@@ -40,7 +40,7 @@ function savePageToMarkSearch(pageData){
         const statusIs200 = (status === 200)
         if(!statusIs200){
           throw new Error(`There was an error in the fetch request in savePageToMarkSearch.
-                          Status code returned from the MarkSearch server was not 200.`)
+                          Status code returned from the MarkSearch server was not 200`)
         }
         resolve(statusIs200)
       })

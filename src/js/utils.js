@@ -37,8 +37,50 @@ function getCurrentTabUrl(tabId){
 
 function checkIfValidUrl(url){
   return new Promise((resolve, reject) => {
-    !isWebUri(url) ? reject(new Error('getCurrentTabUrl invalid url')) : resolve(url)
+    if(!isWebUri(url)){
+      const invalidUrlError = new Error('Invalid Url')
+      /*****
+      * getCurrentTabUrlInvalidUrl is to make it easier to filter out these in the error logger.
+      */
+      invalidUrlError.getCurrentTabUrl_InvalidUrl = true
+      reject(invalidUrlError)
+    }
+    else{
+      resolve(url)
+    }
   })
 }
 
-export { getCurrentTabId, getCurrentTabUrl, checkIfValidUrl, insertContentScript }
+/*****
+* @param {Object} error - thrown Error object.
+* @param {string} error.message
+* @param {string} action - could be 'saving' (from savePageToMarkSearch),
+*                          or 'saving or removing', 'removedPage', 'savePage' from browserActionHandler.
+*/
+function createErrorMessageToShowUser(error, action){
+  let returnedErrorMessage
+  if(error && error.message){
+    returnedErrorMessage = error.message
+  }
+  /*****
+  * If it's 'saving or removing' or 'removedPage', then we want to say 'from' MarkSearch.
+  */
+  let toOrFromMarkSearch = 'from'
+  if(action === 'savePage'){
+    toOrFromMarkSearch = 'to'
+  }
+
+  const errorMessageToDisplay = `There was an error ${ action }
+    this page ${ toOrFromMarkSearch } MarkSearch${ returnedErrorMessage ? `:  ${ returnedErrorMessage }.` : `.` }
+    ${ (returnedErrorMessage === 'Failed to fetch') ? `Check the MarkSearch desktop app is running.` : `` }`
+
+  return errorMessageToDisplay
+}
+
+export {
+  getCurrentTabId,
+  getCurrentTabUrl,
+  checkIfValidUrl,
+  insertContentScript,
+  createErrorMessageToShowUser
+}
