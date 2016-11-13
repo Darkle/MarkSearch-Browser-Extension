@@ -8,8 +8,8 @@ import { getCurrentTabId, createErrorMessageToShowUser } from './utils'
 * This is run when the sendPageData_ContentScript sends a message with the pageData back to the
 * background script.
 */
-function backgroundMessageHandler(request){
-  savePageToMarkSearch(request)
+function backgroundMessageHandler(pageData){
+  savePageToMarkSearch(pageData)
     .then(() =>
       sendMessageToNotifyContentScript(
         {
