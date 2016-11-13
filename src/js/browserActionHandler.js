@@ -51,6 +51,7 @@ function browserActionEventHandler(tab){
         /*****
         * removePageFromMarkSearch resolves true if it successfully removed the page
         */
+        this.action = 'removePage'
         return removePageFromMarkSearch(this.tab.url)
       }
       /*****
@@ -67,7 +68,6 @@ function browserActionEventHandler(tab){
     })
     .then(function(successfullyRemovedPage){
       if(successfullyRemovedPage){
-        this.action = 'removedPage'
         const pageIsSavedInMarkSearch = false
         updateIcon(pageIsSavedInMarkSearch, this.tab.id)
         return sendMessageToNotifyContentScript(

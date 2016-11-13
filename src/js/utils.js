@@ -54,17 +54,17 @@ function checkIfValidUrl(url){
 /*****
 * @param {Object} error - thrown Error object.
 * @param {string} error.message
-* @param {string} action - could be 'saving or removing' or 'removedPage' or 'savePage'
+* @param {string} action - could be 'saving or removing' or 'removePage' or 'savePage'
 *                           from browserActionHandler/savePageToMarkSearch.
 */
 function createErrorMessageToShowUser(error, action){
   let returnedErrorMessage
   let actionAttempted = action
   /*****
-  * If it's 'saving or removing' or 'removedPage', then we want to say 'from' MarkSearch.
+  * If it's 'saving or removing' or 'removePage', then we want to say 'from' MarkSearch.
   */
   let toOrFromMarkSearch = 'from'
-  
+
   if(error && error.message){
     returnedErrorMessage = error.message
   }
@@ -72,7 +72,7 @@ function createErrorMessageToShowUser(error, action){
     toOrFromMarkSearch = 'to'
     actionAttempted = 'saving'
   }
-  if(action === 'removedPage'){
+  if(action === 'removePage'){
     actionAttempted = 'removing'
   }
 
