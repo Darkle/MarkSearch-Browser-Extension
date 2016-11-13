@@ -28,10 +28,14 @@ const paths = {
   srcBase: path.join(__dirname, 'src'),
   srcJS: path.join(__dirname, 'src', 'js'),
   srcPug: path.join(__dirname, 'src', 'pug'),
+  srcImages: path.join(__dirname, 'src', 'images'),
+  srcFonts: path.join(__dirname, 'src', 'fonts'),
   srcStyles: path.join(__dirname, 'src', 'styles'),
   buildBase: path.join(__dirname, 'build'),
   buildJS: path.join(__dirname, 'build', 'js'),
+  buildHTML: path.join(__dirname, 'build', 'html'),
   buildImages: path.join(__dirname, 'build', 'images'),
+  buildFonts: path.join(__dirname, 'build', 'fonts'),
 }
 
 // let manifestObject = fsExtra.readJsonSync(path.join(paths.src, 'manifest.json'))
@@ -97,13 +101,26 @@ module.exports = {
         include: [
           paths.srcStyles
         ],
-        loader: 'style!css?sourceMap!stylus'
+        loader: 'style-loader!css-loader?sourceMap!stylus-loader'
         // loader: ExtractTextPlugin.extract('style', 'css?sourceMap!stylus')
+      },
+      /*****
+      * url-loader lets us load the opensans-regular.woff2 font file as a base64 data:application/font-woff2 url
+      */
+      {
+        test: /\.woff2$/,
+        include: [
+          paths.srcFonts
+        ],
+        loader: 'url-loader',
+        query: {
+          mimetype: 'application/font-woff2'
+        }
       }
     ]
   },
   resolve: {
-    extensions: ['', '.js', '.styl', '.sass']
+    extensions: ['', '.js', '.styl', '.sass', 'woff2']
   },
   plugins: [
     // new WebpackCleanupPlugin(),
@@ -117,10 +134,6 @@ module.exports = {
     new CopyWebpackPlugin(
       [
         {
-          from: path.join(paths.srcBase, 'icons', 'MSlargeIcon.png'),
-          to: paths.buildImages
-        },
-        {
           from: path.join(paths.srcBase, 'manifest.json'),
           to: paths.buildBase
         }
@@ -129,7 +142,14 @@ module.exports = {
         copyUnmodified: true
       }
     ),
-
+    new CopyWebpackPlugin(
+      [
+        {
+          from: path.join(paths.srcImages, 'MSlargeIcon.png'),
+          to: paths.buildImages
+        }
+      ]
+    ),
     /****
     * Need to set up $/jquery as a global
     */
@@ -172,7 +192,7 @@ module.exports = {
     //   ]
     // }),
     new HtmlWebpackPlugin({
-      filename: '../html/options.html',
+      filename: path.resolve(paths.buildHTML, 'options.html'),
       template: path.join(paths.srcPug, 'options.pug'),
       // inject: false,
       // showErrors: false,
