@@ -21,7 +21,8 @@ function browserActionEventHandler(tab){
   */
 
   /* eslint-disable no-invalid-this */
-  Promise.resolve()
+  Promise
+    .resolve()
     .bind({action: 'saving or removing', tab, noToken: false})
     .then(() => sendMessageToNotifyContentScript({notifyScriptRunningCheck: true}))
     .then( response => {
