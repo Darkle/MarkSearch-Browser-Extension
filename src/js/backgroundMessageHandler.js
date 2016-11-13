@@ -30,7 +30,7 @@ function backgroundMessageHandler(request){
         {
           action: 'savePage',
           actionSucceeded: false,
-          errorMessage: createErrorMessageToShowUser(error, 'saving')
+          errorMessage: createErrorMessageToShowUser(error, 'savePage')
         }
       )
     })

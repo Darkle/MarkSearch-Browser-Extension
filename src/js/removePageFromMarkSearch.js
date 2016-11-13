@@ -19,6 +19,13 @@ function removePageFromMarkSearch(urlToRemove){
     fetch(request)
       .then( ({ status }) => {
         const statusIs200 = (status === 200)
+        /*****
+        * 403 - Forbidden - prolly an issue with the token
+        */
+        if(status === 403){
+          throw new Error(`There was a permission error connecting to the MarkSearch server.
+                          Check that your token is correct in extension settings`)
+        }
         if(!statusIs200){
           throw new Error(`There was an error in the fetch request in removePageFromMarkSearch.
                           Status code returned from the MarkSearch server was not 200`)

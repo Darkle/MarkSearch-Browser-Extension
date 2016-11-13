@@ -54,23 +54,29 @@ function checkIfValidUrl(url){
 /*****
 * @param {Object} error - thrown Error object.
 * @param {string} error.message
-* @param {string} action - could be 'saving' (from savePageToMarkSearch),
-*                          or 'saving or removing', 'removedPage', 'savePage' from browserActionHandler.
+* @param {string} action - could be 'saving or removing' or 'removedPage' or 'savePage'
+*                           from browserActionHandler/savePageToMarkSearch.
 */
 function createErrorMessageToShowUser(error, action){
   let returnedErrorMessage
-  if(error && error.message){
-    returnedErrorMessage = error.message
-  }
+  let actionAttempted = action
   /*****
   * If it's 'saving or removing' or 'removedPage', then we want to say 'from' MarkSearch.
   */
   let toOrFromMarkSearch = 'from'
+  
+  if(error && error.message){
+    returnedErrorMessage = error.message
+  }
   if(action === 'savePage'){
     toOrFromMarkSearch = 'to'
+    actionAttempted = 'saving'
+  }
+  if(action === 'removedPage'){
+    actionAttempted = 'removing'
   }
 
-  const errorMessageToDisplay = `There was an error ${ action }
+  const errorMessageToDisplay = `There was an error ${ actionAttempted }
     this page ${ toOrFromMarkSearch } MarkSearch${ returnedErrorMessage ? `:  ${ returnedErrorMessage }.` : `.` }
     ${ (returnedErrorMessage === 'Failed to fetch') ? `Check the MarkSearch desktop app is running.` : `` }`
 

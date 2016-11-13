@@ -5,13 +5,16 @@ import '../styles/showNotification_ContentScript.styl'
 import { alert as notieAlert, setOptions as notieSetOptions } from 'notie'
 
 function showNotification(action, actionSucceeded, errorMessage){
-  let notificationMessage = action === 'savePage' ? 'Page Saved To MarkSearch' : 'Page Removed From MarkSearch'
-  let notificationType = 1  //1 is notie Success
+  const notificationMessage = action === 'savePage' ? 'Page Saved To MarkSearch' : 'Page Removed From MarkSearch'
   if(!actionSucceeded){
-    notificationType = 3  //3 is notie Error
-    notificationMessage = errorMessage
+    /*****
+    * If it's an error message, leave it showing. They can click to close it.
+    */
+    notieAlert(3, errorMessage)   //3 is notie Error
   }
-  notieAlert(notificationType, notificationMessage, 4)
+  else{
+    notieAlert(1, notificationMessage, 4) //1 is notie Success, 4 for 4 seconds
+  }
 }
 
 notieSetOptions({

@@ -31,11 +31,18 @@ function checkIfPageIsSaved(tabId){
         const statusIs200 = (status === 200)
         const statusIs404 = (status === 404)
         /*****
+        * 403 - Forbidden - prolly an issue with the token
+        */
+        if(status === 403){
+          throw new Error(`There was a permission error connecting to the MarkSearch server.
+                          Check that your token is correct in extension settings`)
+        }
+        /*****
         * If it's not 200 or 404, then there has been some kind of issue on the server, so throw an error.
         */
         if(!statusIs200 && !statusIs404){
           throw new Error(`There was an error in the fetch request in checkIfPageIsSaved.
-                          Status code returned from the MarkSearch server was not 200 or 404.`)
+                          Status code returned from the MarkSearch server was not 200 or 404`)
         }
         resolve(statusIs200)
       })
