@@ -1,4 +1,3 @@
-// require('file?name=manifest.[ext]!../manifest.json')
 
 import { assignServerAddressAndToken } from './serverAddressAndToken'
 import { checkIfPageIsSaved } from './checkIfPageIsSaved'
