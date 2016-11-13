@@ -1,7 +1,19 @@
 
 import path from 'path'
+import { default as _get } from 'lodash.get'
 
 import { isWebUri } from 'valid-url'
+
+/*****
+* Cause lodash.get on it's own will throw an error if the object is undefined. I would like it to just return
+* a falsey value if the object is undefined.
+*/
+function getObjectProperty(obj, propertyName){
+  if(!obj || !_get(obj, propertyName)){
+    return
+  }
+  return propertyName
+}
 
 function insertContentScript(scriptName){
   chrome.tabs.executeScript(
@@ -65,7 +77,7 @@ function createErrorMessageToShowUser(error, action){
   */
   let toOrFromMarkSearch = 'from'
 
-  if(error && error.message){
+  if(getObjectProperty(error, 'message')){
     returnedErrorMessage = error.message
   }
   if(action === 'savePage'){
@@ -88,5 +100,6 @@ export {
   getCurrentTabUrl,
   checkIfValidUrl,
   insertContentScript,
-  createErrorMessageToShowUser
+  createErrorMessageToShowUser,
+  getObjectProperty
 }

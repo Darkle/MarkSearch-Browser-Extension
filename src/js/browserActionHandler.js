@@ -7,7 +7,7 @@ import { updateIcon } from './updateIcon'
 import { sendMessageToNotifyContentScript } from './sendMessageToNotifyContentScript'
 import { errorLogger } from './errorLogger'
 import { marksearchServerAddress, marksearchApiToken } from './serverAddressAndToken'
-import { insertContentScript, createErrorMessageToShowUser } from './utils'
+import { insertContentScript, createErrorMessageToShowUser, getObjectProperty as _get } from './utils'
 
 function browserActionEventHandler(tab){
   /*****
@@ -26,7 +26,7 @@ function browserActionEventHandler(tab){
     .bind({action: 'saving or removing', tab, noToken: false})
     .then(() => sendMessageToNotifyContentScript({notifyScriptRunningCheck: true}))
     .then( response => {
-      if(!response || !response.scriptAlreadyInserted){
+      if(!_get(response, 'scriptAlreadyInserted')){
         insertContentScript('showNotification_ContentScript.build.js')
       }
     })
