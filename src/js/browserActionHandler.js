@@ -85,7 +85,6 @@ function browserActionEventHandler(tab){
       * token saved in the settings. Log error and notify the user.
       */
       errorLogger(error)
-
       sendMessageToNotifyContentScript(
         {
           action: this.action,

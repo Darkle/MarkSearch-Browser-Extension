@@ -25,7 +25,6 @@ function backgroundMessageHandler(pageData){
     })
     .catch(error => {
       errorLogger(error)
-
       sendMessageToNotifyContentScript(
         {
           action: 'savePage',

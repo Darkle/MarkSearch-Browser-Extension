@@ -26,14 +26,19 @@ function insertContentScript(scriptName){
 }
 
 function getCurrentTabId(){
-  return new Promise( resolve => {
+  return new Promise( (resolve, reject) => {
     chrome.tabs.query(
       {
         active: true,
         currentWindow: true
       },
       tabs => {
-        resolve(tabs[0].id)
+        if(tabs && tabs[0] && tabs[0].id){
+          resolve(tabs[0].id)
+        }
+        else{
+          reject('Unable to get current tab id')
+        }
       }
     )
   })

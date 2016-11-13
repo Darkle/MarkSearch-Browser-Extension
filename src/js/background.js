@@ -5,6 +5,7 @@ import { updateIcon } from './updateIcon'
 import { browserActionEventHandler } from './browserActionHandler'
 import { backgroundMessageHandler } from './backgroundMessageHandler'
 import { errorLogger } from './errorLogger'
+import { getCurrentTabId } from './utils'
 
 /*****
 * Note: using chrome.storage.local rather than storage.sync in case they have MarkSearch
@@ -65,18 +66,7 @@ chrome.tabs.onUpdated.addListener((tabId, {status}, tab) => {
 })
 
 chrome.windows.onFocusChanged.addListener(() => {
-  chrome.windows.getCurrent({
-    populate: true
-  },
-  window => {
-    if(window && Array.isArray(window.tabs)) {
-      for(const tab of window.tabs) {
-        if(tab.highlighted) {
-          checkIfPageIsSavedAndUpdateIcon(tab.id)
-        }
-      }
-    }
-  })
+  getCurrentTabId().then(checkIfPageIsSavedAndUpdateIcon).catch(errorLogger)
 })
 
 /*****
