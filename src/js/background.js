@@ -3,7 +3,7 @@ import { assignServerAddressAndToken } from './serverAddressAndToken'
 import { checkIfPageIsSaved } from './checkIfPageIsSaved'
 import { updateIcon } from './updateIcon'
 import { browserActionEventHandler } from './browserActionHandler'
-import { backgroundMessageHandler } from './backgroundMessageHandler'
+import { backgroundOnMessageHandler } from './backgroundOnMessageHandler'
 import { errorLogger } from './errorLogger'
 import { getCurrentTabId, getSettings } from './utils'
 import { handleSearchRequest } from './handleSearchRequest'
@@ -31,7 +31,11 @@ function checkIfPageIsSavedAndUpdateIcon(tabId){
 /*****
 * This assigns the marksearchApiToken & marksearchServerAddress values on chrome startup.
 */
-getSettings().then(({extensionToken}) => assignServerAddressAndToken(extensionToken))
+// getSettings().then(({extensionToken}) => assignServerAddressAndToken(extensionToken))
+// TODO - remove 3 lines below and uncomment out one above when production ready
+const tempExtensionToken = 'http://192.168.1.2:8080,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnQiOiJNYXJrU2VhcmNoIEV4dGVuc2lvbi9Cb29rbWFya2xldF80MyIsImlhdCI6MTQ3OTA3NTAzNn0.fUMvkSI4eH0fdcbigcb169YJTGr97XRVcqGMDgE8QAY'
+assignServerAddressAndToken(tempExtensionToken)
+extensionOptionsDefaultValues.extensionToken = tempExtensionToken
 
 /*****
 * Event listeners
@@ -79,5 +83,13 @@ chrome.storage.onChanged.addListener(({extensionToken}, storageAreaName) => {
 })
 
 chrome.browserAction.onClicked.addListener(browserActionEventHandler)
-chrome.runtime.onMessage.addListener(backgroundMessageHandler)
-chrome.runtime.onConnect.addListener(handleSearchRequest)
+chrome.runtime.onMessage.addListener(backgroundOnMessageHandler)
+
+chrome.runtime.onConnect.addListener(port => {
+  if(port.name === 'openOptionsPage'){
+    port.onMessage.addListener(() => chrome.runtime.openOptionsPage())
+  }
+  if(port.name === 'contentScriptSearchRequest'){
+    handleSearchRequest(port)
+  }
+})

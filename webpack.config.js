@@ -15,7 +15,7 @@ const path = require('path')
 
 // const fsExtra = require('fs-extra')
 
-const webpack = require('webpack')
+// const webpack = require('webpack')
 const bell = require('bell-on-bundler-error-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 // const WebpackCleanupPlugin = require('webpack-cleanup-plugin')
@@ -43,13 +43,16 @@ const paths = {
 module.exports = {
   entry: {
     background: path.join(paths.srcJS, 'background.js'),
-    search_ContentScript: path.join(paths.srcJS, 'search_ContentScript.js'),
+    googleSearch_ContentScript: path.join(paths.srcJS, 'googleSearch_ContentScript.js'),
+    bingSearch_ContentScript: path.join(paths.srcJS, 'bingSearch_ContentScript.js'),
+    baiduSearch_ContentScript: path.join(paths.srcJS, 'baiduSearch_ContentScript.js'),
+    duckduckgoSearch_ContentScript: path.join(paths.srcJS, 'duckduckgoSearch_ContentScript.js'),
     sendPageData_ContentScript: path.join(paths.srcJS, 'sendPageData_ContentScript.js'),
     showNotification_ContentScript: path.join(paths.srcJS, 'showNotification_ContentScript.js'),
     options: path.join(paths.srcJS, 'options.js'),
-    vendor: [
-      'jquery',
-    ]
+    // vendor: [
+    //   'jquery',
+    // ]
   },
   devtool: 'source-map',
   output: {
@@ -68,16 +71,16 @@ module.exports = {
       }
     ],
     loaders: [
-      // /*****
-      // * The json loader is becuase of got library and this: http://bit.ly/2eftCF4
-      // */
+      /*****
+      * The json loader is becuase of lodash.trim etc. library and this: http://bit.ly/2eftCF4
+      */
       // {
       //   test: /\.json$/,
       //   loader: 'json-loader',
       //   include: [
       //     /node_modules/
       //   ],
-      //   ignore: path.join(paths.src, 'manifest.json')
+      //   ignore: path.join(paths.srcBase, 'manifest.json')
       // },
       {
         test: /\.js$/,
@@ -153,11 +156,11 @@ module.exports = {
     /****
     * Need to set up $/jquery as a global
     */
-    new webpack.ProvidePlugin({
-      $: 'jquery',
-      jQuery: 'jquery',
-      'window.jQuery': 'jquery',
-    }),
+    // new webpack.ProvidePlugin({
+    //   $: 'jquery',
+    //   jQuery: 'jquery',
+    //   'window.jQuery': 'jquery',
+    // }),
 
     /****
     * We dont want to use the CommonsChunkPlugin as that would seperate out the webpack bootstrap code which

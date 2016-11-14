@@ -4,6 +4,16 @@ import { default as _get } from 'lodash.get'
 
 import { isWebUri } from 'valid-url'
 
+function $(selector){
+  if(typeof selector !== 'string' || !selector.length){
+    return
+  }
+  if(selector.charAt(1) === '#'){
+    document.querySelector(selector)
+  }
+  return document.querySelectorAll(selector)
+}
+
 /*****
 * Cause lodash.get on it's own will throw an error if the object is undefined. I would like it to just return
 * a falsey value if the object is undefined.
@@ -118,5 +128,6 @@ export {
   insertContentScript,
   createErrorMessageToShowUser,
   getObjectProperty,
-  getSettings
+  getSettings,
+  $
 }

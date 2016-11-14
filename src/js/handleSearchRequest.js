@@ -3,9 +3,6 @@ import { marksearchServerAddress, marksearchApiToken } from './serverAddressAndT
 import { errorLogger } from './errorLogger'
 
 function handleSearchRequest(port){
-  if(port.name !== 'contentScriptSearchRequest'){
-    return
-  }
   port.onMessage.addListener( ({searchTerms}) => {
     const fetchUrl = `${ marksearchServerAddress }/api/search/${ encodeURIComponent(searchTerms) }`
     const request = new Request(fetchUrl, {

@@ -29,7 +29,7 @@
   },
   "content_scripts": [
     {
-      "js": ["js/vendor.build.js", "js/search_ContentScript.build.js"],
+      "js": ["js/googleSearch_ContentScript.build.js"],
       "run_at": "document_end",
       "matches": [
         "https://encrypted.google.com/*",
