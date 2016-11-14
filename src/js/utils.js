@@ -9,7 +9,7 @@ function $(selector){
     return
   }
   if(selector.charAt(1) === '#'){
-    document.querySelector(selector)
+    return document.querySelector(selector)
   }
   return document.querySelectorAll(selector)
 }
