@@ -6,6 +6,7 @@ import { browserActionEventHandler } from './browserActionHandler'
 import { backgroundMessageHandler } from './backgroundMessageHandler'
 import { errorLogger } from './errorLogger'
 import { getCurrentTabId } from './utils'
+import { handleSearchRequest } from './handleSearchRequest'
 
 /*****
 * Note: using chrome.storage.local rather than storage.sync in case they have MarkSearch
@@ -79,5 +80,5 @@ chrome.storage.onChanged.addListener(({extensionToken}, storageAreaName) => {
 })
 
 chrome.browserAction.onClicked.addListener(browserActionEventHandler)
-
 chrome.runtime.onMessage.addListener(backgroundMessageHandler)
+chrome.runtime.onConnect.addListener(handleSearchRequest)
