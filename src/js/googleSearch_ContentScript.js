@@ -3,8 +3,10 @@ import debounce from 'lodash.debounce'
 import trim from 'lodash.trim'
 
 import '../styles/googleSearch_ContentScript.styl'
-import { getSettings, $ } from './utils'
+import { getSettings} from './utils'
 
+const $ = document.querySelector.bind(document)
+const $$ = document.querySelectorAll.bind(document)
 const searchInput = $('#lst-ib')
 let searchRequestPort
 let msResultsContainer
