@@ -5,9 +5,9 @@ import { default as dotProp} from 'dot-prop'
 import { isWebUri } from 'valid-url'
 
 /*****
-* Need to check if obj exists as some places getObjectProperty is used it may not.
+* This is for when the obj may not exist. - a shortcut to obj && obj.prop, plus the dotProp 'a.b.c.d' feature
 */
-function getObjectProperty(obj, propertyName){
+function safeGetObjectProperty(obj, propertyName){
   if(!obj){
     return
   }
@@ -92,7 +92,7 @@ function createErrorMessageToShowUser(error, action){
   */
   let toOrFromMarkSearch = 'from'
 
-  if(getObjectProperty(error, 'message')){
+  if(safeGetObjectProperty(error, 'message')){
     returnedErrorMessage = error.message
   }
   if(action === 'savePage'){
@@ -116,6 +116,6 @@ export {
   checkIfValidUrl,
   insertContentScript,
   createErrorMessageToShowUser,
-  getObjectProperty,
+  safeGetObjectProperty,
   getSettings
 }
