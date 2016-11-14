@@ -5,14 +5,13 @@ import { default as _get } from 'lodash.get'
 import { isWebUri } from 'valid-url'
 
 /*****
-* Cause lodash.get on it's own will throw an error if the object is undefined. I would like it to just return
-* a falsey value if the object is undefined.
+* Need to check if obj exists as some places getObjectProperty is used it may not.
 */
 function getObjectProperty(obj, propertyName){
-  if(!obj || !_get(obj, propertyName)){
+  if(!obj){
     return
   }
-  return propertyName
+  return _get(obj, propertyName)
 }
 /*****
 * https://developer.chrome.com/extensions/storage#type-StorageArea
