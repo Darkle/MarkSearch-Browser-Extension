@@ -1,6 +1,5 @@
 
 import debounce from 'lodash.debounce'
-import trim from 'lodash.trim'
 
 import '../styles/googleSearch_ContentScript.styl'
 import { getSettings} from './utils'
@@ -42,7 +41,7 @@ function createMarkSearchResultsDom(searchResults){
 }
 
 function searchInputChangeHandler(){
-  const searchInputValue = trim(searchInput.value).toLowerCase()
+  const searchInputValue = searchInput.value.trim().toLowerCase()
   if(searchInputValue !== searchInputOldValue){
     searchInputOldValue = searchInputValue
     searchRequestPort.postMessage({searchTerms: searchInput.value})

@@ -1,6 +1,6 @@
 
 import path from 'path'
-import { default as _get } from 'lodash.get'
+import { default as dotProp} from 'dot-prop'
 
 import { isWebUri } from 'valid-url'
 
@@ -11,7 +11,7 @@ function getObjectProperty(obj, propertyName){
   if(!obj){
     return
   }
-  return _get(obj, propertyName)
+  return dotProp.get(obj, propertyName)
 }
 /*****
 * https://developer.chrome.com/extensions/storage#type-StorageArea
