@@ -3,36 +3,35 @@ import '../styles/options.styl'
 
 import { getSettings } from './utils'
 
+const $ = document.querySelector.bind(document)
+const $$ = document.querySelectorAll.bind(document)
+
 function firstRunCheck(extensionToken){
-  const navListElems$ = $('#optionsPanel nav li')
-  let tabToDisplay = navListElems$[0]
+  const navListElems = $$('#optionsPanel nav li')
   if(extensionToken.indexOf(',') === -1){
     /*****
-    * navListElems$[1] is the setup tab - show that if its the first run
+    * navListElems[1] is the setup tab - show that if its the first run
     */
-    tabToDisplay = navListElems$[1]
+    return navListElems[1]
   }
-  return tabToDisplay
+  return navListElems[0]
+}
+
+function getOptionElementValue(optionElement){
+  if(optionElement.matches('input[type="checkbox"]')){
+    return optionElement.checked
+  }
+  return optionElement.value
 }
 
 function saveOptions(DOMoptionElements) {
-  // console.log('saving options')
+  console.log('saving options')
   // console.log('saved settingsObj',
   //   Object
   //     .keys(DOMoptionElements)
   //     .reduce((settingsObj, keyname) => {
-  //       const optionElement$ = DOMoptionElements[keyname]
-  //       let optionElemValue = optionElement$.val()
-  //       if(optionElemValue === 'true'){
-  //         optionElemValue = true
-  //       }
-  //       if(optionElemValue === 'false'){
-  //         optionElemValue = false
-  //       }
-  //       if(optionElement$.is('input[type="checkbox"]')){
-  //         optionElemValue = optionElement$[0].checked
-  //       }
-  //       settingsObj[optionElement$.data('settingKey')] = optionElemValue
+  //       const optionElement = DOMoptionElements[keyname]
+  //       settingsObj[optionElement.dataset.settingKey] = getOptionElementValue(optionElement)
   //       return settingsObj
   //     },
   //     {}
@@ -42,18 +41,8 @@ function saveOptions(DOMoptionElements) {
     Object
       .keys(DOMoptionElements)
       .reduce((settingsObj, keyname) => {
-        const optionElement$ = DOMoptionElements[keyname]
-        let optionElemValue = optionElement$.val()
-        if(optionElemValue === 'true'){
-          optionElemValue = true
-        }
-        if(optionElemValue === 'false'){
-          optionElemValue = false
-        }
-        if(optionElement$.is('input[type="checkbox"]')){
-          optionElemValue = optionElement$[0].checked
-        }
-        settingsObj[optionElement$.data('settingKey')] = optionElemValue
+        const optionElement = DOMoptionElements[keyname]
+        settingsObj[optionElement.dataset.settingKey] = getOptionElementValue(optionElement)
         return settingsObj
       },
       {}
@@ -62,50 +51,55 @@ function saveOptions(DOMoptionElements) {
 }
 
 function setInitialDOMoptionValues(options, DOMoptionElements) {
-  console.log('setInitialDOMoptionValues options: ', options)
-  DOMoptionElements.extTokenInput$.val(options.extensionToken)
-  DOMoptionElements.googleSearchCheckbox$[0].checked = options.integrateWithGoogleSearch
-  DOMoptionElements.bingSearchCheckbox$[0].checked = options.integrateWithBingSearch
-  DOMoptionElements.duckduckgoSearchCheckbox$[0].checked = options.integrateWithDuckduckgoSearch
-  DOMoptionElements.baiduSearchCheckbox$[0].checked = options.integrateWithBaiduSearch
+  DOMoptionElements.extTokenInput.value = options.extensionToken
+  DOMoptionElements.googleSearchCheckbox.checked = options.integrateWithGoogleSearch
+  DOMoptionElements.bingSearchCheckbox.checked = options.integrateWithBingSearch
+  DOMoptionElements.duckduckgoSearchCheckbox.checked = options.integrateWithDuckduckgoSearch
+  DOMoptionElements.baiduSearchCheckbox.checked = options.integrateWithBaiduSearch
 }
 
 function setUpHelpAboutPage() {
   const versionText = `MarkSearch Version: ${ chrome.runtime.getManifest().version }`
-  $('#marksearchVersionNumber').text(versionText)
+  $('#marksearchVersionNumber').innerText = versionText
 }
 
 function settingsTabsBehaviour(selectedListElement) {
-  $('#optionsPanel nav li').each((index, el) => {
-    const elDataSet = el.dataset.showHideDivId
-    if(selectedListElement === el){
-      el.className = 'selected'
-      $(elDataSet)[0].className = 'show'
+  /*****
+  * const seems to be valid in for of loops - http://bit.ly/2eYKQd1 http://bit.ly/2eYECtO
+  */
+  for(const liElem of $$('#optionsPanel nav li')){
+    const elDataSet = liElem.dataset.showHideDivId
+    if(selectedListElement === liElem){
+      liElem.className = 'selected'
+      $(elDataSet).className = 'show'
     }
     else{
-      el.className = ''
-      $(elDataSet)[0].className = 'hide'
+      liElem.className = ''
+      $(elDataSet).className = 'hide'
     }
-  })
+  }
 }
 
 function setUpEventListeners(DOMoptionElements) {
-  $('#optionsPanel nav').on('click', evt => settingsTabsBehaviour(evt.target))
-  $('input').on('change', () => saveOptions(DOMoptionElements))
+  $('#optionsPanel nav').addEventListener('click', evt => settingsTabsBehaviour(evt.target))
+  for(const inputElem of $$('input')){
+    inputElem.addEventListener('change', () => saveOptions(DOMoptionElements))
+  }
   /*****
-  * Also need .on('input' for extTokenInput$ as $('input').on('change' only fires for text input
-  * change once it loses focus, so using .on('input' as well so it saves straight away on paste.
+  * Also need .addEventListener('input' for extTokenInput as $('input').addEventListener('change'
+  * only fires for text input change once it loses focus, so using .addEventListener('input' as
+  * well so it saves straight away on paste.
   */
-  DOMoptionElements.extTokenInput$.on('input', () => saveOptions(DOMoptionElements))
+  DOMoptionElements.extTokenInput.addEventListener('input', () => saveOptions(DOMoptionElements))
 }
 
 function optionsPageInit() {
   const DOMoptionElements = {
-    extTokenInput$: $('#extensionToken'),
-    googleSearchCheckbox$: $('#googleSearchCheckbox'),
-    bingSearchCheckbox$: $('#bingSearchCheckbox'),
-    duckduckgoSearchCheckbox$: $('#duckduckgoSearchCheckbox'),
-    baiduSearchCheckbox$: $('#baiduSearchCheckbox'),
+    extTokenInput: $('#extensionToken'),
+    googleSearchCheckbox: $('#googleSearchCheckbox'),
+    bingSearchCheckbox: $('#bingSearchCheckbox'),
+    duckduckgoSearchCheckbox: $('#duckduckgoSearchCheckbox'),
+    baiduSearchCheckbox: $('#baiduSearchCheckbox'),
   }
   getSettings()
     .then(options => {
