@@ -6,7 +6,7 @@ import { isWebUri } from 'valid-url'
 
 /*****
 * safeGetObjectProperty is for when the obj may not exist.
-* It's a shortcut to obj && obj.prop (plus the dotProp 'a.b.c.d' feature).
+* It's a shortcut for obj && obj.prop (plus the dotProp 'a.b.c.d' feature).
 */
 function safeGetObjectProperty(obj, propertyName){
   if(!obj){
