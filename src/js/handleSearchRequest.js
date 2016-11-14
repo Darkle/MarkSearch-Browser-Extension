@@ -28,7 +28,6 @@ function handleSearchRequest(port){
       })
       .then(searchResults => port.postMessage(searchResults))
       .catch(errorLogger)
-
   })
 }
 

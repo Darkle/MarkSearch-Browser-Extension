@@ -1,6 +1,8 @@
 import '../styles/commonStyles.styl'
 import '../styles/options.styl'
 
+import { getSettings } from './utils'
+
 function firstRunCheck(extensionToken){
   const navListElems$ = $('#optionsPanel nav li')
   let tabToDisplay = navListElems$[0]
@@ -105,19 +107,13 @@ function optionsPageInit() {
     duckduckgoSearchCheckbox$: $('#duckduckgoSearchCheckbox'),
     baiduSearchCheckbox$: $('#baiduSearchCheckbox'),
   }
-
-  chrome.storage.local.get(
-    /*****
-    * Pass in null to get the entire contents of storage: http://bit.ly/2dokoIX
-    */
-    null,
-    (options) => {
+  getSettings()
+    .then(options => {
       setInitialDOMoptionValues(options, DOMoptionElements)
       settingsTabsBehaviour(firstRunCheck(options.extensionToken))
       setUpHelpAboutPage()
       setUpEventListeners(DOMoptionElements)
-    }
-  )
+    })
 }
 
 

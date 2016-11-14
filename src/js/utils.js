@@ -14,6 +14,17 @@ function getObjectProperty(obj, propertyName){
   }
   return propertyName
 }
+/*****
+* https://developer.chrome.com/extensions/storage#type-StorageArea
+*/
+function getSettings(keys = null){
+  return new Promise( resolve => {
+    /*****
+    * Pass in null to get the entire contents of storage.
+    */
+    chrome.storage.local.get(keys, resolve)
+  })
+}
 
 function insertContentScript(scriptName){
   chrome.tabs.executeScript(
@@ -106,5 +117,6 @@ export {
   checkIfValidUrl,
   insertContentScript,
   createErrorMessageToShowUser,
-  getObjectProperty
+  getObjectProperty,
+  getSettings
 }

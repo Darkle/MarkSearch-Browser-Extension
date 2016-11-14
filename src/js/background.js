@@ -5,7 +5,7 @@ import { updateIcon } from './updateIcon'
 import { browserActionEventHandler } from './browserActionHandler'
 import { backgroundMessageHandler } from './backgroundMessageHandler'
 import { errorLogger } from './errorLogger'
-import { getCurrentTabId } from './utils'
+import { getCurrentTabId, getSettings } from './utils'
 import { handleSearchRequest } from './handleSearchRequest'
 
 /*****
@@ -31,28 +31,27 @@ function checkIfPageIsSavedAndUpdateIcon(tabId){
 /*****
 * This assigns the marksearchApiToken & marksearchServerAddress values on chrome startup.
 */
-chrome.storage.local.get(null, ({extensionToken}) => {
-  assignServerAddressAndToken(extensionToken)
-})
+getSettings().then(({extensionToken}) => assignServerAddressAndToken(extensionToken))
 
 /*****
 * Event listeners
 */
 chrome.runtime.onInstalled.addListener(({reason}) => {
   if(reason === 'install'){
-    chrome.storage.local.get(null, options => {
-      if(!options.extensionToken){
-        /*****
-        * Set up the default settings on first install.
-        */
-        chrome.storage.local.set(
-          extensionOptionsDefaultValues,
-          () => {
-            chrome.runtime.openOptionsPage()
-          }
-        )
-      }
-    })
+    getSettings()
+      .then(({extensionToken}) => {
+        if(!extensionToken){
+          /*****
+          * Set up the default settings on first install.
+          */
+          chrome.storage.local.set(
+            extensionOptionsDefaultValues,
+            () => {
+              chrome.runtime.openOptionsPage()
+            }
+          )
+        }
+      })
   }
 })
 
