@@ -27,6 +27,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const paths = {
   srcBase: path.join(__dirname, 'src'),
   srcJS: path.join(__dirname, 'src', 'js'),
+  srcJSContentScript: path.join(__dirname, 'src', 'js', 'contentScripts'),
   srcPug: path.join(__dirname, 'src', 'pug'),
   srcImages: path.join(__dirname, 'src', 'images'),
   srcFonts: path.join(__dirname, 'src', 'fonts'),
@@ -43,13 +44,13 @@ const paths = {
 module.exports = {
   entry: {
     background: path.join(paths.srcJS, 'background.js'),
-    googleSearch_ContentScript: path.join(paths.srcJS, 'googleSearch_ContentScript.js'),
-    bingSearch_ContentScript: path.join(paths.srcJS, 'bingSearch_ContentScript.js'),
-    baiduSearch_ContentScript: path.join(paths.srcJS, 'baiduSearch_ContentScript.js'),
-    duckduckgoSearch_ContentScript: path.join(paths.srcJS, 'duckduckgoSearch_ContentScript.js'),
-    sendPageData_ContentScript: path.join(paths.srcJS, 'sendPageData_ContentScript.js'),
-    showNotification_ContentScript: path.join(paths.srcJS, 'showNotification_ContentScript.js'),
     options: path.join(paths.srcJS, 'options.js'),
+    googleSearch_ContentScript: path.join(paths.srcJSContentScript, 'googleSearch_ContentScript.js'),
+    bingSearch_ContentScript: path.join(paths.srcJSContentScript, 'bingSearch_ContentScript.js'),
+    baiduSearch_ContentScript: path.join(paths.srcJSContentScript, 'baiduSearch_ContentScript.js'),
+    duckduckgoSearch_ContentScript: path.join(paths.srcJSContentScript, 'duckduckgoSearch_ContentScript.js'),
+    sendPageData_ContentScript: path.join(paths.srcJSContentScript, 'sendPageData_ContentScript.js'),
+    showNotification_ContentScript: path.join(paths.srcJSContentScript, 'showNotification_ContentScript.js'),
     // vendor: [
     //   'jquery',
     // ]

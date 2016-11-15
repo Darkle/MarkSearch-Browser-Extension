@@ -45,11 +45,17 @@ function saveOptions() {
 }
 
 function setInitialDOMoptionValues(options) {
-  DOMoptionElements.extTokenInput.value = options.extensionToken
-  DOMoptionElements.googleSearchCheckbox.checked = options.integrateWithGoogleSearch
-  DOMoptionElements.bingSearchCheckbox.checked = options.integrateWithBingSearch
-  DOMoptionElements.duckduckgoSearchCheckbox.checked = options.integrateWithDuckduckgoSearch
-  DOMoptionElements.baiduSearchCheckbox.checked = options.integrateWithBaiduSearch
+  Object
+    .values(DOMoptionElements)
+    .forEach(optionElement => {
+      const settingKey = optionElement.dataset.settingKey
+      if(optionElement.matches('input[type="checkbox"]')){
+        optionElement.checked = options[settingKey]
+      }
+      else{
+        optionElement.value = options[settingKey]
+      }
+    })
 }
 
 function setUpHelpAboutPage() {

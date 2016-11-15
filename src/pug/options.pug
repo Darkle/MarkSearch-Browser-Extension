@@ -12,26 +12,71 @@ html
           li(data-show-hide-div-id='#helpAbout') Help/About
       #settings
         section#lookAndBehaviour
-          h3 Enable Integrated Searches With The Following Search Engines
-          .flexrow#integratedSearches
+          .settingsGroup.flexcolumn
+            span Integrate MarkSearch Results With The Following Search Engines:
+            .flexrow#integratedSearches
+              .checkbox
+                label
+                  input(type='checkbox', name='googleSearchCheckbox', id='googleSearchCheckbox', data-setting-key='integrateWithGoogleSearch')
+                  span Google
+              .checkbox
+                label
+                  input(type='checkbox', name='bingSearchCheckbox', id='bingSearchCheckbox', data-setting-key='integrateWithBingSearch')
+                  span Bing
+              .checkbox
+                label
+                  input(type='checkbox', name='duckduckgoSearchCheckbox', id='duckduckgoSearchCheckbox', data-setting-key='integrateWithDuckduckgoSearch')
+                  span DuckDuckGo
+              .checkbox
+                label
+                  input(type='checkbox', name='baiduSearchCheckbox', id='baiduSearchCheckbox', data-setting-key='integrateWithBaiduSearch')
+                  span Baidu
+            .moreInfo
+              a(href='https://github.com/Darkle/MarkSearch#helpMenuExtensionIntegratedSearches', target='_blank', rel='noopener') More Info
+          .settingsGroup.flexcolumn#msResultsBox
             .checkbox
               label
-                input(type='checkbox', name='googleSearchCheckbox', id='googleSearchCheckbox', data-setting-key='integrateWithGoogleSearch')
-                span Google
+                input(type='checkbox', name='msResultsBoxEnabled', id='msResultsBoxEnabled', data-setting-key='msResultsBoxEnabled')
+                span Show MarkSearch Results Box On The Side Of The Search Engine Search Results Page
+            .settingsSubGroup
+              .flexrow.selectBoxContainer
+                span Box Position:
+                select#msResultsBoxPosition(data-setting-key='msResultsBoxPosition')
+                  option(value="right") Right
+                  option(value="left") Left
+              .checkbox
+                label
+                  input(type='checkbox', name='msResultsBoxShowAutomatically', id='msResultsBoxShowAutomatically', data-setting-key='msResultsBoxShowAutomatically')
+                  span Always Show The MarkSearch Results Box Automatically
+              .flexrow.selectBoxContainer
+                span Show The MarkSearch Results Box Via:
+                select#msResultsBoxPosition(data-setting-key='msResultsBoxShowVia')
+                  option(value="click") Click
+                  option(value="hover") Hover
+              .moreInfo
+                a(href='https://github.com/Darkle/MarkSearch#helpMenuExtensionIntegratedSearches', target='_blank', rel='noopener') More Info
+          .settingsGroup.flexcolumn#resultsAtBottom
             .checkbox
               label
-                input(type='checkbox', name='bingSearchCheckbox', id='bingSearchCheckbox', data-setting-key='integrateWithBingSearch')
-                span Bing
-            .checkbox
-              label
-                input(type='checkbox', name='duckduckgoSearchCheckbox', id='duckduckgoSearchCheckbox', data-setting-key='integrateWithDuckduckgoSearch')
-                span DuckDuckGo
-            .checkbox
-              label
-                input(type='checkbox', name='baiduSearchCheckbox', id='baiduSearchCheckbox', data-setting-key='integrateWithBaiduSearch')
-                span Baidu
-          .moreInfo
-            a(href='https://github.com/Darkle/MarkSearch#helpMenuExtensionIntegratedSearches', target='_blank', rel='noopener') More Info
+                input(type='checkbox', name='msResultsAtBottom', id='msResultsAtBottom', data-setting-key='msResultsAtBottom')
+                span Show MarkSearch Results At The Bottom Of The The Search Engine Search Results Page
+            .settingsSubGroup
+              .flexrow.selectBoxContainer
+                span Number Of Results To Show:
+                select#resultsAtBottom_amount(data-setting-key='resultsAtBottomNumberOfResultsToShow')
+                  option(value='1') 1
+                  option(value='2') 2
+                  option(value='3') 3
+                  option(value='4') 4
+                  option(value='5') 5
+                  option(value='10') 10
+                  option(value='20') 20
+                  option(value='40') 40
+                  option(value='50') 50
+                  option(value='100') 100
+                  option(value='all') All
+              .moreInfo
+                a(href='https://github.com/Darkle/MarkSearch#helpMenuExtensionIntegratedSearches', target='_blank', rel='noopener') More Info
           //- h3 Content
           //- .checkbox
           //-   label

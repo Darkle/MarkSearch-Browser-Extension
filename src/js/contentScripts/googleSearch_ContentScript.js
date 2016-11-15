@@ -1,8 +1,8 @@
 
 import debounce from 'lodash.debounce'
 
-import '../styles/googleSearch_ContentScript.styl'
-import { getSettings} from './utils'
+import '../../styles/googleSearch_ContentScript.styl'
+import { getSettings} from '../utils'
 
 const $ = document.querySelector.bind(document)
 // const $$ = document.querySelectorAll.bind(document)

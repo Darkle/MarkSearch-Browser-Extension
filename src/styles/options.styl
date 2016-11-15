@@ -5,6 +5,15 @@ body
   margin: 0
   padding: 0
   overflow: hidden
+  font-size: 0.8em
+
+.flexrow
+  display: flex
+  flex-direction: row
+
+.flexcolumn
+  display: flex
+  flex-direction: column
 
 #optionsPanel
   width: 650px
@@ -51,32 +60,46 @@ body
   margin-top: 41px
   display: flex
   padding: 14px 17px
-  .moreInfo
-    opacity: 0.5
-    margin-bottom: 10px
-    margin-top: 2px
-    &:hover
-      opacity: 1.0
 
 #optionsPanel #settings section
   flex: 1
   display: flex
   flex-direction: column
-  .settings-row
-    margin: 6px 0 0
 
+.moreInfo
+  opacity: 0.5
+  margin-bottom: 10px
+  margin-top: 2px
+  width: 5em
+  &:hover
+    opacity: 1.0
+
+.settingsGroup
+  margin-top: 4px
+
+.settingsSubGroup
+  margin-left: 30px
+
+.selectBoxContainer
+  // margin-left: 30px
+  select
+    margin-left: 6px
+/*
+ * Look And Behaviour Section
+ */
 #lookAndBehaviour
   display: none
-  .flexrow
-    display: flex
-    flex-direction: row
-  #integratedSearches
-    .checkbox
-      margin-right: 15px
-      span
-        margin-left: 4px
-        margin-top: -1px
 
+#integratedSearches
+  .checkbox
+    margin-right: 15px
+    span
+      margin-left: 4px
+      margin-top: -1px
+
+/*
+ * Setup Section
+ */
 #setup
   display: none
   .input-box
@@ -86,5 +109,8 @@ body
     margin-bottom: 10px
     max-width: 400px
 
+/*
+ * Help & About Section
+ */
 #helpAbout
   display: none
