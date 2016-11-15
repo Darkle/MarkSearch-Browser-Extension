@@ -32,17 +32,6 @@ function getOptionElementValue(optionElement){
 }
 
 function saveOptions() {
-  console.log('saving options')
-  // console.log('saved settingsObj',
-  //   Object
-  //     .values(DOMoptionElements)
-  //     .reduce((settingsObj, optionElement) => {
-  //       settingsObj[optionElement.dataset.settingKey] = getOptionElementValue(optionElement)
-  //       return settingsObj
-  //     },
-  //     {}
-  //   )
-  // )
   chrome.storage.local.set(
     Object
       .values(DOMoptionElements)
