@@ -201,7 +201,7 @@ module.exports = {
       // showErrors: false,
       // hash: true,
       chunks: [
-        'vendor',
+        // 'vendor',
         'options'
       ]
     }),

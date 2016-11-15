@@ -5,6 +5,13 @@ import { getSettings } from './utils'
 
 const $ = document.querySelector.bind(document)
 const $$ = document.querySelectorAll.bind(document)
+const DOMoptionElements = {
+  extTokenInput: $('#extensionToken'),
+  googleSearchCheckbox: $('#googleSearchCheckbox'),
+  bingSearchCheckbox: $('#bingSearchCheckbox'),
+  duckduckgoSearchCheckbox: $('#duckduckgoSearchCheckbox'),
+  baiduSearchCheckbox: $('#baiduSearchCheckbox'),
+}
 
 function firstRunCheck(extensionToken){
   const navListElems = $$('#optionsPanel nav li')
@@ -24,13 +31,12 @@ function getOptionElementValue(optionElement){
   return optionElement.value
 }
 
-function saveOptions(DOMoptionElements) {
+function saveOptions() {
   console.log('saving options')
   // console.log('saved settingsObj',
   //   Object
-  //     .keys(DOMoptionElements)
-  //     .reduce((settingsObj, keyname) => {
-  //       const optionElement = DOMoptionElements[keyname]
+  //     .values(DOMoptionElements)
+  //     .reduce((settingsObj, optionElement) => {
   //       settingsObj[optionElement.dataset.settingKey] = getOptionElementValue(optionElement)
   //       return settingsObj
   //     },
@@ -39,9 +45,8 @@ function saveOptions(DOMoptionElements) {
   // )
   chrome.storage.local.set(
     Object
-      .keys(DOMoptionElements)
-      .reduce((settingsObj, keyname) => {
-        const optionElement = DOMoptionElements[keyname]
+      .values(DOMoptionElements)
+      .reduce((settingsObj, optionElement) => {
         settingsObj[optionElement.dataset.settingKey] = getOptionElementValue(optionElement)
         return settingsObj
       },
@@ -50,7 +55,7 @@ function saveOptions(DOMoptionElements) {
   )
 }
 
-function setInitialDOMoptionValues(options, DOMoptionElements) {
+function setInitialDOMoptionValues(options) {
   DOMoptionElements.extTokenInput.value = options.extensionToken
   DOMoptionElements.googleSearchCheckbox.checked = options.integrateWithGoogleSearch
   DOMoptionElements.bingSearchCheckbox.checked = options.integrateWithBingSearch
@@ -80,35 +85,26 @@ function settingsTabsBehaviour(selectedListElement) {
   }
 }
 
-function setUpEventListeners(DOMoptionElements) {
+function setUpEventListeners() {
   $('#optionsPanel nav').addEventListener('click', evt => settingsTabsBehaviour(evt.target))
+  /*****
+  * const seems to be valid in for of loops - http://bit.ly/2eYKQd1 http://bit.ly/2eYECtO
+  */
   for(const inputElem of $$('input')){
-    inputElem.addEventListener('change', () => saveOptions(DOMoptionElements))
+    inputElem.addEventListener('change', saveOptions)
   }
   /*****
   * Also need .addEventListener('input' for extTokenInput as $('input').addEventListener('change'
   * only fires for text input change once it loses focus, so using .addEventListener('input' as
   * well so it saves straight away on paste.
   */
-  DOMoptionElements.extTokenInput.addEventListener('input', () => saveOptions(DOMoptionElements))
+  DOMoptionElements.extTokenInput.addEventListener('input', saveOptions)
 }
 
-function optionsPageInit() {
-  const DOMoptionElements = {
-    extTokenInput: $('#extensionToken'),
-    googleSearchCheckbox: $('#googleSearchCheckbox'),
-    bingSearchCheckbox: $('#bingSearchCheckbox'),
-    duckduckgoSearchCheckbox: $('#duckduckgoSearchCheckbox'),
-    baiduSearchCheckbox: $('#baiduSearchCheckbox'),
-  }
-  getSettings()
-    .then(options => {
-      setInitialDOMoptionValues(options, DOMoptionElements)
-      settingsTabsBehaviour(firstRunCheck(options.extensionToken))
-      setUpHelpAboutPage()
-      setUpEventListeners(DOMoptionElements)
-    })
-}
-
-
-document.addEventListener('DOMContentLoaded', optionsPageInit)
+getSettings()
+  .then(options => {
+    setInitialDOMoptionValues(options)
+    settingsTabsBehaviour(firstRunCheck(options.extensionToken))
+    setUpHelpAboutPage()
+    setUpEventListeners()
+  })
