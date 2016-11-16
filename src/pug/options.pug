@@ -44,15 +44,16 @@ html
                 select#msResultsBoxPosition(data-setting-key='msResultsBoxPosition')
                   option(value="right") Right
                   option(value="left") Left
-              .checkbox
-                label
-                  input(type='checkbox', name='msResultsBoxShowAutomatically', id='msResultsBoxShowAutomatically', data-setting-key='msResultsBoxShowAutomatically')
-                  span Always Show The MarkSearch Results Box Automatically
+              //- .checkbox
+              //-   label
+              //-     input(type='checkbox', name='msResultsBoxShowAutomatically', id='msResultsBoxShowAutomatically', data-setting-key='msResultsBoxShowAutomatically')
+              //-     span Always Show The MarkSearch Results Box Automatically
               .flexrow.selectBoxContainer
                 span Show The MarkSearch Results Box Via:
-                select#msResultsBoxPosition(data-setting-key='msResultsBoxShowVia')
+                select#msResultsBoxShowVia(data-setting-key='msResultsBoxShowVia')
                   option(value="click") Click
                   option(value="hover") Hover
+                  option(value="always") Always Show
               .moreInfo
                 a(href='https://github.com/Darkle/MarkSearch#helpMenuExtensionIntegratedSearches', target='_blank', rel='noopener') More Info
           .settingsGroup.flexcolumn#resultsAtBottom

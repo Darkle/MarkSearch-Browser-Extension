@@ -1,7 +1,7 @@
-
+console.log('google search content script inserted and running')
 import debounce from 'lodash.debounce'
 
-import '../../styles/googleSearch_ContentScript.styl'
+// import '../../styles/googleSearch_ContentScript.styl'
 import { getSettings} from '../utils'
 
 const $ = document.querySelector.bind(document)
