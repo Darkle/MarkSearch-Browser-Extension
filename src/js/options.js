@@ -15,7 +15,7 @@ const DOMoptionElements = {
 
 function firstRunCheck(extensionToken){
   const navListElems = $$('#optionsPanel nav li')
-  if(extensionToken.indexOf(',') === -1){
+  if(!extensionToken.includes(',')){
     /*****
     * navListElems[1] is the setup tab - show that if its the first run
     */
