@@ -1,6 +1,5 @@
 
-import { extensionOptionsDefaultValues } from './extensionOptionsDefaultValues'
-import { assignServerAddressAndToken, marksearchServerAddress } from './serverAddressAndToken'
+import { assignServerAddressAndToken } from './serverAddressAndToken'
 import { checkIfPageIsSaved } from './checkIfPageIsSaved'
 import { updateIcon } from './updateIcon'
 import { browserActionEventHandler } from './browserActionHandler'
@@ -8,7 +7,10 @@ import { backgroundOnMessageHandler } from './backgroundOnMessageHandler'
 import { errorLogger } from './errorLogger'
 import { getCurrentTabId, getSettings } from './utils'
 import { handleSearchRequest } from './handleSearchRequest'
+import { contextMenuOnClickedHandler } from './contextMenuOnClickedHandler'
+import { onInstalledEventHandler } from './onInstalledEventHandler'
 import { hotReloadInit } from './hotReload'
+import { extensionOptionsDefaultValues } from './extensionOptionsDefaultValues'
 
 /*****
 * Note: using chrome.storage.local in the extension rather than storage.sync in case they have MarkSearch
@@ -36,13 +38,14 @@ function checkIfPageIsSavedAndUpdateIcon(tabId){
 */
 // getSettings().then(({extensionToken}) => assignServerAddressAndToken(extensionToken))
 // TODO - remove 3 lines below and uncomment out one above when production ready
+// TODO - also remove the import { extensionOptionsDefaultValues } from './extensionOptionsDefaultValues' above
+// if not needed in this script
 const tempExtensionToken = 'http://192.168.1.2:8080,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnQiOiJNYXJrU2VhcmNoIEV4dGVuc2lvbi9Cb29rbWFya2xldF80NiIsImlhdCI6MTQ3OTMzOTY2OX0.OjiFQoFRw4LrqrVlSNzv87dlN9A0wYQZnQf5dehPFKU'
 assignServerAddressAndToken(tempExtensionToken)
 extensionOptionsDefaultValues.extensionToken = tempExtensionToken
 
 chrome.contextMenus.create(
   {
-    type: 'normal',
     id: 'marksearchOpenSearchPage',
     title: 'Open MarkSearch Search Page',
     contexts: ['browser_action']
@@ -52,24 +55,7 @@ chrome.contextMenus.create(
 /*****
 * Event listeners
 */
-chrome.runtime.onInstalled.addListener(({reason}) => {
-  if(reason === 'install'){
-    getSettings()
-      .then(({extensionToken}) => {
-        if(!extensionToken){
-          /*****
-          * Set up the default settings on first install.
-          */
-          chrome.storage.local.set(
-            extensionOptionsDefaultValues,
-            () => {
-              chrome.runtime.openOptionsPage()
-            }
-          )
-        }
-      })
-  }
-})
+chrome.runtime.onInstalled.addListener(onInstalledEventHandler)
 
 chrome.tabs.onActivated.addListener(({tabId}) => {
   checkIfPageIsSavedAndUpdateIcon(tabId)
@@ -106,10 +92,4 @@ chrome.runtime.onConnect.addListener(port => {
   }
 })
 
-chrome.contextMenus.onClicked.addListener(({menuItemId}) => {
-  if(menuItemId === 'marksearchOpenSearchPage'){
-    if(marksearchServerAddress){
-      chrome.tabs.create({url: marksearchServerAddress})
-    }
-  }
-})
+chrome.contextMenus.onClicked.addListener(contextMenuOnClickedHandler)

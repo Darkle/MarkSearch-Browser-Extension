@@ -27,7 +27,10 @@ function browserActionEventHandler(tab){
     .then(() => sendMessageToNotifyContentScript({notifyScriptRunningCheck: true}))
     .then( response => {
       if(!safeGetObjectProperty(response, 'scriptAlreadyInserted')){
-        insertContentScript('showNotification_ContentScript.build.js')
+        /*****
+        * insertContentScript returns a promise, so return it so the script is ready.
+        */
+        return insertContentScript('showNotification_ContentScript.build.js')
       }
     })
     .then(function() {
@@ -59,6 +62,8 @@ function browserActionEventHandler(tab){
       * If it's not saved, run the content script to save it.
       * Note: dont' have to worry about multiple sendPageData_ContentScript's being on the page as
       * it doesn't have any message/event listeners and just sends a single message straight away.
+      * Note: don't need to return and wait for insertContentScript('sendPageData_ContentScript.build.js')
+      * to finish.
       */
       this.action = 'savePage'
       insertContentScript('sendPageData_ContentScript.build.js')

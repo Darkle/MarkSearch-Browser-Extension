@@ -35,13 +35,16 @@ function getSettings(keys = null){
 }
 
 function insertContentScript(scriptName){
-  chrome.tabs.executeScript(
-    null,
-    {
-      file: path.join('js', scriptName),
-      runAt: 'document_end'
-    }
-  )
+  return new Promise( resolve => {
+    chrome.tabs.executeScript(
+      null,
+      {
+        file: path.join('js', scriptName),
+        runAt: 'document_end'
+      },
+      resolve
+    )
+  })
 }
 
 function getCurrentTabId(){

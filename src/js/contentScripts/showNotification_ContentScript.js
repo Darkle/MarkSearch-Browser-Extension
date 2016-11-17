@@ -46,7 +46,7 @@ chrome.runtime.onMessage.addListener(
       return
     }
     if(typeof actionSucceeded !== 'undefined'){
-      showNotification(action, actionSucceeded, errorMessage, noToken)
+      showNotification(action, actionSucceeded, errorMessage)
     }
   }
 )
