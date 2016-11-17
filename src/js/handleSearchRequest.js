@@ -1,13 +1,12 @@
 
-import { marksearchServerAddress, marksearchApiToken } from './serverAddressAndToken'
 import { errorLogger } from './errorLogger'
 
 function handleSearchRequest(port){
   port.onMessage.addListener( ({searchTerms}) => {
-    const fetchUrl = `${ marksearchServerAddress }/api/search/${ encodeURIComponent(searchTerms) }`
+    const fetchUrl = `${ localStorage.marksearchServerAddress }/api/search/${ encodeURIComponent(searchTerms) }`
     const request = new Request(fetchUrl, {
       headers: new Headers({
-        'Authorization': marksearchApiToken
+        'Authorization': localStorage.marksearchApiToken
       }),
       method: 'GET'
     })

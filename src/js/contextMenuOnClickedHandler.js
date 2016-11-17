@@ -1,12 +1,11 @@
 
 import { sendMessageToNotifyContentScript } from './sendMessageToNotifyContentScript'
-import { marksearchServerAddress } from './serverAddressAndToken'
 import { insertContentScript, safeGetObjectProperty } from './utils'
 
 function contextMenuOnClickedHandler({menuItemId}){
   if(menuItemId === 'marksearchOpenSearchPage'){
-    if(marksearchServerAddress){
-      chrome.tabs.create({url: marksearchServerAddress})
+    if(localStorage.marksearchServerAddress){
+      chrome.tabs.create({url: localStorage.marksearchServerAddress})
       return
     }
     sendMessageToNotifyContentScript({notifyScriptRunningCheck: true})

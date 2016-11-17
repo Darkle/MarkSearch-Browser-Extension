@@ -1,6 +1,4 @@
 
-import { marksearchServerAddress, marksearchApiToken } from './serverAddressAndToken'
-
 function removePageFromMarkSearch(urlToRemove){
   return new Promise( (resolve, reject) => {
     /*****
@@ -8,10 +6,10 @@ function removePageFromMarkSearch(urlToRemove){
     * in the browserActionHandler, and it calls checkIfPageIsSaved first, which checks the url is
     * a valid web url.
     */
-    const fetchUrl = `${ marksearchServerAddress }/api/remove/${ encodeURIComponent(urlToRemove) }`
+    const fetchUrl = `${ localStorage.marksearchServerAddress }/api/remove/${ encodeURIComponent(urlToRemove) }`
     const request = new Request(fetchUrl, {
       headers: new Headers({
-        'Authorization': marksearchApiToken
+        'Authorization': localStorage.marksearchApiToken
       }),
       method: 'DELETE'
     })

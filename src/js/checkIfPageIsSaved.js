@@ -1,5 +1,4 @@
 
-import { marksearchServerAddress, marksearchApiToken } from './serverAddressAndToken'
 import { getCurrentTabUrl, checkIfValidUrl } from './utils'
 
 /*****
@@ -11,17 +10,17 @@ function checkIfPageIsSaved(tabId){
     if(!tabId){
       return reject(new Error('tabId is undefined'))
     }
-    if(!marksearchServerAddress || !marksearchApiToken){
+    if(!localStorage.marksearchServerAddress || !localStorage.marksearchApiToken){
       return reject(new Error('token not saved in extension settings'))
     }
 
     getCurrentTabUrl(tabId)
       .then(checkIfValidUrl)
       .then(tabUrl => {
-        const fetchUrl = `${ marksearchServerAddress }/api/get/${ encodeURIComponent(tabUrl) }`
+        const fetchUrl = `${ localStorage.marksearchServerAddress }/api/get/${ encodeURIComponent(tabUrl) }`
         const request = new Request(fetchUrl, {
           headers: new Headers({
-            'Authorization': marksearchApiToken
+            'Authorization': localStorage.marksearchApiToken
           })
         })
         return request

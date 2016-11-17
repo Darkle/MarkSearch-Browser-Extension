@@ -1,7 +1,9 @@
 import '../styles/commonStyles.styl'
 import '../styles/options.styl'
-
 import { getSettings } from './utils'
+
+import { isWebUri } from 'valid-url'
+
 
 const $ = document.querySelector.bind(document)
 const $$ = document.querySelectorAll.bind(document)
@@ -15,7 +17,7 @@ const DOMoptionElements = {
 
 function firstRunCheck(extensionToken){
   const navListElems = $$('#optionsPanel nav li')
-  if(!extensionToken.includes(',')){
+  if(!isWebUri(extensionToken.split(',')[0])){
     /*****
     * navListElems[1] is the setup tab - show that if its the first run
     */

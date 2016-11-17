@@ -91,7 +91,7 @@ function checkIfValidUrl(url){
 }
 
 /*****
-* @param {Object} error - thrown Error object.
+* @param {object} error - thrown Error object.
 * @param {string} error.message
 * @param {string} action - could be 'saving or removing' or 'removePage' or 'savePage'
 *                           from browserActionHandler/savePageToMarkSearch.
@@ -122,6 +122,24 @@ function createErrorMessageToShowUser(error, action){
   return errorMessageToDisplay
 }
 
+/*****
+* @param {(string|undefined)} extensionTokenAndServerAddressString
+* http://usejsdoc.org/tags-param.html
+* http://usejsdoc.org/tags-type.html#jsdoc-types
+*/
+function syncServerAddressAndApiTokenInLocalStorage(extensionTokenAndServerAddressString){
+  if(typeof extensionTokenAndServerAddressString !== 'string' ||
+      !isWebUri(extensionTokenAndServerAddressString.split(',')[0])
+    ){
+    localStorage.removeItem('marksearchServerAddress')
+    localStorage.removeItem('marksearchApiToken')
+    return
+  }
+  const splitExtensionTokenAndServerAddressString = extensionTokenAndServerAddressString.split(',')
+  localStorage.marksearchServerAddress = splitExtensionTokenAndServerAddressString[0]
+  localStorage.marksearchApiToken = splitExtensionTokenAndServerAddressString[1]
+}
+
 export {
   $,
   $$,
@@ -131,5 +149,6 @@ export {
   insertContentScript,
   createErrorMessageToShowUser,
   safeGetObjectProperty,
-  getSettings
+  getSettings,
+  syncServerAddressAndApiTokenInLocalStorage
 }

@@ -6,7 +6,6 @@ import { checkIfPageIsSaved } from './checkIfPageIsSaved'
 import { updateIcon } from './updateIcon'
 import { sendMessageToNotifyContentScript } from './sendMessageToNotifyContentScript'
 import { errorLogger } from './errorLogger'
-import { marksearchServerAddress, marksearchApiToken } from './serverAddressAndToken'
 import { insertContentScript, createErrorMessageToShowUser, safeGetObjectProperty } from './utils'
 
 function browserActionEventHandler(tab){
@@ -41,7 +40,7 @@ function browserActionEventHandler(tab){
       * We send the error info with sendMessageToNotifyContentScript in the catch at the end of the promise
       * chain below.
       */
-      if(!marksearchServerAddress || !marksearchApiToken){
+      if(!localStorage.marksearchServerAddress || !localStorage.marksearchApiToken){
         this.noToken = true
         throw new Error('token not saved in extension settings')
       }

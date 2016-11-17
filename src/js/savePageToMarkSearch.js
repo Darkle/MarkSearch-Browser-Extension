@@ -1,7 +1,6 @@
 
 import { validate as validatePageData } from 'schema-inspector'
 
-import { marksearchServerAddress, marksearchApiToken } from './serverAddressAndToken'
 import { pageDataSchema } from './pageDataSchema'
 
 /*****
@@ -25,10 +24,10 @@ function savePageToMarkSearch(pageData){
     const pageText = `&pageText=${ encodeURIComponent(pageData.pageText) }`
     const pageDescription = `&pageDescription=${ encodeURIComponent(pageData.pageDescription) }`
     const body = pageTitle + pageText + pageDescription
-    const fetchUrl = `${ marksearchServerAddress }/api/add/${ encodeURIComponent(pageData.url) }`
+    const fetchUrl = `${ localStorage.marksearchServerAddress }/api/add/${ encodeURIComponent(pageData.url) }`
     const request = new Request(fetchUrl, {
       headers: new Headers({
-        'Authorization': marksearchApiToken,
+        'Authorization': localStorage.marksearchApiToken,
         'Content-type': 'application/x-www-form-urlencoded'
       }),
       method: 'POST',
