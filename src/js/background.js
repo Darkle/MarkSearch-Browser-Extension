@@ -1,6 +1,6 @@
 
 import { extensionOptionsDefaultValues } from './extensionOptionsDefaultValues'
-import { assignServerAddressAndToken } from './serverAddressAndToken'
+import { assignServerAddressAndToken, marksearchServerAddress } from './serverAddressAndToken'
 import { checkIfPageIsSaved } from './checkIfPageIsSaved'
 import { updateIcon } from './updateIcon'
 import { browserActionEventHandler } from './browserActionHandler'
@@ -39,6 +39,15 @@ function checkIfPageIsSavedAndUpdateIcon(tabId){
 const tempExtensionToken = 'http://192.168.1.2:8080,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnQiOiJNYXJrU2VhcmNoIEV4dGVuc2lvbi9Cb29rbWFya2xldF80NiIsImlhdCI6MTQ3OTMzOTY2OX0.OjiFQoFRw4LrqrVlSNzv87dlN9A0wYQZnQf5dehPFKU'
 assignServerAddressAndToken(tempExtensionToken)
 extensionOptionsDefaultValues.extensionToken = tempExtensionToken
+
+chrome.contextMenus.create(
+  {
+    type: 'normal',
+    id: 'marksearchOpenSearchPage',
+    title: 'Open MarkSearch Search Page',
+    contexts: ['browser_action']
+  }
+)
 
 /*****
 * Event listeners
@@ -94,5 +103,13 @@ chrome.runtime.onConnect.addListener(port => {
   }
   if(port.name === 'contentScriptSearchRequest'){
     handleSearchRequest(port)
+  }
+})
+
+chrome.contextMenus.onClicked.addListener(({menuItemId}) => {
+  if(menuItemId === 'marksearchOpenSearchPage'){
+    if(marksearchServerAddress){
+      chrome.tabs.create({url: marksearchServerAddress})
+    }
   }
 })

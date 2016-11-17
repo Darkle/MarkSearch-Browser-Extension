@@ -11,7 +11,8 @@
     "http://*/*",
     "storage",
     "tabs",
-    "activeTab"
+    "activeTab",
+    "contextMenus"
   ],
   "incognito": "split",
   "background": {

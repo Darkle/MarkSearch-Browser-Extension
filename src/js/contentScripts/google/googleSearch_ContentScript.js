@@ -1,8 +1,5 @@
 (() => {
-  console.log('google search content script inserted and running')
-  const $ = document.querySelector.bind(document)
-  // const $$ = document.querySelectorAll.bind(document)
-  const searchInput = $('#lst-ib')
+  const searchInput = document.querySelector('#lst-ib')
   /*****
   * We wanna exit early if it's not a search page.
   */
@@ -10,9 +7,10 @@
     return
   }
 
+  console.log('google search content script inserted and running')
   // import '../../styles/googleSearch_ContentScript.styl'
   const debounce = require('lodash.debounce')
-  const getSettings = require('../../utils').getSettings
+  const { getSettings, $, $$ } = require('../../utils')
 
   let searchRequestPort
   let msResultsContainer

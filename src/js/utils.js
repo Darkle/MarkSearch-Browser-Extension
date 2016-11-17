@@ -4,6 +4,14 @@ import { default as dotProp} from 'dot-prop'
 
 import { isWebUri } from 'valid-url'
 
+let $
+let $$
+
+if(document && document.querySelector){
+  $ = document.querySelector.bind(document)
+  $$ = document.querySelectorAll.bind(document)
+}
+
 /*****
 * safeGetObjectProperty is for when the obj may not exist.
 * It's a shortcut for obj && obj.prop (plus the dotProp 'a.b.c.d' feature).
@@ -112,6 +120,8 @@ function createErrorMessageToShowUser(error, action){
 }
 
 export {
+  $,
+  $$,
   getCurrentTabId,
   getCurrentTabUrl,
   checkIfValidUrl,
