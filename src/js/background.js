@@ -1,4 +1,5 @@
 
+import { extensionOptionsDefaultValues } from './extensionOptionsDefaultValues'
 import { assignServerAddressAndToken } from './serverAddressAndToken'
 import { checkIfPageIsSaved } from './checkIfPageIsSaved'
 import { updateIcon } from './updateIcon'
@@ -7,20 +8,22 @@ import { backgroundOnMessageHandler } from './backgroundOnMessageHandler'
 import { errorLogger } from './errorLogger'
 import { getCurrentTabId, getSettings } from './utils'
 import { handleSearchRequest } from './handleSearchRequest'
+import { hotReloadInit } from './hotReload'
 
 /*****
-* Note: using chrome.storage.local rather than storage.sync in case they have MarkSearch
+* Note: using chrome.storage.local in the extension rather than storage.sync in case they have MarkSearch
 * set up on a different network and have different settings there (e.g. different
 * port number that MarkSearch is running on)
 */
 
-const extensionOptionsDefaultValues = {
-  integrateWithBaiduSearch: true,
-  integrateWithDuckduckgoSearch: true,
-  integrateWithBingSearch: true,
-  integrateWithGoogleSearch: true,
-  extensionToken: ''
-}
+/*****
+* Hot reload (http://bit.ly/2fXpr1G)
+*/
+chrome.management.getSelf( ({installType}) => {
+  if(installType === 'development'){
+    hotReloadInit()
+  }
+})
 
 function checkIfPageIsSavedAndUpdateIcon(tabId){
   checkIfPageIsSaved(tabId)
@@ -33,7 +36,7 @@ function checkIfPageIsSavedAndUpdateIcon(tabId){
 */
 // getSettings().then(({extensionToken}) => assignServerAddressAndToken(extensionToken))
 // TODO - remove 3 lines below and uncomment out one above when production ready
-const tempExtensionToken = 'http://192.168.1.2:8080,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnQiOiJNYXJrU2VhcmNoIEV4dGVuc2lvbi9Cb29rbWFya2xldF80MyIsImlhdCI6MTQ3OTA3NTAzNn0.fUMvkSI4eH0fdcbigcb169YJTGr97XRVcqGMDgE8QAY'
+const tempExtensionToken = 'http://192.168.1.2:8080,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnQiOiJNYXJrU2VhcmNoIEV4dGVuc2lvbi9Cb29rbWFya2xldF80NiIsImlhdCI6MTQ3OTMzOTY2OX0.OjiFQoFRw4LrqrVlSNzv87dlN9A0wYQZnQf5dehPFKU'
 assignServerAddressAndToken(tempExtensionToken)
 extensionOptionsDefaultValues.extensionToken = tempExtensionToken
 

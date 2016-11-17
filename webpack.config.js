@@ -45,10 +45,10 @@ module.exports = {
   entry: {
     background: path.join(paths.srcJS, 'background.js'),
     options: path.join(paths.srcJS, 'options.js'),
-    googleSearch_ContentScript: path.join(paths.srcJSContentScript, 'googleSearch_ContentScript.js'),
-    bingSearch_ContentScript: path.join(paths.srcJSContentScript, 'bingSearch_ContentScript.js'),
-    baiduSearch_ContentScript: path.join(paths.srcJSContentScript, 'baiduSearch_ContentScript.js'),
-    duckduckgoSearch_ContentScript: path.join(paths.srcJSContentScript, 'duckduckgoSearch_ContentScript.js'),
+    googleSearch_ContentScript: path.join(paths.srcJSContentScript, 'google', 'googleSearch_ContentScript.js'),
+    bingSearch_ContentScript: path.join(paths.srcJSContentScript, 'bing', 'bingSearch_ContentScript.js'),
+    baiduSearch_ContentScript: path.join(paths.srcJSContentScript, 'baidu', 'baiduSearch_ContentScript.js'),
+    duckduckgoSearch_ContentScript: path.join(paths.srcJSContentScript, 'duckduckgo', 'duckduckgoSearch_ContentScript.js'),
     sendPageData_ContentScript: path.join(paths.srcJSContentScript, 'sendPageData_ContentScript.js'),
     showNotification_ContentScript: path.join(paths.srcJSContentScript, 'showNotification_ContentScript.js'),
     // vendor: [
