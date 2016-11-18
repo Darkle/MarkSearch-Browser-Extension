@@ -12,7 +12,11 @@ html
           li(data-show-hide-div-id='#helpAbout') Help/About
       #settings
         section#lookAndBehaviour
-          .settingsGroup.flexcolumn#integratedSearches
+          .flexrow#optionsHelpLink
+            span You Can Get Help And Information About These Settings Here: 
+            a(href='https://github.com/Darkle/MarkSearch#chromeExtensionOptions') MarkSearch Chrome Extension Help
+          h3 Search Engines
+          .settingsGroup#integratedSearches
             span Integrate MarkSearch Results With The Following Search Engines:
             .flexrow
               .checkbox
@@ -31,9 +35,52 @@ html
                 label
                   input(type='checkbox', name='baiduSearchCheckbox', id='baiduSearchCheckbox', data-setting-key='integrateWithBaiduSearch')
                   span Baidu
-            //- .moreInfo
-              a(href='https://github.com/Darkle/MarkSearch#helpMenuExtensionIntegratedSearches', target='_blank', rel='noopener') More Info
-          .settingsGroup.flexcolumn#msResultsBox
+          h3 Search Page Results Integration
+          .settingsGroup
+            .settingsGroup.flexcolumn#resultsAtTop
+              .checkbox
+                label
+                  input(type='checkbox', name='msResultsAtTop', data-setting-key='msResultsAtTop')
+                  span Show MarkSearch Results At The Top Of The The Search Engine Search Results Page
+              .settingsSubGroup
+                .flexrow
+                  span Number Of Results To Show:
+                  input(
+                    type='number', 
+                    min='1'
+                    name='msResultsAtTop_numberOfResultsToShow', 
+                    data-setting-key='msResultsAtTop_numberOfResultsToShow'
+                  )
+            .settingsGroup.flexcolumn#resultsInterspersed
+              .checkbox
+                label
+                  input(type='checkbox', name='msResultsInterspersed', data-setting-key='msResultsInterspersed')
+                  span Intersperse MarkSearch Results On The Search Engine Search Results Page
+              .settingsSubGroup
+                .flexrow
+                  span Number Of Results To Intersperse:
+                  input(
+                    type='number', 
+                    min='1'
+                    name='msResultsInterspersed_numberOfResultsToShow', 
+                    data-setting-key='msResultsInterspersed_numberOfResultsToShow'
+                  )
+            .settingsGroup.flexcolumn#resultsAtBottom
+              .checkbox
+                label
+                  input(type='checkbox', name='msResultsAtBottom', data-setting-key='msResultsAtBottom')
+                  span Show MarkSearch Results At The Bottom Of The The Search Engine Search Results Page
+              .settingsSubGroup
+                .flexrow
+                  span Number Of Results To Show:
+                  input(
+                    type='number', 
+                    min='1'
+                    name='msResultsAtBottom_numberOfResultsToShow', 
+                    data-setting-key='msResultsAtBottom_numberOfResultsToShow'
+                  )
+          h3 MarkSearch Results Box
+          .settingsGroup#msResultsBox
             .checkbox
               label
                 input(type='checkbox', name='msResultsBox', data-setting-key='msResultsBox')
@@ -47,86 +94,30 @@ html
               .flexcolumn
                 span Show The MarkSearch Results Box Via:
                 .flexrow.msResultsBox_radio
-                  input(type='radio', name='msResultsBox_ShowViaClick', data-setting-key='msResultsBox_ShowViaClick')
+                  input.msResultsBoxRadio#msResultsBoxRadio1(type='radio', name='msResultsBox_ShowViaClick', data-setting-key='msResultsBox_ShowViaClick')
                   span Click
                 .flexrow.msResultsBox_radio
-                  input(type='radio', name='msResultsBox_ShowViaAlwaysShow', data-setting-key='msResultsBox_ShowViaAlwaysShow')
+                  input.msResultsBoxRadio#msResultsBoxRadio2(type='radio', name='msResultsBox_ShowViaAlwaysShow', data-setting-key='msResultsBox_ShowViaAlwaysShow')
                   span Always Show
               .flexrow.sidebarColor
                 span Results Box SideBar Color: 
                 input(type='color', name='msResultsBox_SidebarColor', data-setting-key='msResultsBox_SidebarColor')
                 button Revert To Default Color
-              //- .moreInfo
-                a(href='https://github.com/Darkle/MarkSearch#helpMenuExtensionIntegratedSearches', target='_blank', rel='noopener') More Info
-          .settingsGroup.flexcolumn#resultsAtTop
-            .checkbox
-              label
-                input(type='checkbox', name='msResultsAtTop', data-setting-key='msResultsAtTop')
-                span Show MarkSearch Results At The Top Of The The Search Engine Search Results Page
-            .settingsSubGroup
-              .flexrow
-                span Number Of Results To Show:
-                input(
-                  type='number', 
-                  min='1'
-                  name='msResultsAtTop_numberOfResultsToShow', 
-                  id='msResultsAtTop_numberOfResultsToShow', 
-                  data-setting-key='msResultsAtTop_numberOfResultsToShow'
-                )
-              //- .moreInfo
-                a(href='https://github.com/Darkle/MarkSearch#helpMenuExtensionIntegratedSearches', target='_blank', rel='noopener') More Info                
-          .settingsGroup.flexcolumn#resultsInterspersed
-            .checkbox
-              label
-                input(type='checkbox', name='msResultsInterspersed', data-setting-key='msResultsInterspersed')
-                span Show MarkSearch Results At The Top Of The The Search Engine Search Results Page
-            .settingsSubGroup
-              .flexrow
-                span Number Of Results To Intersperse:
-                input(
-                  type='number', 
-                  min='1'
-                  name='msResultsInterspersed_numberOfResultsToShow', 
-                  id='msResultsInterspersed_numberOfResultsToShow', 
-                  data-setting-key='msResultsInterspersed_numberOfResultsToShow'
-                )
-              //- .moreInfo
-                a(href='https://github.com/Darkle/MarkSearch#helpMenuExtensionIntegratedSearches', target='_blank', rel='noopener') More Info                
-          .settingsGroup.flexcolumn#resultsAtBottom
-            .checkbox
-              label
-                input(type='checkbox', name='msResultsAtBottom', data-setting-key='msResultsAtBottom')
-                span Show MarkSearch Results At The Bottom Of The The Search Engine Search Results Page
-            .settingsSubGroup
-              .flexrow
-                span Number Of Results To Show:
-                input(
-                  type='number', 
-                  min='1'
-                  name='msResultsAtBottom_numberOfResultsToShow', 
-                  id='msResultsAtBottom_numberOfResultsToShow', 
-                  data-setting-key='msResultsAtBottom_numberOfResultsToShow'
-                )
-              //- .moreInfo
-                a(href='https://github.com/Darkle/MarkSearch#helpMenuExtensionIntegratedSearches', target='_blank', rel='noopener') More Info
-          .settingsGroup.flexcolumn#msButtonOptionContainer
+          h3 MarkSearch Search Button
+          .settingsGroup#msButtonOptionContainer
             .checkbox
               label
                 input(type='checkbox', name='showMSsearchButton', data-setting-key='showMSsearchButton')
                 span Show A MarkSearch Search Button On Search Engine Start Page & Search Engine Search Page
-            //- .moreInfo
-              a(href='https://github.com/Darkle/MarkSearch#helpMenuExtensionIntegratedSearches', target='_blank', rel='noopener') More Info
-          .settingsGroup.flexcolumn#msPrebrowsingOptionContainer
+          h3 Prebrowsing
+          .settingsGroup#msPrebrowsingOptionContainer
             .checkbox
               label
                 input(type='checkbox', name='msResultsPrebrowsing', data-setting-key='msResultsPrebrowsing')
                 span Add Prebrowsing To The First 2 MarkSearch Results
-            //- .moreInfo
-              a(href='https://github.com/Darkle/MarkSearch#helpMenuExtensionIntegratedSearches', target='_blank', rel='noopener') More Info
-          .settingsGroup.flexcolumn#importExport
-            span You Can Import/Export Bookmarks Via The Desktop App Settings
-            //- .moreInfo
-              a(href='https://github.com/Darkle/MarkSearch#helpMenuExtensionIntegratedSearches', target='_blank', rel='noopener') More Info
+          h3 Importing & Exporting Bookmarks
+          .settingsGroup#importExport
+            span You Can Import & Export Bookmarks Via The Desktop App Settings
         section#setup
           h3 MarkSearch Extension Token
           .input-box
@@ -145,7 +136,7 @@ html
               a(href='https://github.com/Darkle/MarkSearch#helpMenuMarkSearch', target='_blank', rel='noopener') https://github.com/Darkle/MarkSearch#helpMenuMarkSearch
           div#about
             h3 About
-            div#marksearchVersionNumber MarkSearch Version: 
+            div#marksearchChromeExtensionVersionNumber MarkSearch Chrome Extension Version: 
             div
               | MarkSearch Chrome Extension Repo: 
               a(href='https://github.com/Darkle/MarkSearch-Chrome-Extension', target='_blank', rel='noopener') https://github.com/Darkle/MarkSearch-Chrome-Extension

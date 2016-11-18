@@ -28,6 +28,7 @@ const paths = {
   srcBase: path.join(__dirname, 'src'),
   srcJS: path.join(__dirname, 'src', 'js'),
   srcJSContentScript: path.join(__dirname, 'src', 'js', 'contentScripts'),
+  srcJSOptions: path.join(__dirname, 'src', 'js', 'options'),
   srcPug: path.join(__dirname, 'src', 'pug'),
   srcImages: path.join(__dirname, 'src', 'images'),
   srcFonts: path.join(__dirname, 'src', 'fonts'),
@@ -44,7 +45,7 @@ const paths = {
 module.exports = {
   entry: {
     background: path.join(paths.srcJS, 'background.js'),
-    options: path.join(paths.srcJS, 'options.js'),
+    options: path.join(paths.srcJSOptions, 'options.js'),
     googleSearch_ContentScript: path.join(paths.srcJSContentScript, 'google', 'googleSearch_ContentScript.js'),
     bingSearch_ContentScript: path.join(paths.srcJSContentScript, 'bing', 'bingSearch_ContentScript.js'),
     baiduSearch_ContentScript: path.join(paths.srcJSContentScript, 'baidu', 'baiduSearch_ContentScript.js'),

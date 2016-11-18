@@ -3,6 +3,8 @@ import { errorLogger } from './errorLogger'
 
 function handleSearchRequest(port){
   port.onMessage.addListener( ({searchTerms}) => {
+    console.log('handleSearchRequest')
+    console.log('searchTerms', searchTerms)
     const fetchUrl = `${ localStorage.marksearchServerAddress }/api/search/${ encodeURIComponent(searchTerms) }`
     const request = new Request(fetchUrl, {
       headers: new Headers({

@@ -1,4 +1,14 @@
 (() => {
+  /*****
+  * Note: URLSearchParams is not available in Microsoft Edge yet, maybe use npm 'query-string'
+  */
+  const pageQueryParams = new URLSearchParams(window.location.search)
+  let pageHash = new URLSearchParams(window.location.hash)
+  /*****
+  * If there is a query string (?), then it's not instant search. Can't do it the
+  * other way, cause it's possible to have a hash on the end of a query string, but not vice versa (AFAIK)
+  */
+  const isInstantSearch = !pageQueryParams.has('q')    //if there is a query string (?), then it's not instant search
   const searchInput = document.querySelector('#lst-ib')
   /*****
   * We wanna exit early if it's not a search page.
@@ -70,7 +80,15 @@
       createMarkSearchResultsDom(searchResults)
     })
 
-    searchRequestPort.postMessage({searchTerms: searchInput.value})
+    /*****
+    * The searchInput.value doesn't seem to be available yet, so grab search terms
+    * from window location hash/query params.
+    */
+    searchRequestPort.postMessage(
+      {
+        searchTerms: isInstantSearch ? pageHash.get('q') : pageQueryParams.get('q')
+      }
+    )
 
     const debouncedSearchInputChangeHandler = debounce(
       searchInputChangeHandler,

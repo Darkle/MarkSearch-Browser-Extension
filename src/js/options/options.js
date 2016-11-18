@@ -1,10 +1,12 @@
-import '../styles/commonStyles.styl'
-import '../styles/options.styl'
-import { getSettings, $, $$ } from './utils'
+import '../../styles/commonStyles.styl'
+import '../../styles/options.styl'
+import { getSettings, $, $$ } from '../utils'
+import { getOptionElementValue } from './optionUtils'
 
 import { isWebUri } from 'valid-url'
 
 const optionElements = $$('*[data-setting-key]')
+
 
 function firstRunCheck(extensionToken){
   const navListElems = $$('#optionsPanel nav li')
@@ -20,15 +22,9 @@ function firstRunCheck(extensionToken){
   return navListElems[0]
 }
 
-function getOptionElementValue(optionElement){
-  if(optionElement.matches('input[type="checkbox"], input[type="radio"]')){
-    return optionElement.checked
-  }
-  return optionElement.value
-}
-
 function saveOptions() {
-  chrome.storage.local.set(
+  console.log('saveOptions called')
+  console.log(
     Array
       .from(optionElements)  // convert NodeList to Array
       .reduce(
@@ -39,6 +35,17 @@ function saveOptions() {
         {}
       )
   )
+  // chrome.storage.local.set(
+  //   Array
+  //     .from(optionElements)  // convert NodeList to Array
+  //     .reduce(
+  //       (settingsObj, optionElement) => {
+  //         settingsObj[optionElement.dataset.settingKey] = getOptionElementValue(optionElement)
+  //         return settingsObj
+  //       },
+  //       {}
+  //     )
+  // )
 }
 
 function setInitialDOMoptionValues(options) {
@@ -56,8 +63,8 @@ function setInitialDOMoptionValues(options) {
 }
 
 function setUpHelpAboutPage() {
-  const versionText = `MarkSearch Version: ${ chrome.runtime.getManifest().version }`
-  $('#marksearchVersionNumber').innerText = versionText
+  const versionText = `MarkSearch Chrome Extension Version: ${ chrome.runtime.getManifest().version }`
+  $('#marksearchChromeExtensionVersionNumber').innerText = versionText
 }
 
 function settingsTabsBehaviour(selectedListElement) {
@@ -83,7 +90,27 @@ function setUpEventListeners() {
   * const seems to be valid in for of loops - http://bit.ly/2eYKQd1 http://bit.ly/2eYECtO
   */
   for(const inputElem of optionElements){
-    inputElem.addEventListener('change', saveOptions)
+    /*****
+    * For the #msResultsBox radio buttons, if the user clicks on one and the other is checked, uncheck
+    * the other one and leave the one they clicked on checked (and ignore if the one they clicked on is alrady checked).
+    */
+    if(inputElem.className === 'msResultsBoxRadio'){
+      inputElem.addEventListener('change', event => {
+        if(!event.target.checked){
+          return
+        }
+        if(event.target.id === 'msResultsBoxRadio1'){
+          $('#msResultsBoxRadio2').checked = false
+        }
+        if(event.target.id === 'msResultsBoxRadio2'){
+          $('#msResultsBoxRadio1').checked = false
+        }
+        saveOptions()
+      })
+    }
+    else{
+      inputElem.addEventListener('change', saveOptions)
+    }
     if(inputElem.dataset.settingKey === 'extensionToken'){
       /*****
       * Also need .addEventListener('input' for extensionToken Input as $('input').addEventListener('change'
