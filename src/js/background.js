@@ -37,13 +37,13 @@ function checkIfPageIsSavedAndUpdateIcon(tabId){
 * background (the content script doesn't need access to these). We update these below in the
 * chrome.storage.onChanged if the user changes the options.
 */
-getSettings().then(({extensionToken}) => syncServerAddressAndApiTokenInLocalStorage(extensionToken))
+// getSettings().then(({extensionToken}) => syncServerAddressAndApiTokenInLocalStorage(extensionToken))
 // TODO - remove 3 lines below and uncomment out one above when production ready
 // TODO - also remove the import { extensionOptionsDefaultValues } from './extensionOptionsDefaultValues' above
 // if not needed in this script
-// const tempExtensionToken = 'http://192.168.1.2:8080,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnQiOiJNYXJrU2VhcmNoIEV4dGVuc2lvbi9Cb29rbWFya2xldF80NiIsImlhdCI6MTQ3OTMzOTY2OX0.OjiFQoFRw4LrqrVlSNzv87dlN9A0wYQZnQf5dehPFKU'
-// syncServerAddressAndApiTokenInLocalStorage(tempExtensionToken)
-// extensionOptionsDefaultValues.extensionToken = tempExtensionToken
+const tempExtensionToken = 'http://192.168.1.2:8080,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnQiOiJNYXJrU2VhcmNoIEV4dGVuc2lvbi9Cb29rbWFya2xldF80NiIsImlhdCI6MTQ3OTMzOTY2OX0.OjiFQoFRw4LrqrVlSNzv87dlN9A0wYQZnQf5dehPFKU'
+syncServerAddressAndApiTokenInLocalStorage(tempExtensionToken)
+extensionOptionsDefaultValues.extensionToken = tempExtensionToken
 
 chrome.contextMenus.create(
   {

@@ -18,7 +18,7 @@ function contextMenuOnClickedHandler({menuItemId}){
         sendMessageToNotifyContentScript(
           {
             actionSucceeded: false,
-            errorMessage: 'You Have Not Set The MarkSearch Token In The Chrome Extension Settings.'
+            errorMessage: 'You Have Not Set The Token In The MarkSearch Chrome Extension Settings.'
           }
         )
       })

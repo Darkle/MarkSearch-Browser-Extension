@@ -1,22 +1,16 @@
 import '../styles/commonStyles.styl'
 import '../styles/options.styl'
-import { getSettings } from './utils'
+import { getSettings, $, $$ } from './utils'
 
 import { isWebUri } from 'valid-url'
 
-
-const $ = document.querySelector.bind(document)
-const $$ = document.querySelectorAll.bind(document)
-const DOMoptionElements = {
-  extTokenInput: $('#extensionToken'),
-  googleSearchCheckbox: $('#googleSearchCheckbox'),
-  bingSearchCheckbox: $('#bingSearchCheckbox'),
-  duckduckgoSearchCheckbox: $('#duckduckgoSearchCheckbox'),
-  baiduSearchCheckbox: $('#baiduSearchCheckbox'),
-}
+const optionElements = $$('*[data-setting-key]')
 
 function firstRunCheck(extensionToken){
   const navListElems = $$('#optionsPanel nav li')
+  /*****
+  * IF a valid url isn't in the token before the comma, then show the setup tab.
+  */
   if(!isWebUri(extensionToken.split(',')[0])){
     /*****
     * navListElems[1] is the setup tab - show that if its the first run
@@ -27,7 +21,7 @@ function firstRunCheck(extensionToken){
 }
 
 function getOptionElementValue(optionElement){
-  if(optionElement.matches('input[type="checkbox"]')){
+  if(optionElement.matches('input[type="checkbox"], input[type="radio"]')){
     return optionElement.checked
   }
   return optionElement.value
@@ -35,23 +29,24 @@ function getOptionElementValue(optionElement){
 
 function saveOptions() {
   chrome.storage.local.set(
-    Object
-      .values(DOMoptionElements)
-      .reduce((settingsObj, optionElement) => {
-        settingsObj[optionElement.dataset.settingKey] = getOptionElementValue(optionElement)
-        return settingsObj
-      },
-      {}
-    )
+    Array
+      .from(optionElements)  // convert NodeList to Array
+      .reduce(
+        (settingsObj, optionElement) => {
+          settingsObj[optionElement.dataset.settingKey] = getOptionElementValue(optionElement)
+          return settingsObj
+        },
+        {}
+      )
   )
 }
 
 function setInitialDOMoptionValues(options) {
-  Object
-    .values(DOMoptionElements)
+  Array
+    .from(optionElements)  // convert NodeList to Array
     .forEach(optionElement => {
       const settingKey = optionElement.dataset.settingKey
-      if(optionElement.matches('input[type="checkbox"]')){
+      if(optionElement.matches('input[type="checkbox"], input[type="radio"]')){
         optionElement.checked = options[settingKey]
       }
       else{
@@ -87,15 +82,17 @@ function setUpEventListeners() {
   /*****
   * const seems to be valid in for of loops - http://bit.ly/2eYKQd1 http://bit.ly/2eYECtO
   */
-  for(const inputElem of $$('input')){
+  for(const inputElem of optionElements){
     inputElem.addEventListener('change', saveOptions)
+    if(inputElem.dataset.settingKey === 'extensionToken'){
+      /*****
+      * Also need .addEventListener('input' for extensionToken Input as $('input').addEventListener('change'
+      * only fires for text input change once it loses focus, so using .addEventListener('input' as
+      * well so it saves straight away on paste.
+      */
+      inputElem.addEventListener('input', saveOptions)
+    }
   }
-  /*****
-  * Also need .addEventListener('input' for extTokenInput as $('input').addEventListener('change'
-  * only fires for text input change once it loses focus, so using .addEventListener('input' as
-  * well so it saves straight away on paste.
-  */
-  DOMoptionElements.extTokenInput.addEventListener('input', saveOptions)
 }
 
 getSettings()

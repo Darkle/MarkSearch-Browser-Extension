@@ -5,11 +5,19 @@ const extensionOptionsDefaultValues = {
   integrateWithBingSearch: true,
   integrateWithGoogleSearch: true,
   extensionToken: '',
-  msResultsBoxEnabled: false,
-  msResultsBoxPosition: 'right',
-  msResultsBoxShowVia: 'click',
+  msResultsBox: false,
+  msResultsBox_Position: 'right',
+  msResultsBox_ShowViaClick: true,
+  msResultsBox_ShowViaAlwaysShow: false,
+  msResultsBox_SidebarColor: '#000000',
+  msResultsAtTop: false,
+  msResultsAtTop_numberOfResultsToShow: 1,
+  msResultsInterspersed: false,
+  msResultsInterspersed_numberOfResultsToShow: 1,
   msResultsAtBottom: false,
-  msResultsAtBottom_numberOfResultsToShow: 1
+  msResultsAtBottom_numberOfResultsToShow: 1,
+  showMSsearchButton: true,
+  msResultsPrebrowsing: true
 }
 
 export { extensionOptionsDefaultValues }
