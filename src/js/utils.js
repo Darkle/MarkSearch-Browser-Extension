@@ -1,6 +1,6 @@
 
 import path from 'path'
-import { default as dotProp} from 'dot-prop'
+import { default as lodashGet } from 'lodash.get'
 
 import { isWebUri } from 'valid-url'
 
@@ -14,13 +14,10 @@ if(document && document.querySelector){
 
 /*****
 * safeGetObjectProperty is for when the obj may not exist.
-* It's a shortcut for obj && obj.prop (plus the dotProp 'a.b.c.d' feature).
+* It's a shortcut for obj && obj.prop (plus the lodash.get 'a.b.c.d' feature).
 */
-function safeGetObjectProperty(obj, propertyName){
-  if(!obj){
-    return
-  }
-  return dotProp.get(obj, propertyName)
+function safeGetObjectProperty(obj = null, propertyName){
+  return lodashGet(obj, propertyName)
 }
 /*****
 * https://developer.chrome.com/extensions/storage#type-StorageArea

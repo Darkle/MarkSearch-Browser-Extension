@@ -4,7 +4,7 @@ import { updateIcon } from './updateIcon'
 import { browserActionEventHandler } from './browserActionHandler'
 import { backgroundOnMessageHandler } from './backgroundOnMessageHandler'
 import { errorLogger } from './errorLogger'
-import { getCurrentTabId, getSettings, syncServerAddressAndApiTokenInLocalStorage } from './utils'
+import { getCurrentTabId, /*getSettings,*/ syncServerAddressAndApiTokenInLocalStorage } from './utils'
 import { handleSearchRequest } from './handleSearchRequest'
 import { contextMenuOnClickedHandler } from './contextMenuOnClickedHandler'
 import { onInstalledEventHandler } from './onInstalledEventHandler'
@@ -40,7 +40,7 @@ function checkIfPageIsSavedAndUpdateIcon(tabId){
 // getSettings().then(({extensionToken}) => syncServerAddressAndApiTokenInLocalStorage(extensionToken))
 // TODO - remove 3 lines below and uncomment out one above when production ready
 // TODO - also remove the import { extensionOptionsDefaultValues } from './extensionOptionsDefaultValues' above
-// if not needed in this script
+// if not needed in this script & uncomment getSettings in the imports above
 const tempExtensionToken = 'http://192.168.1.2:8080,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnQiOiJNYXJrU2VhcmNoIEV4dGVuc2lvbi9Cb29rbWFya2xldF80NiIsImlhdCI6MTQ3OTMzOTY2OX0.OjiFQoFRw4LrqrVlSNzv87dlN9A0wYQZnQf5dehPFKU'
 syncServerAddressAndApiTokenInLocalStorage(tempExtensionToken)
 extensionOptionsDefaultValues.extensionToken = tempExtensionToken
@@ -85,9 +85,9 @@ chrome.browserAction.onClicked.addListener(browserActionEventHandler)
 chrome.runtime.onMessage.addListener(backgroundOnMessageHandler)
 
 chrome.runtime.onConnect.addListener(port => {
-  if(port.name === 'openOptionsPage'){
-    port.onMessage.addListener(() => chrome.runtime.openOptionsPage())
-  }
+  // if(port.name === 'openOptionsPage'){
+  //   port.onMessage.addListener(() => chrome.runtime.openOptionsPage())
+  // }
   if(port.name === 'contentScriptSearchRequest'){
     handleSearchRequest(port)
   }
