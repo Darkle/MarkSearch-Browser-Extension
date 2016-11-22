@@ -39,10 +39,7 @@ function onReceivedMarkSearchResults(searchResults){
 function mutationObserverHandler(mutations){
   const filteredMutation = mutations.filter(({type, target: {id}}) => (type === 'childList' && id === 'search'))[0]
   const addedNodes = safeGetObjectProperty(filteredMutation, 'addedNodes')
-  console.log('filteredMutation', filteredMutation)
-  console.log('filteredMutation.addedNodes', filteredMutation.addedNodes)
-  console.log('safeGetObjectProperty', safeGetObjectProperty(filteredMutation, 'addedNodes'))
-  console.log('addedNodes', addedNodes)
+
   if(!addedNodes){
     return
   }
