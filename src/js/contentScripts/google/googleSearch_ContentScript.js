@@ -19,18 +19,25 @@ function sendSearchRequestToMarkSearch(searchTerms, dateFilter){
   if(!searchTerms){
     return
   }
-
+  /*****
+  * Note: we do a check in the handleSearchRequest.js background script to check if
+  * dateFilter.startDate & dateFilter.endDate are not null/undefined
+  */
   markSearchResults = null
   searchEngineResultsHaveBeenInserted = false
   searchRequestPort.postMessage({searchTerms, dateFilter})
 }
 
 function onReceivedMarkSearchResults(searchResults){
+
   removeMarkSearchResults()
+
   if(!Array.isArray(searchResults) || !searchResults.length){
     return
   }
+
   markSearchResults = searchResults
+  
   if(searchEngineResultsHaveBeenInserted){
     renderMarkSearchResults(markSearchResults, rsoElement)
   }

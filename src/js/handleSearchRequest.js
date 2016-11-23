@@ -1,10 +1,14 @@
 
+import { safeGetObjectProperty } from './utils'
 import { errorLogger } from './errorLogger'
 
 function handleSearchRequest(port){
-  port.onMessage.addListener( ({searchTerms}) => {
+  port.onMessage.addListener( ({searchTerms, dateFilter}) => {
     console.log('handleSearchRequest')
     console.log('searchTerms', searchTerms)
+    const startDate = safeGetObjectProperty(dateFilter, 'startDate')
+    const endDate = safeGetObjectProperty(dateFilter, 'endDate')
+    if(startDate && )
     const fetchUrl = `${ localStorage.marksearchServerAddress }/api/search/${ encodeURIComponent(searchTerms) }`
     const request = new Request(fetchUrl, {
       headers: new Headers({
