@@ -123,7 +123,6 @@ function mutationObserverHandler(mutations){
   }
 }
 
-
 function init(settings){
   searchInput = $('#lst-ib')
   /*****
