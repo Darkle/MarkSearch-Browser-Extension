@@ -29,15 +29,11 @@ function sendSearchRequestToMarkSearch(searchTerms, dateFilter){
 }
 
 function onReceivedMarkSearchResults(searchResults){
-
   removeMarkSearchResults()
-
   if(!Array.isArray(searchResults) || !searchResults.length){
     return
   }
-
   markSearchResults = searchResults
-  
   if(searchEngineResultsHaveBeenInserted){
     renderMarkSearchResults(markSearchResults, rsoElement)
   }
@@ -78,7 +74,6 @@ function dateFilterDropdownElemListener(event){
   dateFilterDropdownElementsHaveEventHandlers = false
   let dateFilter = null
   const dateFilterElemId = event.currentTarget.id.replace('_', ':')
-
   if(dateFilterElemId !== 'qdr:'){
     dateFilter = parseDateFilter(dateFilterElemId)
   }
@@ -102,21 +97,17 @@ function setUpDateFilterDropdownElementsEventHandlers(){
 function mutationObserverHandler(mutations){
   if(!dateFilterDropdownElementsHaveEventHandlers){
     const menuIsInserted = mutations.find(({target: {id}}) => id === 'hdtbMenus')
-
     if(menuIsInserted){
       setUpDateFilterDropdownElementsEventHandlers()
     }
   }
-
   const addedResultNodes = safeGetObjectProperty(
                       mutations.find(({target: {id}}) => id === 'search'),
                       'addedNodes'
                     )
-
   if(!addedResultNodes){
     return
   }
-
   searchEngineResultsHaveBeenInserted = true
   /*****
   * The first item in the addedResultNodes NodeList is usually a style element,
@@ -144,7 +135,6 @@ function init(settings){
   if(!settings.integrateWithGoogleSearch || !searchInput){
     return
   }
-
   if(isInstantSearch){
     /*****
     * Set up listeners/observers for instant search.
@@ -187,10 +177,8 @@ function init(settings){
     searchEngineResultsHaveBeenInserted = true
     rsoElement = $('#rso')
   }
-
   searchRequestPort = chrome.runtime.connect({name: 'contentScriptSearchRequest'})
   searchRequestPort.onMessage.addListener(onReceivedMarkSearchResults)
-
   /*****
   * Do the inital search for the terms on page load.
   * Note: the searchInput.value isn't available quite yet, so grab search terms
