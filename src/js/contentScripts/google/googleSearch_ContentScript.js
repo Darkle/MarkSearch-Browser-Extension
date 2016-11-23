@@ -118,7 +118,6 @@ function mutationObserverHandler(mutations){
                 .ires
                 .children
                 .rso
-
   if(markSearchResults){
     renderMarkSearchResults(markSearchResults, rsoElement)
   }
