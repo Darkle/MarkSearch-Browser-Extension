@@ -101,10 +101,7 @@ function mutationObserverHandler(mutations){
       setUpDateFilterDropdownElementsEventHandlers()
     }
   }
-  const addedResultNodes = safeGetObjectProperty(
-                      mutations.find(({target: {id}}) => id === 'search'),
-                      'addedNodes'
-                    )
+  const addedResultNodes = safeGetObjectProperty(mutations.find(({target: {id}}) => id === 'search'), 'addedNodes')
   if(!addedResultNodes){
     return
   }
