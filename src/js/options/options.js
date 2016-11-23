@@ -85,7 +85,10 @@ function settingsTabsBehaviour(selectedListElement) {
 }
 
 function setUpEventListeners() {
-  $('#optionsPanel nav').addEventListener('click', evt => settingsTabsBehaviour(evt.currentTarget))
+  /*****
+  * settingsTabsBehaviour(evt.target) - needs to be even.target on this one
+  */
+  $('#optionsPanel nav').addEventListener('click', evt => settingsTabsBehaviour(evt.target))
   /*****
   * const seems to be valid in for of loops - http://bit.ly/2eYKQd1 http://bit.ly/2eYECtO
   */

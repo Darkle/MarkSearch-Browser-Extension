@@ -1,18 +1,26 @@
 import moment from 'moment'
 /*****
 * Note: URLSearchParams is not available in Microsoft Edge yet, maybe use npm 'query-string'
+* .slice(1) to remove the ? at the start.
 */
-const pageQueryParams = new URLSearchParams(window.location.search)
+const pageQueryParams = new URLSearchParams(window.location.search.slice(1))
 /*****
 * If there is a query string (?), then it's not instant search. Can't do it the
 * other way, cause it's possible to have a hash on the end of a query string, but not vice versa (AFAIK)
 */
 const isInstantSearch = !pageQueryParams.has('q')    //if there is a query string (?), then it's not instant search
 
+function getPageHash(){
+  /*****
+  * .slice(1) to remove the # at the start.
+  */
+  const pageHash = new URLSearchParams(window.location.hash.slice(1))
+  return pageHash
+}
+
 function getSearchQueryFromUrl(){
   if(isInstantSearch){
-    const pageHash = new URLSearchParams(window.location.hash)
-    return pageHash.get('q')
+    return getPageHash().get('q')
   }
   return pageQueryParams.get('q')
 }
@@ -29,38 +37,35 @@ function parseDateFilter(dateFilter){
     m: 'month',
     y: 'year'
   }
+
   if(dateFilter.startsWith('qdr:')){
-    dateFilterRange.endDate = moment.valueOf()
+    dateFilterRange.endDate = moment().valueOf()
     const startDateShortcutText = startDateShortcuts[dateFilter.split('qdr:')[1]]
-    console.log('startDateShortcutText', startDateShortcutText)
     dateFilterRange.startDate = moment().subtract(1, startDateShortcutText).valueOf()
   }
   if(dateFilter.startsWith('cdr:')){
     /*****
     * cdr example: cdr:1,cd_min:30/10/2016,cd_max:23/11/2016
+    * Note: google fixes it if you set an end date before the start date, or it reverts to the previous legit date
+    * range - it does this by reloading the page (as a non-instant search).
     */
     const cdrStartDate = dateFilter.slice(dateFilter.indexOf('cd_min:') + 7, dateFilter.lastIndexOf(','))
-    console.log('cdrStartDate', cdrStartDate)
     const cdrEndDate = dateFilter.slice(dateFilter.indexOf('cd_max:') + 7)
-    console.log('cdrEndDate', cdrEndDate)
     dateFilterRange.startDate = moment(cdrStartDate, 'DD-MM-YYYY').startOf('day').valueOf()
     dateFilterRange.endDate = moment(cdrEndDate, 'DD-MM-YYYY').endOf('day').valueOf()
   }
-  console.log('dateFilterRange', dateFilterRange)
-  console.dir('dateFilterRange', dateFilterRange)
   return dateFilterRange
 }
 
 function getDateFilterFromUrl(){
-  let tbs
+  let tbs = null
   if(isInstantSearch){
-    const pageHash = new URLSearchParams(window.location.hash)
-    tbs = pageHash.get('tbs')
+    tbs = getPageHash().get('tbs')
   }
   else{
     tbs = pageQueryParams.get('tbs')
   }
-  if(!tbs){
+  if(!tbs || !tbs.length){
     return
   }
   return parseDateFilter(tbs)
