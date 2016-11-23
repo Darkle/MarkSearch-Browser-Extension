@@ -85,7 +85,7 @@ function settingsTabsBehaviour(selectedListElement) {
 }
 
 function setUpEventListeners() {
-  $('#optionsPanel nav').addEventListener('click', evt => settingsTabsBehaviour(evt.target))
+  $('#optionsPanel nav').addEventListener('click', evt => settingsTabsBehaviour(evt.currentTarget))
   /*****
   * const seems to be valid in for of loops - http://bit.ly/2eYKQd1 http://bit.ly/2eYECtO
   */
@@ -96,13 +96,13 @@ function setUpEventListeners() {
     */
     if(inputElem.className === 'msResultsBoxRadio'){
       inputElem.addEventListener('change', event => {
-        if(!event.target.checked){
+        if(!event.currentTarget.checked){
           return
         }
-        if(event.target.id === 'msResultsBoxRadio1'){
+        if(event.currentTarget.id === 'msResultsBoxRadio1'){
           $('#msResultsBoxRadio2').checked = false
         }
-        if(event.target.id === 'msResultsBoxRadio2'){
+        if(event.currentTarget.id === 'msResultsBoxRadio2'){
           $('#msResultsBoxRadio1').checked = false
         }
         saveOptions()

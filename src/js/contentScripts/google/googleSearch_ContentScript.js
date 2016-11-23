@@ -2,7 +2,7 @@
 
 console.log('google search content script inserted and running')
 // import '../../styles/googleSearch_ContentScript.styl'
-const { isInstantSearch, getSearchQueryFromUrl } = require('./googleSearchCSutils')
+const { isInstantSearch, getSearchQueryFromUrl, getDateFilterFromUrl, parseDateFilter } = require('./googleSearchCSutils')
 const { renderMarkSearchResults, removeMarkSearchResults } = require('./renderMarkSearchResults')
 const { getSettings, $, safeGetObjectProperty } = require('../../utils')
 
@@ -15,13 +15,18 @@ let markSearchResults
 let searchEngineResultsHaveBeenInserted = false
 let rsoElement
 
+function sendSearchRequestToMarkSearch(searchTerms, dateFilter){
+  markSearchResults = null
+  searchEngineResultsHaveBeenInserted = false
+  searchRequestPort.postMessage({searchTerms, dateFilter})
+}
+
 function searchInputChangeHandler(){
+  console.log('searchInputChangeHandler  ', searchInputChangeHandler)
   const searchInputValue = searchInput.value.trim().toLowerCase()
   if(searchInputValue !== searchInputOldValue){
-    markSearchResults = null
-    searchEngineResultsHaveBeenInserted = false
     searchInputOldValue = searchInputValue
-    searchRequestPort.postMessage({searchTerms: searchInput.value})
+    sendSearchRequestToMarkSearch(searchInput.value, getDateFilterFromUrl())
   }
 }
 
@@ -43,15 +48,34 @@ function mutationObserverHandler(mutations){
   if(!addedNodes){
     return
   }
+  /*****
+  * The first item in the addedNodes NodeList is usually a style element,
+  * so grab the second which is a container div. But check first.
+  */
+  const divItemPosition = addedNodes[0].tagName.toLowerCase() === 'style' ? 1 : 0
 
   searchEngineResultsHaveBeenInserted = true
-  rsoElement = safeGetObjectProperty(
-                  Array.from(addedNodes).filter(node => node.tagName.toLowerCase() === 'div')[0],
-                  'children.ires.children.rso'
-                )
+  rsoElement = addedNodes[divItemPosition].children.ires.children.rso
+
   if(markSearchResults){
     renderMarkSearchResults(markSearchResults, rsoElement)
   }
+}
+
+function dateFilterDropdownElemListener(event){
+  /*****
+  * We cant use getDateFilterFromUrl() here as it hasn't yet been updated by the js on the page, so
+  * we're cheating a bit and getting the new filter from the filter drop down meny element id's.
+  *
+  * If it's the '#qdr_' (aka 'qdr:') element, then we re-do the search with no date filter as thats the element
+  * that clears the date filter on the page.
+  */
+  let dateFilter
+  const dateFilterElemId = event.currentTarget.id.replace('_', ':')
+  if(dateFilterElemId !== 'qdr:'){
+    dateFilter = parseDateFilter(dateFilter)
+  }
+  sendSearchRequestToMarkSearch(getSearchQueryFromUrl(), dateFilter)
 }
 
 function init(settings){
@@ -73,10 +97,10 @@ function init(settings){
   searchRequestPort.onMessage.addListener(onReceivedMarkSearchResults)
 
   /*****
-  * The searchInput.value doesn't seem to be available quite yet, so grab search terms
+  * The searchInput.value isn't available quite yet, so grab search terms
   * from window location hash/query params.
   */
-  searchRequestPort.postMessage({searchTerms: getSearchQueryFromUrl()})
+  sendSearchRequestToMarkSearch(getSearchQueryFromUrl(), getDateFilterFromUrl())
 
   if(isInstantSearch){
     const debouncedSearchInputChangeHandler = debounce(
@@ -104,6 +128,23 @@ function init(settings){
         characterDataOldValue: false
       }
     )
+
+    /*****
+    * These elements aren't ready in DOMContentLoaded, so grab them on load.
+    */
+    window.addEventListener('load', () => {
+      document.querySelector('#qdr_').addEventListener('click', dateFilterDropdownElemListener)
+      document.querySelector('#qdr_h').addEventListener('click', dateFilterDropdownElemListener)
+      document.querySelector('#qdr_d').addEventListener('click', dateFilterDropdownElemListener)
+      document.querySelector('#qdr_w').addEventListener('click', dateFilterDropdownElemListener)
+      document.querySelector('#qdr_m').addEventListener('click', dateFilterDropdownElemListener)
+      document.querySelector('#qdr_y').addEventListener('click', dateFilterDropdownElemListener)
+      /*****
+      * Note: there's no listener for the custom range dropdown link as it seems
+      * to reload the page and convert the search to non-instant.
+      */
+    })
+
   }
   else{
     searchEngineResultsHaveBeenInserted = true
