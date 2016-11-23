@@ -116,7 +116,8 @@ function mutationObserverHandler(mutations){
                 .find(({tagName}) => tagName.toLowerCase() !== 'style')
                 .children
                 .ires
-                .children.rso
+                .children
+                .rso
 
   if(markSearchResults){
     renderMarkSearchResults(markSearchResults, rsoElement)
