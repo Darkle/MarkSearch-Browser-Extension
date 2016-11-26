@@ -31,12 +31,12 @@ function renderMarkSearchResults(searchResults, rsoElement){
   // }
 }
 
-function removeMarkSearchResults(){
-  //NOTE may not need to remove the MS results that are above/intersperesed/below the search engine
-  //results as the search engine results container div might be removed by google
-}
+// function removeMarkSearchResults(){
+//   //NOTE may not need to remove the MS results that are above/intersperesed/below the search engine
+//   //results as the search engine results container div might be removed by google
+// }
 
 export {
   renderMarkSearchResults,
-  removeMarkSearchResults
+  // removeMarkSearchResults
 }

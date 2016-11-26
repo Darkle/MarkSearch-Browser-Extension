@@ -6,15 +6,26 @@ function handleSearchRequest(port){
   port.onMessage.addListener( ({searchTerms, dateFilter}) => {
     console.log('handleSearchRequest')
     console.log('searchTerms', searchTerms)
-    const startDate = safeGetObjectProperty(dateFilter, 'startDate')
-    const endDate = safeGetObjectProperty(dateFilter, 'endDate')
-    if(startDate && )
+    console.log('dateFilter', dateFilter)
+    /*****
+    * If dateFilterStartDate or dateFilterEndDate is undefined, MarkSearch will ignore them on the server
+    * side.
+    */
+    const dateFilterStartDate = safeGetObjectProperty(dateFilter, 'startDate')
+    const dateFilterEndDate = safeGetObjectProperty(dateFilter, 'endDate')
     const fetchUrl = `${ localStorage.marksearchServerAddress }/api/search/${ encodeURIComponent(searchTerms) }`
+    /*****
+    * Post cause we have to post the dateFilter data.
+    */
     const request = new Request(fetchUrl, {
       headers: new Headers({
         'Authorization': localStorage.marksearchApiToken
       }),
-      method: 'GET'
+      method: 'POST',
+      body: JSON.stringify({
+        dateFilterStartDate,
+        dateFilterEndDate
+      })
     })
 
     fetch(request)
@@ -28,7 +39,11 @@ function handleSearchRequest(port){
         }
         throw new Error(`handleSearchRequest fetch server issue. Response was ${ response.status }`)
       })
-      .then(searchResults => port.postMessage(searchResults))
+      .then(searchResults => {
+        console.log('search response ok')
+        console.log('searchResults', searchResults)
+        port.postMessage(searchResults)
+      })
       .catch(errorLogger)
   })
 }

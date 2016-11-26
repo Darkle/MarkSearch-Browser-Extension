@@ -2,7 +2,7 @@
 
 // import '../../styles/googleSearch_ContentScript.styl'
 import { isInstantSearch, getSearchQueryFromUrl, getDateFilterFromUrl, parseDateFilter } from './googleSearchCSutils'
-import { renderMarkSearchResults, removeMarkSearchResults } from './renderMarkSearchResults'
+import { renderMarkSearchResults, /*removeMarkSearchResults*/ } from './renderMarkSearchResults'
 import { getSettings, $, safeGetObjectProperty } from '../../utils'
 
 import { default as debounce } from 'lodash.debounce'
@@ -29,7 +29,7 @@ function sendSearchRequestToMarkSearch(searchTerms, dateFilter){
 }
 
 function onReceivedMarkSearchResults(searchResults){
-  removeMarkSearchResults()
+  // removeMarkSearchResults()
   if(!Array.isArray(searchResults) || !searchResults.length){
     return
   }
