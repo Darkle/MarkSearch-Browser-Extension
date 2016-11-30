@@ -30,7 +30,7 @@ async function browserActionEventHandler(tab){
     }
     /*****
     * If they havent yet saved the MarkSearch token to the extension settings page, then throw.
-    * Note: we need to wait untill the showNotification_ContentScript is inserted before we check the tokens
+    * Note: we need to wait until the showNotification_ContentScript is inserted before we check the tokens
     * are saved as we will need that content script to inform the user that they haven't saved the them.
     * We send the error info with sendMessageToNotifyContentScript in the catch at the end below.
     */
@@ -59,8 +59,8 @@ async function browserActionEventHandler(tab){
     * Note: don't need to await for insertContentScript('sendPageData_ContentScript.build.js')
     * to finish.
     * Note: the backgroundOnMessageHandler shows the notification that the page was saved (& updates
-    * the icon) when the sendPageData_ContentScript sends a message back that it's finished,
-    * so we dont need to show a notification here or update the icon.
+    * the icon) when the sendPageData_ContentScript sends sends the data back, so we dont
+    * need to show a notification here or update the icon.
     */
     action = 'savePage'
     insertContentScript('sendPageData_ContentScript.build.js')
