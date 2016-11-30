@@ -30,10 +30,9 @@ async function browserActionEventHandler(tab){
     }
     /*****
     * If they havent yet saved the MarkSearch token to the extension settings page, then throw.
-    * We need to wait untill the showNotification_ContentScript is inserted before we check the tokens are saved
+    * Note: we need to wait untill the showNotification_ContentScript is inserted before we check the tokens are saved
     * as we will need that content script to inform the user that they haven't saved the them.
-    * We send the error info with sendMessageToNotifyContentScript in the catch at the end of the promise
-    * chain below.
+    * We send the error info with sendMessageToNotifyContentScript in the catch at the end below.
     */
     if(!localStorage.marksearchServerAddress || !localStorage.marksearchApiToken){
       const noTokenError = new Error('token not saved in extension settings')
