@@ -23,6 +23,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 // const WriteJsonPlugin = require('write-json-webpack-plugin')
 // const ExtractTextPlugin = require('extract-text-webpack-plugin')
 // const webpackLoadPlugins = require('webpack-load-plugins')
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 const paths = {
   srcBase: path.join(__dirname, 'src'),
@@ -41,12 +42,14 @@ const paths = {
 }
 
 // let manifestObject = fsExtra.readJsonSync(path.join(paths.src, 'manifest.json'))
-
+/*****
+* googleSearch_ContentScript needs to be an array because of this: https://github.com/webpack/webpack/issues/300
+*/
 module.exports = {
   entry: {
     background: path.join(paths.srcJS, 'background.js'),
     options: path.join(paths.srcJSOptions, 'options.js'),
-    googleSearch_ContentScript: path.join(paths.srcJSContentScript, 'google', 'googleSearch_ContentScript.js'),
+    googleSearch_ContentScript: [path.join(paths.srcJSContentScript, 'google', 'googleSearch_ContentScript.js')],
     bingSearch_ContentScript: path.join(paths.srcJSContentScript, 'bing', 'bingSearch_ContentScript.js'),
     baiduSearch_ContentScript: path.join(paths.srcJSContentScript, 'baidu', 'baiduSearch_ContentScript.js'),
     duckduckgoSearch_ContentScript: path.join(paths.srcJSContentScript, 'duckduckgo', 'duckduckgoSearch_ContentScript.js'),
@@ -89,6 +92,7 @@ module.exports = {
         include: [
           paths.srcJS
         ],
+        exclude: /node_modules/,
         loader: 'babel-loader',
       },
       {
@@ -124,6 +128,9 @@ module.exports = {
       }
     ]
   },
+  /*****
+  * The empty string first is needed for resolve.extensions
+  */
   resolve: {
     extensions: ['', '.js', '.styl', '.sass', 'woff2']
   },
@@ -135,6 +142,8 @@ module.exports = {
     //   path: paths.build,
     //   filename: 'manifest.json'
     // }),
+
+    // new BundleAnalyzerPlugin(),
 
     new CopyWebpackPlugin(
       [

@@ -1,7 +1,9 @@
 {
   "plugins": [
     "transform-object-rest-spread",
-    "babel-plugin-transform-es2015-modules-commonjs"
+    "babel-plugin-transform-es2015-modules-commonjs",
+    "syntax-async-functions",
+    "transform-async-to-generator"
   ],
   "sourceMaps": true
 }

@@ -23,8 +23,7 @@ function firstRunCheck(extensionToken){
 }
 
 function saveOptions() {
-  console.log('saveOptions called')
-  console.log(
+  chrome.storage.local.set(
     Array
       .from(optionElements)  // convert NodeList to Array
       .reduce(
@@ -35,17 +34,6 @@ function saveOptions() {
         {}
       )
   )
-  // chrome.storage.local.set(
-  //   Array
-  //     .from(optionElements)  // convert NodeList to Array
-  //     .reduce(
-  //       (settingsObj, optionElement) => {
-  //         settingsObj[optionElement.dataset.settingKey] = getOptionElementValue(optionElement)
-  //         return settingsObj
-  //       },
-  //       {}
-  //     )
-  // )
 }
 
 function setInitialDOMoptionValues(options) {

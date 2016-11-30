@@ -4,9 +4,6 @@ import { errorLogger } from './errorLogger'
 
 function handleSearchRequest(port){
   port.onMessage.addListener( ({searchTerms, dateFilter}) => {
-    console.log('handleSearchRequest')
-    console.log('searchTerms', searchTerms)
-    console.log('dateFilter', dateFilter)
     /*****
     * If dateFilterStartDate or dateFilterEndDate is undefined, MarkSearch will ignore them on the server
     * side.
@@ -16,6 +13,8 @@ function handleSearchRequest(port){
     const fetchUrl = `${ localStorage.marksearchServerAddress }/api/search/${ encodeURIComponent(searchTerms) }`
     /*****
     * Post cause we have to post the dateFilter data.
+    * dateFilterStartDate & dateFilterEndDate are the property names the MS server is looking for when it receives the
+    * post request.
     */
     const request = new Request(fetchUrl, {
       headers: new Headers({
@@ -40,8 +39,6 @@ function handleSearchRequest(port){
         throw new Error(`handleSearchRequest fetch server issue. Response was ${ response.status }`)
       })
       .then(searchResults => {
-        console.log('search response ok')
-        console.log('searchResults', searchResults)
         port.postMessage(searchResults)
       })
       .catch(errorLogger)

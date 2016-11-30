@@ -14,6 +14,8 @@ let markSearchResults
 let searchEngineResultsHaveBeenInserted = false
 let rsoElement
 let dateFilterDropdownElementsHaveEventHandlers = false
+let extensionSettings
+let msResultsBoxElem
 
 function sendSearchRequestToMarkSearch(searchTerms, dateFilter){
   if(!searchTerms){
@@ -24,17 +26,26 @@ function sendSearchRequestToMarkSearch(searchTerms, dateFilter){
   * dateFilter.startDate & dateFilter.endDate are not null/undefined
   */
   markSearchResults = null
-  searchEngineResultsHaveBeenInserted = false
+  /*****
+  * We dont have mutation observers when non-instant search & also sendSearchRequestToMarkSearch is
+  * only called once on non-instant search, so we dont need to reset searchEngineResultsHaveBeenInserted.
+  */
+  if(isInstantSearch){
+    searchEngineResultsHaveBeenInserted = false
+  }
   searchRequestPort.postMessage({searchTerms, dateFilter})
 }
 
 function onReceivedMarkSearchResults(searchResults){
   // removeMarkSearchResults()
+  console.log('onReceivedMarkSearchResults')
   if(!Array.isArray(searchResults) || !searchResults.length){
     return
   }
   markSearchResults = searchResults
+  console.log('searchEngineResultsHaveBeenInserted', searchEngineResultsHaveBeenInserted)
   if(searchEngineResultsHaveBeenInserted){
+    console.log('just before renderMarkSearchResults call 1')
     renderMarkSearchResults(markSearchResults, rsoElement)
   }
 }
@@ -119,17 +130,28 @@ function mutationObserverHandler(mutations){
                 .children
                 .rso
   if(markSearchResults){
+    console.log('just before renderMarkSearchResults call 2')
     renderMarkSearchResults(markSearchResults, rsoElement)
   }
 }
 
 function init(settings){
+  extensionSettings = settings
+  console.log('extensionSettings', extensionSettings)
   searchInput = $('#lst-ib')
   /*****
   * We wanna exit early if it's not a search page or they dont have integrated results enabled in the settings.
   */
-  if(!settings.integrateWithGoogleSearch || !searchInput){
+  if(!extensionSettings.integrateWithGoogleSearch || !searchInput){
     return
+  }
+  /*****
+  * Set up the results box if enabled in settings
+  */
+  if(extensionSettings.msResultsBox){
+    msResultsBoxElem = document.createElement('div')
+    msResultsBoxElem.setAttribute('id', 'msResultsBox')
+    $('#rcnt').appendChild(msResultsBoxElem)
   }
   if(isInstantSearch){
     /*****
@@ -184,3 +206,8 @@ function init(settings){
 }
 
 document.addEventListener('DOMContentLoaded', () => getSettings().then(init))
+
+export {
+  extensionSettings,
+  msResultsBoxElem
+}
