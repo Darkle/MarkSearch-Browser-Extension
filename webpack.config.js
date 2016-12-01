@@ -142,9 +142,9 @@ module.exports = {
     extensions: ['', '.js', '.styl', '.sass', 'woff2']
   },
   plugins: [
-    new ExtractTextPlugin('../stylesheets/[name].css'),
     // new WebpackCleanupPlugin(),
     // new BundleAnalyzerPlugin(),
+    new ExtractTextPlugin('../stylesheets/[name].css'),
     new CopyWebpackPlugin(
       [
         {
@@ -189,21 +189,6 @@ module.exports = {
     //   * name is the chunk name(s) of the file CommonsChunkPlugin produces
     //   */
     //   names: ['vendor', 'webpackBootstrap']
-    // }),
-
-    // new ExtractTextPlugin('[name].[chunkhash].css'),
-
-    // https://github.com/ampedandwired/html-webpack-plugin#configuration
-    // new HtmlWebpackPlugin({
-    //   filename: 'popup.html',
-    //   template: path.join(paths.srcPug, 'popup.pug'),
-    //   // inject: false,
-    //   // showErrors: false,
-    //   // hash: true,
-    //   chunks: [
-    //     'vendor',
-    //     'popup'
-    //   ]
     // }),
     new HtmlWebpackPlugin({
       filename: path.resolve(paths.buildHTML, 'options.html'),
