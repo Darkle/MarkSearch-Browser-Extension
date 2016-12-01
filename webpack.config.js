@@ -144,15 +144,7 @@ module.exports = {
   plugins: [
     new ExtractTextPlugin('../stylesheets/[name].css'),
     // new WebpackCleanupPlugin(),
-
-    // new WriteJsonPlugin({
-    //   object: manifestObject,
-    //   path: paths.build,
-    //   filename: 'manifest.json'
-    // }),
-
     // new BundleAnalyzerPlugin(),
-
     new CopyWebpackPlugin(
       [
         {
