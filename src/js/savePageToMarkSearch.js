@@ -20,18 +20,18 @@ function savePageToMarkSearch(pageData){
       return reject(new Error(errorMessage))
     }
 
-    const pageTitle = `pageTitle=${ encodeURIComponent(pageData.pageTitle) }`
-    const pageText = `&pageText=${ encodeURIComponent(pageData.pageText) }`
-    const pageDescription = `&pageDescription=${ encodeURIComponent(pageData.pageDescription) }`
-    const body = pageTitle + pageText + pageDescription
     const fetchUrl = `${ localStorage.marksearchServerAddress }/api/add/${ encodeURIComponent(pageData.url) }`
     const request = new Request(fetchUrl, {
       headers: new Headers({
         'Authorization': localStorage.marksearchApiToken,
-        'Content-type': 'application/x-www-form-urlencoded'
+        'Content-type': 'application/json;charset=utf-8'
       }),
       method: 'POST',
-      body
+      body: JSON.stringify({
+        pageTitle: pageData.pageTitle,
+        pageText: pageData.pageText,
+        pageDescription: pageData.pageDescription
+      })
     })
 
     fetch(request)

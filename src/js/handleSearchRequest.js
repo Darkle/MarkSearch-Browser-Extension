@@ -18,7 +18,8 @@ function handleSearchRequest(port){
     */
     const request = new Request(fetchUrl, {
       headers: new Headers({
-        'Authorization': localStorage.marksearchApiToken
+        'Authorization': localStorage.marksearchApiToken,
+        'Content-type': 'application/json;charset=utf-8'
       }),
       method: 'POST',
       body: JSON.stringify({
