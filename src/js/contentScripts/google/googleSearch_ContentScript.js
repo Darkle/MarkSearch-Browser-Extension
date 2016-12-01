@@ -1,6 +1,6 @@
 
 
-// import '../../styles/googleSearch_ContentScript.styl'
+import '../../../nonInlineStyles/googleSearch_ContentScript.styl'
 import { isInstantSearch, getSearchQueryFromUrl, getDateFilterFromUrl, parseDateFilter } from './googleSearchCSutils'
 import { renderMarkSearchResults, /*removeMarkSearchResults*/ } from './renderMarkSearchResults'
 import { getSettings, $, safeGetObjectProperty } from '../../utils'
@@ -27,7 +27,7 @@ function sendSearchRequestToMarkSearch(searchTerms, dateFilter){
   */
   markSearchResults = null
   /*****
-  * We dont have mutation observers when non-instant search & also sendSearchRequestToMarkSearch is
+  * We dont have mutation observers when non-instant search, & also sendSearchRequestToMarkSearch is
   * only called once on non-instant search, so we dont need to reset searchEngineResultsHaveBeenInserted.
   */
   if(isInstantSearch){
@@ -135,23 +135,54 @@ function mutationObserverHandler(mutations){
   }
 }
 
+function setUpMSresultsBox(settings){
+  console.log('setUpMSresultsBox')
+  msResultsBoxElem = document.createElement('div')
+  msResultsBoxElem.setAttribute('id', 'msResultsBox')
+  console.log('setUpMSresultsBox 2')
+  const resultsBoxSideBar = document.createElement('div')
+  resultsBoxSideBar.setAttribute('id', 'msResultsBoxSidebar')
+  resultsBoxSideBar.style.backgroundColor = settings.msResultsBox_SidebarColor
+  resultsBoxSideBar.addEventListener('click', () => {
+    //will need to be http://caniuse.com/#search=animation
+    console.log(`resultsBoxSideBar.addEventListener('click'`)
+  })
+  msResultsBoxElem.appendChild(resultsBoxSideBar)
+  console.log('setUpMSresultsBox 3')
+  if(settings.msResultsBox_Position === 'left'){
+    msResultsBoxElem.classList.add('showMsResultsBoxOnLeft')
+  }
+  console.log('setUpMSresultsBox 4')
+  if(settings.msResultsBox_ShowViaAlwaysShow){
+    msResultsBoxElem.classList.add('forceShowMsResultsBox')
+  }
+  console.log('setUpMSresultsBox 5')
+  console.log(`$('#rcnt')`, $('#rcnt'))
+  /*****
+  * We don't insert into the #rcnt element as it has a max-width set and doesn't expand fully,
+  * and we don't insert higher up as we want the results box to be under the google
+  * toolbars/buttons.
+  */
+  const rcnt = $('#rcnt')
+  rcnt.parentNode.insertBefore(msResultsBoxElem, rcnt)
+}
+
 function init(settings){
+  /*****
+  * reference settings to a variable so we can export it
+  */
   extensionSettings = settings
   console.log('extensionSettings', extensionSettings)
   searchInput = $('#lst-ib')
   /*****
   * We wanna exit early if it's not a search page or they dont have integrated results enabled in the settings.
   */
-  if(!extensionSettings.integrateWithGoogleSearch || !searchInput){
+  if(!settings.integrateWithGoogleSearch || !searchInput){
     return
   }
-  /*****
-  * Set up the results box if enabled in settings
-  */
-  if(extensionSettings.msResultsBox){
-    msResultsBoxElem = document.createElement('div')
-    msResultsBoxElem.setAttribute('id', 'msResultsBox')
-    $('#rcnt').appendChild(msResultsBoxElem)
+  console.log('settings.msResultsBox', settings.msResultsBox)
+  if(settings.msResultsBox){
+    setUpMSresultsBox(settings)
   }
   if(isInstantSearch){
     /*****

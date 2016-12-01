@@ -30,6 +30,7 @@
   "content_scripts": [
     {
       "js": ["js/googleSearch_ContentScript.build.js"],
+      "css": ["stylesheets/googleSearch_ContentScript.css"],
       "run_at": "document_start",
       "matches": [
         "https://encrypted.google.com/*",

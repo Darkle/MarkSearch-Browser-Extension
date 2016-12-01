@@ -91,14 +91,10 @@ html
                 select#msResultsBoxPosition(data-setting-key='msResultsBox_Position')
                   option(value="right") Right
                   option(value="left") Left
-              .flexcolumn
-                span Show The MarkSearch Results Box Via:
-                .flexrow.msResultsBox_radio
-                  input.msResultsBoxRadio#msResultsBoxRadio1(type='radio', name='msResultsBox_ShowViaClick', data-setting-key='msResultsBox_ShowViaClick')
-                  span Click
-                .flexrow.msResultsBox_radio
-                  input.msResultsBoxRadio#msResultsBoxRadio2(type='radio', name='msResultsBox_ShowViaAlwaysShow', data-setting-key='msResultsBox_ShowViaAlwaysShow')
-                  span Always Show
+              .checkbox
+                label
+                  input(type='checkbox', name='msResultsBox_AutoExpand', data-setting-key='msResultsBox_AutoExpand')
+                  span Autoexpand The MarkSearch Results Box On Page Load
               .flexrow.sidebarColor
                 span Results Box SideBar Color: 
                 input(type='color', name='msResultsBox_SidebarColor', data-setting-key='msResultsBox_SidebarColor')

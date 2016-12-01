@@ -21,7 +21,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 // const WebpackCleanupPlugin = require('webpack-cleanup-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 // const WriteJsonPlugin = require('write-json-webpack-plugin')
-// const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
 // const webpackLoadPlugins = require('webpack-load-plugins')
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
@@ -34,6 +34,7 @@ const paths = {
   srcImages: path.join(__dirname, 'src', 'images'),
   srcFonts: path.join(__dirname, 'src', 'fonts'),
   srcStyles: path.join(__dirname, 'src', 'styles'),
+  nonInlineStyles: path.join(__dirname, 'src', 'nonInlineStyles'),
   buildBase: path.join(__dirname, 'build'),
   buildJS: path.join(__dirname, 'build', 'js'),
   buildHTML: path.join(__dirname, 'build', 'html'),
@@ -111,7 +112,13 @@ module.exports = {
           paths.srcStyles
         ],
         loader: 'style-loader!css-loader?sourceMap!stylus-loader'
-        // loader: ExtractTextPlugin.extract('style', 'css?sourceMap!stylus')
+      },
+      {
+        test: /\.styl$/,
+        include: [
+          paths.nonInlineStyles
+        ],
+        loader: ExtractTextPlugin.extract('style-loader', 'css-loader?sourceMap!stylus-loader')
       },
       /*****
       * url-loader lets us load the opensans-regular.woff2 font file as a base64 data:application/font-woff2 url
@@ -135,6 +142,7 @@ module.exports = {
     extensions: ['', '.js', '.styl', '.sass', 'woff2']
   },
   plugins: [
+    new ExtractTextPlugin('../stylesheets/[name].css'),
     // new WebpackCleanupPlugin(),
 
     // new WriteJsonPlugin({

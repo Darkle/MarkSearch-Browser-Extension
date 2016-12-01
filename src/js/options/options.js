@@ -1,4 +1,3 @@
-import '../../styles/commonStyles.styl'
 import '../../styles/options.styl'
 import { getSettings, $, $$ } from '../utils'
 import { getOptionElementValue } from './optionUtils'
@@ -81,27 +80,7 @@ function setUpEventListeners() {
   * const seems to be valid in for of loops - http://bit.ly/2eYKQd1 http://bit.ly/2eYECtO
   */
   for(const inputElem of optionElements){
-    /*****
-    * For the #msResultsBox radio buttons, if the user clicks on one and the other is checked, uncheck
-    * the other one and leave the one they clicked on checked (and ignore if the one they clicked on is alrady checked).
-    */
-    if(inputElem.className === 'msResultsBoxRadio'){
-      inputElem.addEventListener('change', event => {
-        if(!event.currentTarget.checked){
-          return
-        }
-        if(event.currentTarget.id === 'msResultsBoxRadio1'){
-          $('#msResultsBoxRadio2').checked = false
-        }
-        if(event.currentTarget.id === 'msResultsBoxRadio2'){
-          $('#msResultsBoxRadio1').checked = false
-        }
-        saveOptions()
-      })
-    }
-    else{
-      inputElem.addEventListener('change', saveOptions)
-    }
+    inputElem.addEventListener('change', saveOptions)
     if(inputElem.dataset.settingKey === 'extensionToken'){
       /*****
       * Also need .addEventListener('input' for extensionToken Input as $('input').addEventListener('change'

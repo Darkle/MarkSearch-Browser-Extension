@@ -56,6 +56,7 @@
     "moment": "^2.17.0",
     "notie": "^3.9.4",
     "schema-inspector": "^1.6.8",
-    "valid-url": "^1.0.9"
+    "valid-url": "^1.0.9",
+    "validator": "^6.2.0"
   }
 }
