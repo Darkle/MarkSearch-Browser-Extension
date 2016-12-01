@@ -1,5 +1,5 @@
 
-import validator from 'validator'
+import { default as validatorUnescape } from 'validator/lib/unescape'
 
 import { extensionSettings, msResultsBoxElem } from './googleSearch_ContentScript'
 import { $$ } from '../../utils'
@@ -80,7 +80,7 @@ function renderMarkSearchResults(searchResults, rsoElement){
       /****
        * unescape should be ok here as we are using textContent and not innerHTML
        */
-      resultLink.textContent = validator.unescape(resultLinkTextContent)
+      resultLink.textContent = validatorUnescape(resultLinkTextContent)
       mainResultLink.appendChild(resultLink)
 
       const resultUrlText = document.createElement('div')

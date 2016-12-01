@@ -13,17 +13,16 @@
 
 const path = require('path')
 
-// const fsExtra = require('fs-extra')
-
-// const webpack = require('webpack')
 const bell = require('bell-on-bundler-error-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-// const WebpackCleanupPlugin = require('webpack-cleanup-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-// const WriteJsonPlugin = require('write-json-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
+// const webpack = require('webpack')
+// const WebpackCleanupPlugin = require('webpack-cleanup-plugin')
+// const WriteJsonPlugin = require('write-json-webpack-plugin')
 // const webpackLoadPlugins = require('webpack-load-plugins')
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+
 
 const paths = {
   srcBase: path.join(__dirname, 'src'),
@@ -43,7 +42,6 @@ const paths = {
   buildStylesheets: path.join(__dirname, 'build', 'stylesheets'),
 }
 
-// let manifestObject = fsExtra.readJsonSync(path.join(paths.src, 'manifest.json'))
 /*****
 * googleSearch_ContentScript needs to be an array because of this: https://github.com/webpack/webpack/issues/300
 */
