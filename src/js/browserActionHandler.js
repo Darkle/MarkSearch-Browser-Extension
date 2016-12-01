@@ -45,7 +45,7 @@ async function browserActionEventHandler(tab){
     */
     if(await checkIfPageIsSaved(tab.id)){
       /*****
-      * removePageFromMarkSearch resolves true if it successfully removed the page
+      * removePageFromMarkSearch resolves true if it successfully removed the page 
       */
       action = 'removePage'
       const pageIsSavedInMarkSearch = await !removePageFromMarkSearch(tab.url)

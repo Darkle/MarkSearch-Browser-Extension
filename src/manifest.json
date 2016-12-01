@@ -14,10 +14,9 @@
     "activeTab",
     "contextMenus"
   ],
-  "incognito": "split",
+  "incognito": "not_allowed",
   "background": {
     "persistent": false,
-    "run_at": "document_end",
     "scripts": ["js/background.build.js"]
   },
   "browser_action": {
