@@ -139,12 +139,14 @@ function setUpMSresultsBox(settings){
   console.log('setUpMSresultsBox')
   msResultsBoxElem = document.createElement('div')
   msResultsBoxElem.setAttribute('id', 'msResultsBox')
+  console.log(`$('#res').clientHeight`, $('#res').clientHeight)
+  msResultsBoxElem.setAttribute('style', `height:${ $('#res').clientHeight }px;`)
   console.log('setUpMSresultsBox 2')
   const resultsBoxSideBar = document.createElement('div')
   resultsBoxSideBar.setAttribute('id', 'msResultsBoxSidebar')
-  resultsBoxSideBar.style.backgroundColor = settings.msResultsBox_SidebarColor
+  resultsBoxSideBar.setAttribute('style', `background-color:${ settings.msResultsBox_SidebarColor };`)
   resultsBoxSideBar.addEventListener('click', () => {
-    //will need to be http://caniuse.com/#search=animation
+    //will need to be http://caniuse.com/#search=animation 
     console.log(`resultsBoxSideBar.addEventListener('click'`)
   })
   msResultsBoxElem.appendChild(resultsBoxSideBar)

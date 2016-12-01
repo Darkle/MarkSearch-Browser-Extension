@@ -93,6 +93,7 @@ function renderMarkSearchResults(searchResults, rsoElement){
   }
   // for(let i = 0, len = searchResults.length; i < len; i++){
   //   const result = searchResults[i]
+  //   use a document fragment here as well for these bits
   //
   // }
 }

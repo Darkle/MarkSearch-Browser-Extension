@@ -40,6 +40,7 @@ const paths = {
   buildHTML: path.join(__dirname, 'build', 'html'),
   buildImages: path.join(__dirname, 'build', 'images'),
   buildFonts: path.join(__dirname, 'build', 'fonts'),
+  buildStylesheets: path.join(__dirname, 'build', 'stylesheets'),
 }
 
 // let manifestObject = fsExtra.readJsonSync(path.join(paths.src, 'manifest.json'))
@@ -102,7 +103,7 @@ module.exports = {
           paths.srcPug
         ],
         loader: 'pug-loader',
-        query: {  //https://github.com/pugjs/pug-loader#options https://webpack.github.io/docs/using-loaders.html#query-parameters
+        query: {
           pretty: true
         }
       },
@@ -121,7 +122,8 @@ module.exports = {
         loader: ExtractTextPlugin.extract('style-loader', 'css-loader?sourceMap!stylus-loader')
       },
       /*****
-      * url-loader lets us load the opensans-regular.woff2 font file as a base64 data:application/font-woff2 url
+      * url-loader lets us load the opensans-regular.woff2 font file as a base64 data:application/font-woff2
+      * url.
       */
       {
         test: /\.woff2$/,
