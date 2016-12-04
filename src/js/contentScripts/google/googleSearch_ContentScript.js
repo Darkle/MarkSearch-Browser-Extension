@@ -1,5 +1,3 @@
-
-
 import '../../../nonInlineStyles/googleSearch_ContentScript.styl'
 import { isInstantSearch, getSearchQueryFromUrl, getDateFilterFromUrl, parseDateFilter } from './googleSearchCSutils'
 import { renderMarkSearchResults, /*removeMarkSearchResults*/ } from './renderMarkSearchResults'
@@ -38,12 +36,8 @@ function sendSearchRequestToMarkSearch(searchTerms, dateFilter){
 }
 
 function onReceivedMarkSearchResults(searchResults){
-  // removeMarkSearchResults()
-  console.log('onReceivedMarkSearchResults')
   markSearchResults = searchResults
-  console.log('searchEngineResultsHaveBeenInserted', searchEngineResultsHaveBeenInserted)
   if(searchEngineResultsHaveBeenInserted){
-    console.log('just before renderMarkSearchResults call 1')
     renderMarkSearchResults(markSearchResults, rsoElement, searchEngineResults)
   }
 }
@@ -123,7 +117,6 @@ function mutationObserverHandler(mutations){
   rsoElement = addedResultNodes[nodePosition].querySelector('#rso')
   searchEngineResults = rsoElement.querySelectorAll('.g')
   if(markSearchResults){
-    console.log('just before renderMarkSearchResults call 2')
     renderMarkSearchResults(markSearchResults, rsoElement, searchEngineResults)
   }
 }
@@ -149,7 +142,6 @@ function setUpMSresultsBox(settings){
   resultsBoxSideBar.setAttribute('id', 'msResultsBoxSidebar')
   resultsBoxSideBar.addEventListener('click', () => {
     //will need to be http://caniuse.com/#search=animation
-    console.log(`resultsBoxSideBar.addEventListener('click'`)
   })
   msResultsBoxElem.appendChild(resultsBoxSideBar)
 
@@ -195,7 +187,6 @@ function init(settings){
   * reference settings to a variable so we can export it
   */
   extensionSettings = settings
-  console.log('extensionSettings', extensionSettings)
   searchInput = $('#lst-ib')
   /*****
   * We wanna exit early if it's not a search page or they dont have integrated results enabled in the settings.
@@ -203,7 +194,6 @@ function init(settings){
   if(!settings.integrateWithGoogleSearch || !searchInput){
     return
   }
-  console.log('settings.msResultsBox', settings.msResultsBox)
   if(settings.msResultsBox){
     setUpMSresultsBox(settings)
   }

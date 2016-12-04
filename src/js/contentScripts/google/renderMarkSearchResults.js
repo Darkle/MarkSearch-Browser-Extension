@@ -1,4 +1,3 @@
-
 import { default as validatorUnescape } from 'validator/lib/unescape'
 
 import { extensionSettings, msResultsBoxResultsContainer } from './googleSearch_ContentScript'
