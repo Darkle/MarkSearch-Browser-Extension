@@ -12,6 +12,14 @@ if(document && document.querySelector){
   $$ = document.querySelectorAll.bind(document)
 }
 
+function isDevelopment(){
+  return new Promise(resolve => {
+    chrome.management.getSelf( ({installType}) => {
+      resolve(installType === 'development')
+    })
+  })
+}
+
 /*****
 * safeGetObjectProperty is for when the obj may not exist.
 * It's a shortcut for obj && obj.prop (plus the lodash.get 'a.b.c.d' feature).
@@ -19,6 +27,7 @@ if(document && document.querySelector){
 function safeGetObjectProperty(obj = null, propertyName){
   return lodashGet(obj, propertyName)
 }
+
 /*****
 * https://developer.chrome.com/extensions/storage#type-StorageArea
 */
@@ -140,6 +149,7 @@ function syncServerAddressAndApiTokenInLocalStorage(extensionTokenAndServerAddre
 export {
   $,
   $$,
+  isDevelopment,
   getCurrentTabId,
   getCurrentTabUrl,
   checkIfValidUrl,

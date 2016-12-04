@@ -4,7 +4,7 @@ import { updateIcon } from './updateIcon'
 import { browserActionEventHandler } from './browserActionHandler'
 import { backgroundOnMessageHandler } from './backgroundOnMessageHandler'
 import { errorLogger } from './errorLogger'
-import { getCurrentTabId, /*getSettings,*/ syncServerAddressAndApiTokenInLocalStorage } from './utils'
+import { getCurrentTabId, /*getSettings,*/ syncServerAddressAndApiTokenInLocalStorage, isDevelopment } from './utils'
 import { handleSearchRequest } from './handleSearchRequest'
 import { contextMenuOnClickedHandler } from './contextMenuOnClickedHandler'
 import { onInstalledEventHandler } from './onInstalledEventHandler'
@@ -20,11 +20,9 @@ import { extensionOptionsDefaultValues } from './extensionOptionsDefaultValues'
 /*****
 * Hot reload (http://bit.ly/2fXpr1G)
 */
-chrome.management.getSelf( ({installType}) => {
-  if(installType === 'development'){
-    hotReloadInit()
-  }
-})
+if(isDevelopment()){
+  hotReloadInit()
+}
 
 function checkIfPageIsSavedAndUpdateIcon(tabId){
   checkIfPageIsSaved(tabId)

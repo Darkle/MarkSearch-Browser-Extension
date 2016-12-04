@@ -8,7 +8,7 @@ const extensionOptionsDefaultValues = {
   msResultsBox: false,
   msResultsBox_Position: 'right',
   msResultsBox_AutoExpand: false,
-  msResultsBox_SidebarColor: '#000000',
+  // msResultsBox_SidebarColor: '#3498DB',
   msResultsAtTop: false,
   msResultsAtTop_numberOfResultsToShow: 1,
   msResultsInterspersed: false,

@@ -14,7 +14,7 @@ function firstRunCheck(extensionToken){
   */
   if(!isWebUri(extensionToken.split(',')[0])){
     /*****
-    * navListElems[1] is the setup tab - show that if its the first run
+    * navListElems[1] is the setup tab - show that if its the first run 
     */
     return navListElems[1]
   }

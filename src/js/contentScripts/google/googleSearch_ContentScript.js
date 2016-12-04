@@ -5,17 +5,18 @@ import { isInstantSearch, getSearchQueryFromUrl, getDateFilterFromUrl, parseDate
 import { renderMarkSearchResults, /*removeMarkSearchResults*/ } from './renderMarkSearchResults'
 import { getSettings, $, safeGetObjectProperty } from '../../utils'
 
-import { default as debounce } from 'lodash.debounce'
+import debounce from 'lodash.debounce'
 
 let searchInput
 let searchRequestPort
 let searchInputOldValue
 let markSearchResults
+let searchEngineResults
 let searchEngineResultsHaveBeenInserted = false
 let rsoElement
 let dateFilterDropdownElementsHaveEventHandlers = false
 let extensionSettings
-let msResultsBoxElem
+let msResultsBoxResultsContainer
 
 function sendSearchRequestToMarkSearch(searchTerms, dateFilter){
   if(!searchTerms){
@@ -39,14 +40,11 @@ function sendSearchRequestToMarkSearch(searchTerms, dateFilter){
 function onReceivedMarkSearchResults(searchResults){
   // removeMarkSearchResults()
   console.log('onReceivedMarkSearchResults')
-  if(!Array.isArray(searchResults) || !searchResults.length){
-    return
-  }
   markSearchResults = searchResults
   console.log('searchEngineResultsHaveBeenInserted', searchEngineResultsHaveBeenInserted)
   if(searchEngineResultsHaveBeenInserted){
     console.log('just before renderMarkSearchResults call 1')
-    renderMarkSearchResults(markSearchResults, rsoElement)
+    renderMarkSearchResults(markSearchResults, rsoElement, searchEngineResults)
   }
 }
 
@@ -119,47 +117,58 @@ function mutationObserverHandler(mutations){
   searchEngineResultsHaveBeenInserted = true
   /*****
   * The first item in the addedResultNodes NodeList is usually a style element,
-  * so start with the second which is a container div (but check first), and then walk
-  * the properties to the #rso element.
+  * so start with the second which is a container div (but check first).
   */
-  rsoElement = Array
-                .from(addedResultNodes)
-                .find(({tagName}) => tagName.toLowerCase() !== 'style')
-                .children
-                .ires
-                .children
-                .rso
+  const nodePosition = addedResultNodes[0].matches('style') ? 1 : 0
+  rsoElement = addedResultNodes[nodePosition].querySelector('#rso')
+  searchEngineResults = rsoElement.querySelectorAll('.g')
   if(markSearchResults){
     console.log('just before renderMarkSearchResults call 2')
-    renderMarkSearchResults(markSearchResults, rsoElement)
+    renderMarkSearchResults(markSearchResults, rsoElement, searchEngineResults)
+  }
+}
+
+function setMSiconClass(msSidebarIcon, msSidebarIconTop){
+  if(window.scrollY >= msSidebarIconTop){
+    msSidebarIcon.classList.add('msSidebarIconFixed')
+  }
+  else{
+    msSidebarIcon.classList.remove('msSidebarIconFixed')
   }
 }
 
 function setUpMSresultsBox(settings){
-  console.log('setUpMSresultsBox')
-  msResultsBoxElem = document.createElement('div')
+  /*****
+  *
+  */
+  const msResultsBoxElem = document.createElement('div')
   msResultsBoxElem.setAttribute('id', 'msResultsBox')
-  console.log(`$('#res').clientHeight`, $('#res').clientHeight)
-  msResultsBoxElem.setAttribute('style', `max-height:${ $('#res').clientHeight }px;`)
-  console.log('setUpMSresultsBox 2')
+  msResultsBoxElem.setAttribute('style', `height:${ $('#res').clientHeight }px;`)
+
   const resultsBoxSideBar = document.createElement('div')
   resultsBoxSideBar.setAttribute('id', 'msResultsBoxSidebar')
-  resultsBoxSideBar.setAttribute('style', `background-color:${ settings.msResultsBox_SidebarColor };`)
   resultsBoxSideBar.addEventListener('click', () => {
     //will need to be http://caniuse.com/#search=animation
     console.log(`resultsBoxSideBar.addEventListener('click'`)
   })
   msResultsBoxElem.appendChild(resultsBoxSideBar)
-  console.log('setUpMSresultsBox 3')
+
+  const msSidebarIcon = document.createElement('div')
+  msSidebarIcon.setAttribute('id', 'msSidebarIcon')
+  msSidebarIcon.textContent = 'MS'
+  resultsBoxSideBar.appendChild(msSidebarIcon)
+
+  msResultsBoxResultsContainer = document.createElement('div')
+  msResultsBoxResultsContainer.setAttribute('id', 'msResultsBoxResultsContainer')
+  msResultsBoxElem.appendChild(msResultsBoxResultsContainer)
+
+
   if(settings.msResultsBox_Position === 'left'){
     msResultsBoxElem.classList.add('showMsResultsBoxOnLeft')
   }
-  console.log('setUpMSresultsBox 4')
   if(settings.msResultsBox_ShowViaAlwaysShow){
     msResultsBoxElem.classList.add('forceShowMsResultsBox')
   }
-  console.log('setUpMSresultsBox 5')
-  console.log(`$('#rcnt')`, $('#rcnt'))
   /*****
   * We don't insert into the #rcnt element as it has a max-width set and doesn't expand fully,
   * and we don't insert higher up as we want the results box to be under the google
@@ -167,6 +176,18 @@ function setUpMSresultsBox(settings){
   */
   const rcnt = $('#rcnt')
   rcnt.parentNode.insertBefore(msResultsBoxElem, rcnt)
+  const {top: msSidebarIconTop} = msSidebarIcon.getBoundingClientRect()
+  const computedMsSidebarIconTop = msSidebarIconTop + scrollY
+
+  setMSiconClass(msSidebarIcon, computedMsSidebarIconTop)
+  window.addEventListener('scroll',
+    () => {
+      setMSiconClass(msSidebarIcon, computedMsSidebarIconTop)
+    },
+    {
+      passive: true
+    }
+  )
 }
 
 function init(settings){
@@ -227,6 +248,7 @@ function init(settings){
   else{
     searchEngineResultsHaveBeenInserted = true
     rsoElement = $('#rso')
+    searchEngineResults = rsoElement.querySelector('g')
   }
   searchRequestPort = chrome.runtime.connect({name: 'contentScriptSearchRequest'})
   searchRequestPort.onMessage.addListener(onReceivedMarkSearchResults)
@@ -242,5 +264,5 @@ document.addEventListener('DOMContentLoaded', () => getSettings().then(init))
 
 export {
   extensionSettings,
-  msResultsBoxElem
+  msResultsBoxResultsContainer
 }
