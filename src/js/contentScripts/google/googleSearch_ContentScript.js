@@ -166,9 +166,15 @@ function setUpMSresultsBox(settings){
   * toolbars/buttons.
   */
   const rcnt = $('#rcnt')
-  const computedMsSidebarIconTop = msSidebarIcon.getBoundingClientRect().top + scrollY
-
   rcnt.parentNode.insertBefore(msResultsBoxElem, rcnt)
+
+  /*****
+  * Gonna do this as a constant rather than computed as it wont change and still seems to
+  * work ok even if the page is zoomed in.
+  */
+  // const computedMsSidebarIconTop = msSidebarIcon.getBoundingClientRect().top + scrollY
+  const computedMsSidebarIconTop = 167
+
   setMSiconClass(msSidebarIcon, computedMsSidebarIconTop)
   window.addEventListener('scroll',
     () => {

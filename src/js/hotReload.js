@@ -7,11 +7,11 @@
 function hotReloadInit(){
   const filesInDirectory = dir => new Promise(resolve =>
       dir.createReader().readEntries(entries =>
-          Promise.all(entries.filter(e => e.name[0] !== '.').map(e =>       // eslint-disable-line
-              e.isDirectory
-                  ? filesInDirectory(e)
-                  : new Promise(resolve => e.file(resolve))         // eslint-disable-line
-          ))
+          Promise.all(
+            entries.
+              filter(e => e.name[0] !== '.')
+              .map(e => e.isDirectory ? filesInDirectory(e) : new Promise(resolve => e.file(resolve)))  // eslint-disable-line
+          )
             .then(files => [].concat(...files))
             .then(resolve)
       )
