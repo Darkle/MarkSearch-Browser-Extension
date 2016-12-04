@@ -1,6 +1,6 @@
 import '../../../nonInlineStyles/googleSearch_ContentScript.styl'
 import { isInstantSearch, getSearchQueryFromUrl, getDateFilterFromUrl, parseDateFilter } from './googleSearchCSutils'
-import { renderMarkSearchResults, /*removeMarkSearchResults*/ } from './renderMarkSearchResults'
+import { renderMarkSearchResults } from './renderMarkSearchResults'
 import { getSettings, $, safeGetObjectProperty } from '../../utils'
 
 import debounce from 'lodash.debounce'
@@ -154,7 +154,6 @@ function setUpMSresultsBox(settings){
   msResultsBoxResultsContainer.setAttribute('id', 'msResultsBoxResultsContainer')
   msResultsBoxElem.appendChild(msResultsBoxResultsContainer)
 
-
   if(settings.msResultsBox_Position === 'left'){
     msResultsBoxElem.classList.add('showMsResultsBoxOnLeft')
   }
@@ -167,10 +166,9 @@ function setUpMSresultsBox(settings){
   * toolbars/buttons.
   */
   const rcnt = $('#rcnt')
-  rcnt.parentNode.insertBefore(msResultsBoxElem, rcnt)
-  const {top: msSidebarIconTop} = msSidebarIcon.getBoundingClientRect()
-  const computedMsSidebarIconTop = msSidebarIconTop + scrollY
+  const computedMsSidebarIconTop = msSidebarIcon.getBoundingClientRect().top + scrollY
 
+  rcnt.parentNode.insertBefore(msResultsBoxElem, rcnt)
   setMSiconClass(msSidebarIcon, computedMsSidebarIconTop)
   window.addEventListener('scroll',
     () => {
