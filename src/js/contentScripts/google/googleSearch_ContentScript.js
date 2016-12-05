@@ -150,6 +150,11 @@ function setUpMSresultsBox(settings){
   msSidebarIcon.textContent = 'MS'
   resultsBoxSideBar.appendChild(msSidebarIcon)
 
+  const msSidebarIconHidden = document.createElement('div')
+  msSidebarIconHidden.setAttribute('id', 'msSidebarIconHidden')
+  msSidebarIconHidden.textContent = 'MS'
+  resultsBoxSideBar.appendChild(msSidebarIconHidden)
+
   msResultsBoxResultsContainer = document.createElement('div')
   msResultsBoxResultsContainer.setAttribute('id', 'msResultsBoxResultsContainer')
   msResultsBoxElem.appendChild(msResultsBoxResultsContainer)

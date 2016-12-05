@@ -14,11 +14,12 @@
 #msResultsBox
   font-family: "open_sansregular"
   // overflow-y: scroll
-  border: 1px solid #ebebeb
+  // border: 1px solid #ebebeb
   position: absolute
   right: 0
   z-index: 99999
   display: flex
+  background-color: #fff
   // Give the results box a default MIN-height on page load so that
   // the thrashing of changing the height is less noticable and also
   // for the rare times when google has no results but MarkSearch does.
@@ -43,11 +44,24 @@
   color: white
   width: 40px
 
+#msSidebarIconHidden
+  text-align: center
+  font-family: "exoregular"
+  font-size: 1.9em
+  color: white
+  width: 40px
+  visibility: hidden
+
 .msSidebarIconFixed
   position: fixed
   top: 0
 
 #msResultsBoxResultsContainer
   // padding-left: 50px
+  border-top: 1px solid #ebebeb
+  border-bottom: 1px solid #ebebeb
   overflow-y: auto
   width: 100%
+  padding-top: 10px
+  padding-left: 25px
+  padding-right: 25px

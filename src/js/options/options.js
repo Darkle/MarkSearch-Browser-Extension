@@ -6,7 +6,6 @@ import { isWebUri } from 'valid-url'
 
 const optionElements = $$('*[data-setting-key]')
 
-
 function firstRunCheck(extensionToken){
   const navListElems = $$('#optionsPanel nav li')
   /*****
@@ -14,7 +13,7 @@ function firstRunCheck(extensionToken){
   */
   if(!isWebUri(extensionToken.split(',')[0])){
     /*****
-    * navListElems[1] is the setup tab - show that if its the first run 
+    * navListElems[1] is the setup tab - show that if its the first run
     */
     return navListElems[1]
   }
