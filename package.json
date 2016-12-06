@@ -1,6 +1,6 @@
 {
   "name": "marksearch-chrome-extension",
-  "version": "2016.4.1",
+  "version": "2017.1.15",
   "description": "MarkSearch Chrome Extension",
   "main": "build/extensionInit.js",
   "scripts": {
