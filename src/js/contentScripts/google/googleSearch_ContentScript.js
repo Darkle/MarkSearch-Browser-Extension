@@ -15,6 +15,7 @@ let rsoElement
 let dateFilterDropdownElementsHaveEventHandlers = false
 let extensionSettings
 let msResultsBoxResultsContainer
+let sideBarIconIsFixed = false
 
 function sendSearchRequestToMarkSearch(searchTerms, dateFilter){
   if(!searchTerms){
@@ -122,10 +123,19 @@ function mutationObserverHandler(mutations){
 }
 
 function setMSiconClass(msSidebarIcon, msSidebarIconTop){
-  if(window.scrollY >= msSidebarIconTop){
+  /*****
+  * Storing a reference to whether the sidebarIcon is fixed makes
+  * it a bit more efficient as we are calling this on scroll without
+  * a debounce so it will get called a lot, so we want to avoid getting
+  * the scrollY and adding the class when the icon is already fixed and
+  * avoid removing the class when its already removed.
+  */
+  if(!sideBarIconIsFixed && window.scrollY >= msSidebarIconTop){
+    sideBarIconIsFixed = true
     msSidebarIcon.classList.add('msSidebarIconFixed')
   }
-  else{
+  else if(sideBarIconIsFixed){
+    sideBarIconIsFixed = false
     msSidebarIcon.classList.remove('msSidebarIconFixed')
   }
 }
