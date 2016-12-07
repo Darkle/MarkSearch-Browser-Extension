@@ -1,14 +1,27 @@
+import { safeGetObjectProperty } from '../../utils'
+
 import moment from 'moment'
 /*****
+* Originally I was using URLSearchParams() to check if the page was set to do instant search by
+* checking if there were search query params (e.g. search?q=skyrim) in the url, but unfortunately it's possible
+* to have search params present and still be in instant search; the url would look something
+* like this (logged out): https://www.google.co.uk/search?q=skyrim+walkthrough+ps3#q=skyrim+walkthrough+pdf
+* I cant seem to find anything in the cookies or local/session storage to indicate that it's instant search,
+* so gonna check the html on the page. (we can still use URLSearchParams() to get the search query quickly
+* though)
+*
+*
 * Note: URLSearchParams is not available in Microsoft Edge yet, maybe use npm 'query-string'
 * .slice(1) to remove the ? at the start.
 */
 const pageQueryParams = new URLSearchParams(window.location.search.slice(1))
-/*****
-* If there is a query string (?), then it's not instant search. Can't do it the
-* other way, cause it's possible to have a hash on the end of a query string, but not vice versa (AFAIK)
-*/
-const isInstantSearch = !pageQueryParams.has('q')
+let isInstantSearch = false
+
+function checkIfInstantSearch(){
+  if(document.querySelector('#tsf>input[value="psy-ab"][name="sclient"]')){
+    isInstantSearch = true
+  }
+}
 
 function getPageHash(){
   /*****
@@ -71,6 +84,10 @@ function getDateFilterFromUrl(){
   return parseDateFilter(tbs)
 }
 
+function getAddedResultNodes(mutations){
+  return safeGetObjectProperty(mutations.find(({target: {id}}) => id === 'search'), 'addedNodes')
+}
+
 function setMSiconClass(msSidebarIcon, msSidebarIconTop){
   const containsClass = msSidebarIcon.classList.contains('msSidebarIconFixed')
   const winScrollY = window.scrollY
@@ -88,5 +105,7 @@ export {
   getDateFilterFromUrl,
   parseDateFilter,
   isInstantSearch,
+  checkIfInstantSearch,
+  getAddedResultNodes,
   setMSiconClass
 }

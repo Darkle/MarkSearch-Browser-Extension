@@ -1,15 +1,27 @@
-import { setMSiconClass } from './googleSearchCSutils'
+import { extensionSettings } from './googleSearch_ContentScript'
+import { setMSiconClass, getAddedResultNodes } from './googleSearchCSutils'
 import { $ } from '../../utils'
 
 let msResultsBoxResultsContainer
+let msResultsBoxElem
+let resElement
+let observer
 
-function setUpMSresultsBox(settings){
-  /*****
-  *
-  */
-  const msResultsBoxElem = document.createElement('div')
+/*****
+* setMSresultsBoxHeight() is also used in renderMarkSearchResults because when we insert
+* MS results into the page, it changes the height of the #res element, so we need to
+* re-set the msResultsBoxElem height.
+*/
+function setMSresultsBoxHeight(){
+  msResultsBoxElem.setAttribute('style', `height:${ resElement.clientHeight }px;`)
+}
+
+function setUpMSresultsBox(){
+
+  msResultsBoxElem = document.createElement('div')
   msResultsBoxElem.setAttribute('id', 'msResultsBox')
-  msResultsBoxElem.setAttribute('style', `height:${ $('#res').clientHeight }px;`)
+
+  setMSresultsBoxHeight()
 
   const resultsBoxSideBar = document.createElement('div')
   resultsBoxSideBar.setAttribute('id', 'msResultsBoxSidebar')
@@ -32,10 +44,10 @@ function setUpMSresultsBox(settings){
   msResultsBoxResultsContainer.setAttribute('id', 'msResultsBoxResultsContainer')
   msResultsBoxElem.appendChild(msResultsBoxResultsContainer)
 
-  if(settings.msResultsBox_Position === 'left'){
+  if(extensionSettings.msResultsBox_Position === 'left'){
     msResultsBoxElem.classList.add('showMsResultsBoxOnLeft')
   }
-  if(settings.msResultsBox_ShowViaAlwaysShow){
+  if(extensionSettings.msResultsBox_ShowViaAlwaysShow){
     msResultsBoxElem.classList.add('forceShowMsResultsBox')
   }
   /*****
@@ -47,12 +59,18 @@ function setUpMSresultsBox(settings){
   rcnt.parentNode.insertBefore(msResultsBoxElem, rcnt)
 
   /*****
-  * Gonna do this as a constant rather than computed as it wont change and still seems to
-  * work ok even if the page is zoomed in.
+  * We wanna have the MS icon in the search box be fixed and stay at the top of the results
+  * box sidebar when the user scrolls down past the top of the results box.
+  * Gonna do computedMsSidebarIconTop as a constant rather than computed as it wont change and
+  * still seems to work ok even if the page is zoomed in.
   */
   // const computedMsSidebarIconTop = msSidebarIcon.getBoundingClientRect().top + scrollY
   const computedMsSidebarIconTop = 167
 
+  /*****
+  * Need to check on load in case the page is already scrolled down past the top of the
+  * results box.
+  */
   setMSiconClass(msSidebarIcon, computedMsSidebarIconTop)
 
   window.addEventListener('scroll',
@@ -65,7 +83,48 @@ function setUpMSresultsBox(settings){
   )
 }
 
+function instantSearchPageLoadMutationHandler(mutations){
+  /*****
+  * getAddedResultNodes finds a mutation that added stuff to the #search element, then returns
+  * the addedNodes NodeList from that mutation if it's there (returns falsey if not).
+  * Looking for the #search target seems to be the best option as the other mutation targets
+  * don't seem that helpful. #search is not a bad one to check since it's a direct child of #res
+  */
+  if(getAddedResultNodes(mutations)){
+    observer.disconnect()
+    resElement = $('#res')
+    setUpMSresultsBox()
+  }
+}
+
+function initMSresultsBox(isInstantSearch){
+  /*****
+  * #res element isn't available yet on DOMContentLoaded when it's instant search,
+  * so need to set an observer and wait. (we remove the observer once #res is available)
+  * #main is the lowest down element in the tree (of what we want) that's available on DOMContentLoaded.
+  */
+  if(isInstantSearch){
+    observer = new MutationObserver(instantSearchPageLoadMutationHandler)
+
+    observer.observe(
+      $('#main'),
+      {
+        childList: true,
+        subtree: true,
+        attributes: false,
+        characterData: false,
+        attributeOldValue: false,
+        characterDataOldValue: false
+      }
+    )
+    return
+  }
+  resElement = $('#res')
+  setUpMSresultsBox()
+}
+
 export {
-  setUpMSresultsBox,
+  initMSresultsBox,
+  setMSresultsBoxHeight,
   msResultsBoxResultsContainer
 }

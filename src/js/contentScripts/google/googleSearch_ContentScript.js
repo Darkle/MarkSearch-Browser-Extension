@@ -1,8 +1,8 @@
 import '../../../nonInlineStyles/googleSearch_ContentScript.styl'
-import { isInstantSearch, getSearchQueryFromUrl, getDateFilterFromUrl, parseDateFilter } from './googleSearchCSutils'
+import { isInstantSearch, checkIfInstantSearch, getSearchQueryFromUrl, getDateFilterFromUrl, parseDateFilter, getAddedResultNodes } from './googleSearchCSutils'
 import { renderMarkSearchResults } from './renderMarkSearchResults'
-import { setUpMSresultsBox } from './setUpMSresultsBox'
-import { getSettings, $, safeGetObjectProperty } from '../../utils'
+import { initMSresultsBox } from './setUpMSresultsBox'
+import { getSettings, $ } from '../../utils'
 
 import debounce from 'lodash.debounce'
 
@@ -102,14 +102,17 @@ function setUpDateFilterDropdownElementsEventHandlers(){
 }
 
 function mutationObserverHandler(mutations){
-  console.log('mutations', mutations)
   if(!dateFilterDropdownElementsHaveEventHandlers){
     const menuIsInserted = mutations.find(({target: {id}}) => id === 'hdtbMenus')
     if(menuIsInserted){
       setUpDateFilterDropdownElementsEventHandlers()
     }
   }
-  const addedResultNodes = safeGetObjectProperty(mutations.find(({target: {id}}) => id === 'search'), 'addedNodes')
+  /*****
+  * getAddedResultNodes finds a mutation that added stuff to the #search element, then returns
+  * the addedNodes NodeList from that mutation if it's there.
+  */
+  const addedResultNodes = getAddedResultNodes(mutations)
 
   if(!addedResultNodes){
     return
@@ -121,13 +124,17 @@ function mutationObserverHandler(mutations){
   * #results element, so just on the off chance it does it sometimes on instant search
   * too, this .find check for nodeName should also filter comment nodes out too, as a
   * nodeName for a comment element is '#comment'.
+  * The zomgWeFoundADiv div is a first child of the #search element
   */
   const zomgWeFoundADiv = Array.from(addedResultNodes).find(elem => elem.nodeName.toLowerCase() === 'div')
-  console.log('zomgWeFoundADiv', zomgWeFoundADiv)
+
   if(!zomgWeFoundADiv){
     return
   }
-
+  /*****
+  * The #rso element is two child nodes down from the zomgWeFoundADiv div, so just gonna
+  * use querySelector to grab it.
+  */
   rsoElement = zomgWeFoundADiv.querySelector('#rso')
 
   if(!rsoElement){
@@ -157,15 +164,19 @@ function init(settings){
   if(!settings.integrateWithGoogleSearch || !searchInput){
     return
   }
+  checkIfInstantSearch()
+
   if(settings.msResultsBox){
-    setUpMSresultsBox(settings)
+    initMSresultsBox(isInstantSearch)
   }
+  console.log('isInstantSearch', isInstantSearch)
   if(isInstantSearch){
     /*****
     * Set up listeners/observers for instant search.
     * Note: The date filter dropdown menu elements aren't ready on DOMContentLoaded or on window load,
     * so grab them after they've been inserted - the call to set up their event listeners is
     * done in the mutationObserverHandler.
+    * #main is the lowest down element in the tree (of what we want) that's available on DOMContentLoaded.
     */
     searchInput.addEventListener('input', debouncedSearchInputChangeHandler)
     searchInput.addEventListener('change', debouncedSearchInputChangeHandler)
@@ -203,6 +214,7 @@ function init(settings){
     rsoElement = $('#rso')
     searchEngineResults = rsoElement.querySelectorAll('.g:not(#imagebox_bigimages)')
   }
+
   searchRequestPort = chrome.runtime.connect({name: 'contentScriptSearchRequest'})
   searchRequestPort.onMessage.addListener(onReceivedMarkSearchResults)
   /*****

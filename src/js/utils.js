@@ -21,8 +21,9 @@ function isDevelopment(){
 }
 
 /*****
-* safeGetObjectProperty is for when the obj may not exist.
-* It's a shortcut for obj && obj.prop (plus the lodash.get 'a.b.c.d' feature).
+* safeGetObjectProperty is for when the obj may not exist, cause lodash will
+* throw if obj is not defined.
+* So it's a shortcut for obj && obj.prop (plus the lodash.get 'a.b.c.d' feature).
 */
 function safeGetObjectProperty(obj = null, propertyName){
   return lodashGet(obj, propertyName)

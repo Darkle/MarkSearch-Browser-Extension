@@ -1,7 +1,7 @@
 import { default as validatorUnescape } from 'validator/lib/unescape'
 
 import { extensionSettings } from './googleSearch_ContentScript'
-import { msResultsBoxResultsContainer } from './setUpMSresultsBox'
+import { msResultsBoxResultsContainer, setMSresultsBoxHeight } from './setUpMSresultsBox'
 import { $$ } from '../../utils'
 
 /*
@@ -175,18 +175,17 @@ function renderMarkSearchResults(searchResults, rsoElement, searchEngineResults)
       bottomResultsContainer.appendChild(resultDiv)
     }
   })
+  /*****
+  * because when we insert MS results into the page, it changes the height of the #res element, so we need to
+  * re-set the msResultsBoxElem height.
+  */
+  setMSresultsBoxHeight()
 
   if(extensionSettings.msResultsBox){
     msResultsBoxResultsContainer.appendChild(msResultsBoxDocFragment)
   }
 }
 
-// function removeMarkSearchResults(){
-//   //NOTE may not need to remove the MS results that are above/intersperesed/below the search engine
-//   //results as the search engine results container div might be removed by google
-// }
-
 export {
-  renderMarkSearchResults,
-  // removeMarkSearchResults
+  renderMarkSearchResults
 }
