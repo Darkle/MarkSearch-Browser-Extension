@@ -6,6 +6,14 @@ import { getSettings, $ } from '../../utils'
 
 import debounce from 'lodash.debounce'
 
+const observerSettings = {
+  childList: true,
+  subtree: true,
+  attributes: false,
+  characterData: false,
+  attributeOldValue: false,
+  characterDataOldValue: false
+}
 let searchInput
 let searchRequestPort
 let searchInputOldValue
@@ -176,6 +184,7 @@ function init(settings){
     * Note: The date filter dropdown menu elements aren't ready on DOMContentLoaded or on window load,
     * so grab them after they've been inserted - the call to set up their event listeners is
     * done in the mutationObserverHandler.
+    *
     * #main is the lowest down element in the tree (of what we want) that's available on DOMContentLoaded.
     */
     searchInput.addEventListener('input', debouncedSearchInputChangeHandler)
@@ -183,17 +192,7 @@ function init(settings){
 
     const observer = new MutationObserver(mutationObserverHandler)
 
-    observer.observe(
-      $('#main'),
-      {
-        childList: true,
-        subtree: true,
-        attributes: false,
-        characterData: false,
-        attributeOldValue: false,
-        characterDataOldValue: false
-      }
-    )
+    observer.observe($('#main'), observerSettings)
     /*****
     * We need to check for popstate events for when the user clicks back/forward in the browser
     * while using instant search.

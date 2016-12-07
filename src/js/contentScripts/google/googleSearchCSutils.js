@@ -22,8 +22,7 @@ function checkIfInstantSearch(){
 }
 
 function getPageHash(){
-  const pageHash = new URLSearchParams(window.location.hash.slice(1))
-  return pageHash
+  return new URLSearchParams(window.location.hash.slice(1))
 }
 
 function getSearchQueryFromUrl(){
