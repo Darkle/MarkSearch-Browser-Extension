@@ -12,8 +12,6 @@
 //     if(!Array.isArray(searchResults) || !searchResults.length){
 //       return
 //     }
-//     console.log('searchRequestPort.onMessage')
-//     console.log('searchResults', searchResults)
 //   })
 //
 //

@@ -9,10 +9,8 @@ import moment from 'moment'
 * I cant seem to find anything in the cookies or local/session storage to indicate that it's instant search,
 * so gonna check the html on the page. (we can still use URLSearchParams() to get the search query quickly
 * though)
-*
-*
 * Note: URLSearchParams is not available in Microsoft Edge yet, maybe use npm 'query-string'
-* .slice(1) to remove the ? at the start.
+* Note: .slice(1) to remove the ? or # at the start.
 */
 const pageQueryParams = new URLSearchParams(window.location.search.slice(1))
 let isInstantSearch = false
@@ -24,9 +22,6 @@ function checkIfInstantSearch(){
 }
 
 function getPageHash(){
-  /*****
-  * .slice(1) to remove the # at the start.
-  */
   const pageHash = new URLSearchParams(window.location.hash.slice(1))
   return pageHash
 }
