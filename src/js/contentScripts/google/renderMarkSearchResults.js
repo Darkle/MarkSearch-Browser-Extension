@@ -28,9 +28,12 @@ function calculateEndResultNumber(){
     endResultNumberToIntersperse = endResultNumberToShowAtTop +
                                     extensionSettings.msResultsInterspersed_numberOfResultsToShow
   }
+  /*****
+  * endResultNumberToIntersperse already includes the endResultNumberToShowAtTop, so don't need to
+  * add it again.
+  */
   if(extensionSettings.msResultsAtBottom){
-    endResultNumberToShowAtBottom = endResultNumberToShowAtTop +
-                                      endResultNumberToIntersperse +
+    endResultNumberToShowAtBottom = endResultNumberToIntersperse +
                                       extensionSettings.msResultsAtBottom_numberOfResultsToShow
   }
   return [endResultNumberToShowAtTop, endResultNumberToIntersperse, endResultNumberToShowAtBottom]
@@ -139,7 +142,11 @@ function renderMarkSearchResults(searchResults, rsoElement, searchEngineResults)
   }
   let tempResults = []
   if(searchResults[0]){
-    tempResults = Array(500).fill(searchResults[0])
+    tempResults = Array(500)
+                    .fill(searchResults[0])
+                    .map(({pageTitle, pageUrl}, index) =>
+                      ({pageTitle: `${ pageTitle } ${ index + 1 }`, pageUrl})
+                    )
   }
 
   let interspersedNodeToInsertAfter = 0
@@ -149,11 +156,19 @@ function renderMarkSearchResults(searchResults, rsoElement, searchEngineResults)
     const resultNumber = index + 1
 
     if(extensionSettings.msResultsBox){
-      msResultsBoxDocFragment.appendChild(resultDiv)
+      /*****
+      * We need to make a copy, otherwise the code below will take the resultDiv. The
+      * results box needs to have it's own independant copy of the MS results.
+      */
+      msResultsBoxDocFragment.appendChild(resultDiv.cloneNode(true))
     }
     if(extensionSettings.msResultsAtTop && resultNumber <= endResultNumberToShowAtTop){
       topResultsContainer.appendChild(resultDiv)
     }
+    /*****
+    * We make sure here not to insert more than how many native search results there are on
+    * the page.
+    */
     if(extensionSettings.msResultsInterspersed &&
         resultNumber > endResultNumberToShowAtTop &&
         resultNumber <= endResultNumberToIntersperse &&
