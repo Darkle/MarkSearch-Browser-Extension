@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack --progress --colors --watch",
+    "production": "webpack --optimize-minimize",
     "serve": "webpack-dev-server"
   },
   "repository": {

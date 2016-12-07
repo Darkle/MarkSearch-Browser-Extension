@@ -1,6 +1,7 @@
 import '../../../nonInlineStyles/googleSearch_ContentScript.styl'
 import { isInstantSearch, getSearchQueryFromUrl, getDateFilterFromUrl, parseDateFilter } from './googleSearchCSutils'
 import { renderMarkSearchResults } from './renderMarkSearchResults'
+import { setUpMSresultsBox } from './setUpMSresultsBox'
 import { getSettings, $, safeGetObjectProperty } from '../../utils'
 
 import debounce from 'lodash.debounce'
@@ -14,7 +15,6 @@ let searchEngineResultsHaveBeenInserted = false
 let rsoElement
 let dateFilterDropdownElementsHaveEventHandlers = false
 let extensionSettings
-let msResultsBoxResultsContainer
 
 function sendSearchRequestToMarkSearch(searchTerms, dateFilter){
   if(!searchTerms){
@@ -35,11 +35,15 @@ function sendSearchRequestToMarkSearch(searchTerms, dateFilter){
   searchRequestPort.postMessage({searchTerms, dateFilter})
 }
 
-function onReceivedMarkSearchResults(searchResults){
-  markSearchResults = searchResults
-  if(searchEngineResultsHaveBeenInserted){
+function renderMarkSearchResultsIfReady(){
+  if(searchEngineResultsHaveBeenInserted && markSearchResults){
     renderMarkSearchResults(markSearchResults, rsoElement, searchEngineResults)
   }
+}
+
+function onReceivedMarkSearchResults(searchResults){
+  markSearchResults = searchResults
+  renderMarkSearchResultsIfReady()
 }
 
 function searchInputChangeHandler(){
@@ -98,6 +102,7 @@ function setUpDateFilterDropdownElementsEventHandlers(){
 }
 
 function mutationObserverHandler(mutations){
+  console.log('mutations', mutations)
   if(!dateFilterDropdownElementsHaveEventHandlers){
     const menuIsInserted = mutations.find(({target: {id}}) => id === 'hdtbMenus')
     if(menuIsInserted){
@@ -105,93 +110,39 @@ function mutationObserverHandler(mutations){
     }
   }
   const addedResultNodes = safeGetObjectProperty(mutations.find(({target: {id}}) => id === 'search'), 'addedNodes')
+
   if(!addedResultNodes){
     return
   }
-  searchEngineResultsHaveBeenInserted = true
   /*****
   * The first item in the addedResultNodes NodeList is usually a style element,
-  * so start with the second which is a container div (but check first).
+  * with the second one being a div (which is the one we want), so find that one.
+  * Also, on page load for non instant search, the page inserts comments into the
+  * #results element, so just on the off chance it does it sometimes on instant search
+  * too, this .find check for nodeName should also filter comment nodes out too, as a
+  * nodeName for a comment element is '#comment'.
   */
-  const nodePosition = addedResultNodes[0].matches('style') ? 1 : 0
-  rsoElement = addedResultNodes[nodePosition].querySelector('#rso')
-  searchEngineResults = rsoElement.querySelectorAll('.g')
-  if(markSearchResults){
-    renderMarkSearchResults(markSearchResults, rsoElement, searchEngineResults)
+  const zomgWeFoundADiv = Array.from(addedResultNodes).find(elem => elem.nodeName.toLowerCase() === 'div')
+  console.log('zomgWeFoundADiv', zomgWeFoundADiv)
+  if(!zomgWeFoundADiv){
+    return
   }
-}
 
-function setMSiconClass(msSidebarIcon, msSidebarIconTop){
-  const containsClass = msSidebarIcon.classList.contains('msSidebarIconFixed')
-  const winScrollY = window.scrollY
+  rsoElement = zomgWeFoundADiv.querySelector('#rso')
 
-  if(!containsClass && winScrollY >= msSidebarIconTop){
-    msSidebarIcon.classList.add('msSidebarIconFixed')
+  if(!rsoElement){
+    return
   }
-  if(containsClass && winScrollY < msSidebarIconTop){
-    msSidebarIcon.classList.remove('msSidebarIconFixed')
+
+  searchEngineResults = rsoElement.querySelectorAll('.g:not(#imagebox_bigimages)')
+
+  if(!searchEngineResults || !searchEngineResults.length){
+    return
   }
-}
 
-function setUpMSresultsBox(settings){
-  /*****
-  *
-  */
-  const msResultsBoxElem = document.createElement('div')
-  msResultsBoxElem.setAttribute('id', 'msResultsBox')
-  msResultsBoxElem.setAttribute('style', `height:${ $('#res').clientHeight }px;`)
+  searchEngineResultsHaveBeenInserted = true
 
-  const resultsBoxSideBar = document.createElement('div')
-  resultsBoxSideBar.setAttribute('id', 'msResultsBoxSidebar')
-  resultsBoxSideBar.addEventListener('click', () => {
-    //will need to be http://caniuse.com/#search=animation
-  })
-  msResultsBoxElem.appendChild(resultsBoxSideBar)
-
-  const msSidebarIcon = document.createElement('div')
-  msSidebarIcon.setAttribute('id', 'msSidebarIcon')
-  msSidebarIcon.textContent = 'MS'
-  resultsBoxSideBar.appendChild(msSidebarIcon)
-
-  const msSidebarIconHidden = document.createElement('div')
-  msSidebarIconHidden.setAttribute('id', 'msSidebarIconHidden')
-  msSidebarIconHidden.textContent = 'MS'
-  resultsBoxSideBar.appendChild(msSidebarIconHidden)
-
-  msResultsBoxResultsContainer = document.createElement('div')
-  msResultsBoxResultsContainer.setAttribute('id', 'msResultsBoxResultsContainer')
-  msResultsBoxElem.appendChild(msResultsBoxResultsContainer)
-
-  if(settings.msResultsBox_Position === 'left'){
-    msResultsBoxElem.classList.add('showMsResultsBoxOnLeft')
-  }
-  if(settings.msResultsBox_ShowViaAlwaysShow){
-    msResultsBoxElem.classList.add('forceShowMsResultsBox')
-  }
-  /*****
-  * We don't insert into the #rcnt element as it has a max-width set and doesn't expand fully,
-  * and we don't insert higher up as we want the results box to be under the google
-  * toolbars/buttons.
-  */
-  const rcnt = $('#rcnt')
-  rcnt.parentNode.insertBefore(msResultsBoxElem, rcnt)
-
-  /*****
-  * Gonna do this as a constant rather than computed as it wont change and still seems to
-  * work ok even if the page is zoomed in.
-  */
-  // const computedMsSidebarIconTop = msSidebarIcon.getBoundingClientRect().top + scrollY
-  const computedMsSidebarIconTop = 167
-
-  setMSiconClass(msSidebarIcon, computedMsSidebarIconTop)
-  window.addEventListener('scroll',
-    () => {
-      setMSiconClass(msSidebarIcon, computedMsSidebarIconTop)
-    },
-    {
-      passive: true
-    }
-  )
+  renderMarkSearchResultsIfReady()
 }
 
 function init(settings){
@@ -250,7 +201,7 @@ function init(settings){
   else{
     searchEngineResultsHaveBeenInserted = true
     rsoElement = $('#rso')
-    searchEngineResults = rsoElement.querySelector('g')
+    searchEngineResults = rsoElement.querySelectorAll('.g:not(#imagebox_bigimages)')
   }
   searchRequestPort = chrome.runtime.connect({name: 'contentScriptSearchRequest'})
   searchRequestPort.onMessage.addListener(onReceivedMarkSearchResults)
@@ -265,6 +216,5 @@ function init(settings){
 document.addEventListener('DOMContentLoaded', () => getSettings().then(init))
 
 export {
-  extensionSettings,
-  msResultsBoxResultsContainer
+  extensionSettings
 }

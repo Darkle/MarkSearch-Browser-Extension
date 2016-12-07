@@ -62,7 +62,7 @@ function createMSresultElements(pageUrl, pageTitle, index){
    * If there's no pageTitle text, then just use the page url
    */
   let resultLinkTextContent = pageUrl
-  if(pageTitle === 'string'){
+  if(typeof pageTitle === 'string'){
     const pageTitleTrimmed = pageTitle.trim()
     if(pageTitleTrimmed.length > 0){
       resultLinkTextContent = pageTitleTrimmed
@@ -86,6 +86,8 @@ function renderMarkSearchResults(searchResults, rsoElement, searchEngineResults)
   console.log('renderMarkSearchResults', searchResults)
   console.log('rsoElement', rsoElement)
   console.log('searchEngineResults', searchEngineResults)
+  console.log('searchEngineResults.length', searchEngineResults.length)
+
   const [
     endResultNumberToShowAtTop,
     endResultNumberToIntersperse,
@@ -113,7 +115,6 @@ function renderMarkSearchResults(searchResults, rsoElement, searchEngineResults)
     msResultsBoxResultsContainer.innerHTML = ''
 
     msResultsBoxDocFragment = document.createDocumentFragment()
-    console.log('searchResults.length', searchResults.length)
     const resultsAmountDiv = document.createElement('div')
     resultsAmountDiv.setAttribute('id', 'resultsBoxCount')
     resultsAmountDiv.textContent = `${ searchResults.length } Results`
@@ -154,11 +155,12 @@ function renderMarkSearchResults(searchResults, rsoElement, searchEngineResults)
     }
     if(extensionSettings.msResultsInterspersed &&
         resultNumber > endResultNumberToShowAtTop &&
-        resultNumber <= endResultNumberToIntersperse){
+        resultNumber <= endResultNumberToIntersperse &&
+        interspersedNodeToInsertAfter <= (searchEngineResults.length -1) ){
       /*****
       * we start inserting interspersed at the first searchEngineResults (0)
       */
-      searchEngineResults[interspersedNodeToInsertAfter].insertAdjacentElement('afterend', resultDiv)
+      searchEngineResults[interspersedNodeToInsertAfter].after(resultDiv)
       interspersedNodeToInsertAfter = interspersedNodeToInsertAfter + 1
     }
     /*****

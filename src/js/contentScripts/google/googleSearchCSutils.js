@@ -71,9 +71,22 @@ function getDateFilterFromUrl(){
   return parseDateFilter(tbs)
 }
 
+function setMSiconClass(msSidebarIcon, msSidebarIconTop){
+  const containsClass = msSidebarIcon.classList.contains('msSidebarIconFixed')
+  const winScrollY = window.scrollY
+
+  if(!containsClass && winScrollY >= msSidebarIconTop){
+    msSidebarIcon.classList.add('msSidebarIconFixed')
+  }
+  if(containsClass && winScrollY < msSidebarIconTop){
+    msSidebarIcon.classList.remove('msSidebarIconFixed')
+  }
+}
+
 export {
   getSearchQueryFromUrl,
   getDateFilterFromUrl,
   parseDateFilter,
-  isInstantSearch
+  isInstantSearch,
+  setMSiconClass
 }
