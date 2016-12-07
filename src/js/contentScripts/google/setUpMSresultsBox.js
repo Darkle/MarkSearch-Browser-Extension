@@ -1,4 +1,5 @@
 import { setMSiconClass } from './googleSearchCSutils'
+import { $ } from '../../utils'
 
 let msResultsBoxResultsContainer
 
@@ -53,7 +54,7 @@ function setUpMSresultsBox(settings){
   const computedMsSidebarIconTop = 167
 
   setMSiconClass(msSidebarIcon, computedMsSidebarIconTop)
-  
+
   window.addEventListener('scroll',
     () => {
       setMSiconClass(msSidebarIcon, computedMsSidebarIconTop)

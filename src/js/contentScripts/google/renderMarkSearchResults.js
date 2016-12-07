@@ -1,6 +1,7 @@
 import { default as validatorUnescape } from 'validator/lib/unescape'
 
-import { extensionSettings, msResultsBoxResultsContainer } from './googleSearch_ContentScript'
+import { extensionSettings } from './googleSearch_ContentScript'
+import { msResultsBoxResultsContainer } from './setUpMSresultsBox'
 import { $$ } from '../../utils'
 
 /*

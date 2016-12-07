@@ -4,8 +4,7 @@
     "commonjs": true,
     "es6": true,
     "node": true,
-    "webextensions": true,
-    "jquery": true
+    "webextensions": true
   },
   "globals": {
     "localStorage": true
