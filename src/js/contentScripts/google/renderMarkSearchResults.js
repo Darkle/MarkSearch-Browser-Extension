@@ -58,15 +58,17 @@ function renderMarkSearchResults(searchResults, rsoElement, searchEngineResults,
   */
   if(msResultsBox){
     tempResults.forEach((result, index) => {
-      msResultsBoxDocFragment.appendChild(createMSresultElements(result, index, searchTerms))
+      const resultIsForForMSresultsBox = true
+      msResultsBoxDocFragment.appendChild(createMSresultElements(result, index, searchTerms, resultIsForForMSresultsBox))
     })
   }
 
   if(msResultsAtTop || msResultsInterspersed || msResultsAtBottom){
     for(let index = 0, len = tempResults.length; index < len; index++){
       const result = tempResults[index]
-      const resultDiv = createMSresultElements(result, index, searchTerms)
+      const resultIsForForMSresultsBox = false
       const resultNumber = index + 1
+      const resultDiv = createMSresultElements(result, index, searchTerms, resultIsForForMSresultsBox)
 
       if( (msResultsAtTop || msResultsAtBottom) && resultNumber <= numberOfIntegratedResultsToShow){
         topOrBottomResultsContainer.appendChild(resultDiv)

@@ -56,6 +56,7 @@
   "dependencies": {
     "lodash.debounce": "^4.0.8",
     "lodash.get": "^4.4.2",
+    "lodash.truncate": "^4.4.2",
     "moment": "^2.17.0",
     "notie": "^3.9.4",
     "schema-inspector": "^1.6.8",
