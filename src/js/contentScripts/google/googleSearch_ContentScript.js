@@ -24,6 +24,12 @@ let searchEngineResultsHaveBeenInserted = false
 let rsoElement
 let dateFilterDropdownElementsHaveEventHandlers = false
 let extensionSettings
+/*****
+* reference settings to a variable so we can export it
+*/
+getSettings().then( settings => {
+  extensionSettings = settings
+})
 
 function sendSearchRequestToMarkSearch(searchTerms, dateFilter){
   if(!searchTerms){
@@ -162,21 +168,17 @@ function mutationObserverHandler(mutations){
   renderMarkSearchResultsIfReady()
 }
 
-function init(settings){
-  /*****
-  * reference settings to a variable so we can export it
-  */
-  extensionSettings = settings
+function init(){
   searchInput = $('#lst-ib')
   /*****
-  * We wanna exit early if it's not a search page or they dont have showOn_____Search results enabled in the settings.
+  * We wanna exit early if it's not a search page or they dont have showOn_____Search results enabled in the extensionSettings.
   */
-  if(!settings.showOnDuckduckgoSearch || !searchInput){
+  if(!extensionSettings.showOnDuckduckgoSearch || !searchInput){
     return
   }
   checkIfInstantSearch()
 
-  if(settings.msResultsBox){
+  if(extensionSettings.msResultsBox){
     initMSresultsBox(isInstantSearch)
   }
   console.log('isInstantSearch', isInstantSearch)
@@ -226,7 +228,7 @@ function init(settings){
   sendSearchRequestToMarkSearch(getSearchQueryFromUrl(), getDateFilterFromUrl())
 }
 
-document.addEventListener('DOMContentLoaded', () => getSettings().then(init))
+document.addEventListener('DOMContentLoaded', init)
 
 export {
   extensionSettings

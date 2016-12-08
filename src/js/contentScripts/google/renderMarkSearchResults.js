@@ -2,49 +2,21 @@ import { extensionSettings } from './googleSearch_ContentScript'
 import { msResultsBoxResultsContainer, setMSresultsBoxHeight } from './setUpMSresultsBox'
 import { createMSresultElements } from './createMSresultElements'
 
-function calculateEndResultNumber(){
-  let endResultNumberToShowAtTop = 0
-  let endResultNumberToIntersperse = 0
-  let endResultNumberToShowAtBottom = 0
-
-  if(extensionSettings.msResultsAtTop){
-    endResultNumberToShowAtTop = extensionSettings.msResultsAtTop_numberOfResultsToShow
-  }
-  if(extensionSettings.msResultsInterspersed){
-    endResultNumberToIntersperse = endResultNumberToShowAtTop +
-                                    extensionSettings.msResultsInterspersed_numberOfResultsToShow
-  }
-  /*****
-  * endResultNumberToIntersperse already includes the endResultNumberToShowAtTop, so don't need to
-  * add it again.
-  */
-  if(extensionSettings.msResultsAtBottom){
-    endResultNumberToShowAtBottom = endResultNumberToIntersperse +
-                                      extensionSettings.msResultsAtBottom_numberOfResultsToShow
-  }
-  return [endResultNumberToShowAtTop, endResultNumberToIntersperse, endResultNumberToShowAtBottom]
-}
-
 function renderMarkSearchResults(searchResults, rsoElement, searchEngineResults, searchTerms){
   console.log('renderMarkSearchResults', searchResults)
   console.log('rsoElement', rsoElement)
   console.log('searchEngineResults', searchEngineResults)
   console.log('searchEngineResults.length', searchEngineResults.length)
 
-  const [
-    endResultNumberToShowAtTop,
-    endResultNumberToIntersperse,
-    endResultNumberToShowAtBottom
-  ] = calculateEndResultNumber()
   const {
     msResultsBox,
     msResultsAtTop,
     msResultsInterspersed,
-    msResultsAtBottom
+    msResultsAtBottom,
+    numberOfIntegratedResultsToShow
   } = extensionSettings
   let msResultsBoxDocFragment
-  let topResultsContainer
-  let bottomResultsContainer
+  let topOrBottomResultsContainer
 
   if(msResultsBox){
     // for(const msResultsBoxResult of $$('#msResultsBox .marksearchResultsBoxResult')){
@@ -64,16 +36,12 @@ function renderMarkSearchResults(searchResults, rsoElement, searchEngineResults,
   * would probably not look as good because you would see them appear slightly later than the
   * interspersed ones.
   */
-  if(msResultsAtTop){
-    topResultsContainer = document.createElement('div')
-    topResultsContainer.setAttribute('id', 'markSearchTopResultsContainer')
-    rsoElement.insertBefore(topResultsContainer, rsoElement.firstElementChild)
+  if(msResultsAtTop || msResultsAtBottom){
+    topOrBottomResultsContainer = document.createElement('div')
+    const idFragment = msResultsAtTop ? 'Top' : 'Bottom'
+    topOrBottomResultsContainer.setAttribute('id', `markSearch${ idFragment }ResultsContainer`)
   }
-  if(msResultsAtBottom){
-    bottomResultsContainer = document.createElement('div')
-    bottomResultsContainer.setAttribute('id', 'markSearchBottomResultsContainer')
-    rsoElement.appendChild(bottomResultsContainer)
-  }
+
   let tempResults = []
   if(searchResults[0]){
     tempResults = Array(500)
@@ -82,8 +50,6 @@ function renderMarkSearchResults(searchResults, rsoElement, searchEngineResults,
                       Object.assign({}, item, {pageTitle: `${ item.pageTitle } ${ index + 1 }`})
                     )
   }
-
-  let interspersedNodeToInsertAfter = 0
 
   /*****
   * Using 2 loops so we can break out of the second loop early. Say there are 1000 results
@@ -102,34 +68,23 @@ function renderMarkSearchResults(searchResults, rsoElement, searchEngineResults,
       const resultDiv = createMSresultElements(result, index, searchTerms)
       const resultNumber = index + 1
 
-      if(msResultsAtTop && resultNumber <= endResultNumberToShowAtTop){
-        topResultsContainer.appendChild(resultDiv)
+      if( (msResultsAtTop || msResultsAtBottom) && resultNumber <= numberOfIntegratedResultsToShow){
+        topOrBottomResultsContainer.appendChild(resultDiv)
       }
       /*****
-      * We make sure here not to insert more than how many native search results there are on
-      * the page.
+      * We make sure not to insert more than how many native search results there are on the page.
       */
-      else if(msResultsInterspersed &&
-          resultNumber > endResultNumberToShowAtTop &&
-          resultNumber <= endResultNumberToIntersperse &&
-          interspersedNodeToInsertAfter <= (searchEngineResults.length -1)
-      ){
+      else if(msResultsInterspersed && resultNumber <= searchEngineResults.length ){
         /*****
-        * we start inserting interspersed at the first searchEngineResults (0)
+        * we start inserting interspersed at the first searchEngineResults (searchEngineResults[0])
+        * Note: for insertBefore(), if referenceNode is null, the newNode is inserted at the end of the
+        * list of child nodes
+        * resultNumber is index + 1, which is what we want as we want to insert it after the result by
+        * inserting it before the next result. Using insertBefore() instead of .after() as the latter is
+        * not supported in Edge.
         */
-        searchEngineResults[interspersedNodeToInsertAfter].after(resultDiv)
-        interspersedNodeToInsertAfter = interspersedNodeToInsertAfter + 1
-      }
-      /*****
-      * endResultNumberToIntersperse is endResultNumberToShowAtTop + endResultNumberToIntersperse.
-      * Note: we need the endResultNumberToShowAtBottom, because we dont want all of the rest of the results to be
-      * shown, just how many the user specified for showing at the bottom.
-      */
-      else if(msResultsAtBottom &&
-          resultNumber > endResultNumberToIntersperse &&
-          resultNumber <= endResultNumberToShowAtBottom
-      ){
-        bottomResultsContainer.appendChild(resultDiv)
+        const nodeToInsertBefore = searchEngineResults[resultNumber] ? searchEngineResults[resultNumber] : null
+        rsoElement.insertBefore(resultDiv, nodeToInsertBefore)
       }
       else{
         break
@@ -143,6 +98,12 @@ function renderMarkSearchResults(searchResults, rsoElement, searchEngineResults,
   if(msResultsBox){
     setMSresultsBoxHeight()
     msResultsBoxResultsContainer.appendChild(msResultsBoxDocFragment)
+  }
+  if(msResultsAtTop){
+    rsoElement.insertBefore(topOrBottomResultsContainer, rsoElement.firstElementChild)
+  }
+  if(msResultsAtBottom){
+    rsoElement.appendChild(topOrBottomResultsContainer)
   }
 }
 
