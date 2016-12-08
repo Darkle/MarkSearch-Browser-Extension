@@ -70,6 +70,20 @@ function settingsTabsBehaviour(selectedListElement) {
   }
 }
 
+function radioInputEventHandler(event){
+  const {currentTarget: { dataset: { settingKey }}} = event
+  const selector = `.msIntegratedResultsRadioElem:not([data-setting-key='${ settingKey }'])`
+  /*****
+  * The currentTarget will always be checked, as clicking
+  * on an already checked radio input will not de-check & will not
+  * fire a change event.
+  */
+  for(const radioElem of $$(selector)){
+    radioElem.checked = false
+  }
+  saveOptions()
+}
+
 function setUpEventListeners() {
   /*****
   * settingsTabsBehaviour(evt.target) - needs to be even.target on this one
@@ -79,7 +93,16 @@ function setUpEventListeners() {
   * const seems to be valid in for of loops - http://bit.ly/2eYKQd1 http://bit.ly/2eYECtO
   */
   for(const inputElem of optionElements){
-    inputElem.addEventListener('change', saveOptions)
+    /*****
+    * For the #msResultsBox radio buttons, if the user clicks on one and the other is checked, uncheck
+    * the other one and leave the one they clicked on checked (and ignore if the one they clicked on is alrady checked).
+    */
+    if(inputElem.className === 'msIntegratedResultsRadioElem'){
+      inputElem.addEventListener('change', radioInputEventHandler)
+    }
+    else{
+      inputElem.addEventListener('change', saveOptions)
+    }
     if(inputElem.dataset.settingKey === 'extensionToken'){
       /*****
       * Also need .addEventListener('input' for extensionToken Input as $('input').addEventListener('change'

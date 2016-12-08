@@ -17,58 +17,40 @@ html
             a(href='https://github.com/Darkle/MarkSearch#chromeExtensionOptions') MarkSearch Chrome Extension Help
           h3 Search Engines
           .settingsGroup#integratedSearches
-            span Integrate MarkSearch Results With The Following Search Engines:
+            span Show MarkSearch Results With The Following Search Engines:
             .flexrow
               .checkbox
                 label
-                  input(type='checkbox', name='googleSearchCheckbox', id='googleSearchCheckbox', data-setting-key='integrateWithGoogleSearch')
+                  input(type='checkbox', name='googleSearchCheckbox', id='googleSearchCheckbox', data-setting-key='showOnGoogleSearch')
                   span Google
               .checkbox
                 label
-                  input(type='checkbox', name='bingSearchCheckbox', id='bingSearchCheckbox', data-setting-key='integrateWithBingSearch')
+                  input(type='checkbox', name='bingSearchCheckbox', id='bingSearchCheckbox', data-setting-key='showOnBingSearch')
                   span Bing
               .checkbox
                 label
-                  input(type='checkbox', name='duckduckgoSearchCheckbox', id='duckduckgoSearchCheckbox', data-setting-key='integrateWithDuckduckgoSearch')
+                  input(type='checkbox', name='duckduckgoSearchCheckbox', id='duckduckgoSearchCheckbox', data-setting-key='showOnDuckduckgoSearch')
                   span DuckDuckGo
               .checkbox
                 label
-                  input(type='checkbox', name='baiduSearchCheckbox', id='baiduSearchCheckbox', data-setting-key='integrateWithBaiduSearch')
+                  input(type='checkbox', name='baiduSearchCheckbox', id='baiduSearchCheckbox', data-setting-key='showOnBaiduSearch')
                   span Baidu
           h3 Search Page Results Integration
           .settingsGroup
             .settingsGroup.flexcolumn#resultsAtTop
-              .checkbox
+              .flexrow
                 label
-                  input(type='checkbox', name='msResultsAtTop', data-setting-key='msResultsAtTop')
+                  input.msIntegratedResultsRadioElem(type='radio', name='msResultsAtTop', data-setting-key='msResultsAtTop')
                   span Show MarkSearch Results At The Top Of The The Search Engine Search Results Page
-              .settingsSubGroup
-                .flexrow
-                  span Number Of Results To Show:
-                  input(
-                    type='number', 
-                    min='1'
-                    name='msResultsAtTop_numberOfResultsToShow', 
-                    data-setting-key='msResultsAtTop_numberOfResultsToShow'
-                  )
             .settingsGroup.flexcolumn#resultsInterspersed
-              .checkbox
+              .flexrow
                 label
-                  input(type='checkbox', name='msResultsInterspersed', data-setting-key='msResultsInterspersed')
+                  input.msIntegratedResultsRadioElem(type='radio', name='msResultsInterspersed', data-setting-key='msResultsInterspersed')
                   span Intersperse MarkSearch Results On The Search Engine Search Results Page
-              .settingsSubGroup
-                .flexrow
-                  span Number Of Results To Intersperse:
-                  input(
-                    type='number', 
-                    min='1'
-                    name='msResultsInterspersed_numberOfResultsToShow', 
-                    data-setting-key='msResultsInterspersed_numberOfResultsToShow'
-                  )
             .settingsGroup.flexcolumn#resultsAtBottom
-              .checkbox
+              .flexrow
                 label
-                  input(type='checkbox', name='msResultsAtBottom', data-setting-key='msResultsAtBottom')
+                  input.msIntegratedResultsRadioElem(type='radio', name='msResultsAtBottom', data-setting-key='msResultsAtBottom')
                   span Show MarkSearch Results At The Bottom Of The The Search Engine Search Results Page
               .settingsSubGroup
                 .flexrow
@@ -76,8 +58,8 @@ html
                   input(
                     type='number', 
                     min='1'
-                    name='msResultsAtBottom_numberOfResultsToShow', 
-                    data-setting-key='msResultsAtBottom_numberOfResultsToShow'
+                    name='numberOfIntegratedResultsToShow', 
+                    data-setting-key='numberOfIntegratedResultsToShow'
                   )
           h3 MarkSearch Results Box
           .settingsGroup#msResultsBox
@@ -95,10 +77,6 @@ html
                 label
                   input(type='checkbox', name='msResultsBox_AutoExpand', data-setting-key='msResultsBox_AutoExpand')
                   span Autoexpand The MarkSearch Results Box On Page Load
-              //- .flexrow.sidebarColor
-              //-   span Results Box SideBar Color: 
-              //-   input(type='color', name='msResultsBox_SidebarColor', data-setting-key='msResultsBox_SidebarColor')
-              //-   button Revert To Default Color
           h3 MarkSearch Search Button
           .settingsGroup#msButtonOptionContainer
             .checkbox

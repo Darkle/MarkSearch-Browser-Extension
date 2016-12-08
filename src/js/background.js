@@ -36,12 +36,16 @@ function checkIfPageIsSavedAndUpdateIcon(tabId){
 * chrome.storage.onChanged if the user changes the options.
 */
 // getSettings().then(({extensionToken}) => syncServerAddressAndApiTokenInLocalStorage(extensionToken))
-// TODO - remove 3 lines below and uncomment out one above when production ready
+// TODO - remove the direct lines below and uncomment out one above when production ready
 // TODO - also remove the import { extensionOptionsDefaultValues } from './extensionOptionsDefaultValues' above
 // if not needed in this script & uncomment getSettings in the imports above
 const tempExtensionToken = 'http://192.168.1.2:8080,eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnQiOiJNYXJrU2VhcmNoIEV4dGVuc2lvbi9Cb29rbWFya2xldF8zNiIsImlhdCI6MTQ4MDM5MDQxMn0.fsE4roDITUo5pioAhdORx6LyX105coaBHykqHCK-Lmg'
 syncServerAddressAndApiTokenInLocalStorage(tempExtensionToken)
 extensionOptionsDefaultValues.extensionToken = tempExtensionToken
+extensionOptionsDefaultValues.msResultsBox = true
+extensionOptionsDefaultValues.msResultsBox_AutoExpand = true
+extensionOptionsDefaultValues.msResultsAtTop = true
+extensionOptionsDefaultValues.numberOfIntegratedResultsToShow = 4
 
 chrome.contextMenus.create(
   {

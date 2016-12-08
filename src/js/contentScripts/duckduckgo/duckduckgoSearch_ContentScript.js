@@ -3,7 +3,7 @@
 // import { getSettings } from './utils'
 //
 // function initDuckduckgoSearchIntegration(settings){
-//   if(!settings.integrateWithDuckduckgoSearch){
+//   if(!settings.showOnDuckduckgoSearch){
 //     return
 //   }
 //   const searchRequestPort = chrome.runtime.connect({name: 'contentScriptSearchRequest'})

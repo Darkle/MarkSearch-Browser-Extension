@@ -1,20 +1,18 @@
 
 const extensionOptionsDefaultValues = {
-  integrateWithBaiduSearch: true,
-  integrateWithDuckduckgoSearch: true,
-  integrateWithBingSearch: true,
-  integrateWithGoogleSearch: true,
+  showOnBaiduSearch: true,
+  showOnDuckduckgoSearch: true,
+  showOnBingSearch: true,
+  showOnGoogleSearch: true,
   extensionToken: '',
   msResultsBox: false,
   msResultsBox_Position: 'right',
   msResultsBox_AutoExpand: false,
   // msResultsBox_SidebarColor: '#3498DB',
   msResultsAtTop: false,
-  msResultsAtTop_numberOfResultsToShow: 1,
   msResultsInterspersed: false,
-  msResultsInterspersed_numberOfResultsToShow: 1,
   msResultsAtBottom: false,
-  msResultsAtBottom_numberOfResultsToShow: 1,
+  numberOfIntegratedResultsToShow: 1,
   showMSsearchButton: true,
   msResultsPrebrowsing: true
 }

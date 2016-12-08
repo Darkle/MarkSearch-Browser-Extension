@@ -2,7 +2,7 @@
 // import { getSettings } from './utils'
 //
 // function initBingSearchIntegration(settings){
-//   if(!settings.integrateWithBingSearch){
+//   if(!settings.showOnBingSearch){
 //     return
 //   }
 //   const searchRequestPort = chrome.runtime.connect({name: 'contentScriptSearchRequest'})

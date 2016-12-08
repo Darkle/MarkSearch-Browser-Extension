@@ -36,11 +36,17 @@ function renderMarkSearchResults(searchResults, rsoElement, searchEngineResults,
     endResultNumberToIntersperse,
     endResultNumberToShowAtBottom
   ] = calculateEndResultNumber()
+  const {
+    msResultsBox,
+    msResultsAtTop,
+    msResultsInterspersed,
+    msResultsAtBottom
+  } = extensionSettings
   let msResultsBoxDocFragment
   let topResultsContainer
   let bottomResultsContainer
 
-  if(extensionSettings.msResultsBox){
+  if(msResultsBox){
     // for(const msResultsBoxResult of $$('#msResultsBox .marksearchResultsBoxResult')){
     //   msResultsBoxResult.remove()
     // }
@@ -58,12 +64,12 @@ function renderMarkSearchResults(searchResults, rsoElement, searchEngineResults,
   * would probably not look as good because you would see them appear slightly later than the
   * interspersed ones.
   */
-  if(extensionSettings.msResultsAtTop){
+  if(msResultsAtTop){
     topResultsContainer = document.createElement('div')
     topResultsContainer.setAttribute('id', 'markSearchTopResultsContainer')
     rsoElement.insertBefore(topResultsContainer, rsoElement.firstElementChild)
   }
-  if(extensionSettings.msResultsAtBottom){
+  if(msResultsAtBottom){
     bottomResultsContainer = document.createElement('div')
     bottomResultsContainer.setAttribute('id', 'markSearchBottomResultsContainer')
     rsoElement.appendChild(bottomResultsContainer)
@@ -79,52 +85,63 @@ function renderMarkSearchResults(searchResults, rsoElement, searchEngineResults,
 
   let interspersedNodeToInsertAfter = 0
 
-  tempResults.forEach((result, index) => {
-    const resultDiv = createMSresultElements(result, index, searchTerms)
-    const resultNumber = index + 1
+  /*****
+  * Using 2 loops so we can break out of the second loop early. Say there are 1000 results
+  * from MarkSearch, we won't be displaying them all on the page for the integrated results,
+  * so having a second loop where we can break early makes sense.
+  */
+  if(msResultsBox){
+    tempResults.forEach((result, index) => {
+      msResultsBoxDocFragment.appendChild(createMSresultElements(result, index, searchTerms))
+    })
+  }
 
-    if(extensionSettings.msResultsBox){
+  if(msResultsAtTop || msResultsInterspersed || msResultsAtBottom){
+    for(let index = 0, len = tempResults.length; index < len; index++){
+      const result = tempResults[index]
+      const resultDiv = createMSresultElements(result, index, searchTerms)
+      const resultNumber = index + 1
+
+      if(msResultsAtTop && resultNumber <= endResultNumberToShowAtTop){
+        topResultsContainer.appendChild(resultDiv)
+      }
       /*****
-      * We need to make a copy, otherwise the code below will take the resultDiv. The
-      * results box needs to have it's own independant copy of the MS results.
+      * We make sure here not to insert more than how many native search results there are on
+      * the page.
       */
-      msResultsBoxDocFragment.appendChild(resultDiv.cloneNode(true))
-    }
-    if(extensionSettings.msResultsAtTop && resultNumber <= endResultNumberToShowAtTop){
-      topResultsContainer.appendChild(resultDiv)
-    }
-    /*****
-    * We make sure here not to insert more than how many native search results there are on
-    * the page.
-    */
-    if(extensionSettings.msResultsInterspersed &&
-        resultNumber > endResultNumberToShowAtTop &&
-        resultNumber <= endResultNumberToIntersperse &&
-        interspersedNodeToInsertAfter <= (searchEngineResults.length -1) ){
+      else if(msResultsInterspersed &&
+          resultNumber > endResultNumberToShowAtTop &&
+          resultNumber <= endResultNumberToIntersperse &&
+          interspersedNodeToInsertAfter <= (searchEngineResults.length -1)
+      ){
+        /*****
+        * we start inserting interspersed at the first searchEngineResults (0)
+        */
+        searchEngineResults[interspersedNodeToInsertAfter].after(resultDiv)
+        interspersedNodeToInsertAfter = interspersedNodeToInsertAfter + 1
+      }
       /*****
-      * we start inserting interspersed at the first searchEngineResults (0)
+      * endResultNumberToIntersperse is endResultNumberToShowAtTop + endResultNumberToIntersperse.
+      * Note: we need the endResultNumberToShowAtBottom, because we dont want all of the rest of the results to be
+      * shown, just how many the user specified for showing at the bottom.
       */
-      searchEngineResults[interspersedNodeToInsertAfter].after(resultDiv)
-      interspersedNodeToInsertAfter = interspersedNodeToInsertAfter + 1
+      else if(msResultsAtBottom &&
+          resultNumber > endResultNumberToIntersperse &&
+          resultNumber <= endResultNumberToShowAtBottom
+      ){
+        bottomResultsContainer.appendChild(resultDiv)
+      }
+      else{
+        break
+      }
     }
-    /*****
-    * endResultNumberToIntersperse is endResultNumberToShowAtTop + endResultNumberToIntersperse.
-    * Note: we need the endResultNumberToShowAtBottom, because we dont want all of the rest of the results to be
-    * shown, just how many the user specified for showing at the bottom.
-    */
-    if(extensionSettings.msResultsAtBottom &&
-        resultNumber > endResultNumberToIntersperse &&
-        resultNumber <= endResultNumberToShowAtBottom){
-      bottomResultsContainer.appendChild(resultDiv)
-    }
-  })
+  }
   /*****
   * because when we insert MS results into the page, it changes the height of the #res element, so we need to
   * re-set the msResultsBoxElem height.
   */
-  setMSresultsBoxHeight()
-
-  if(extensionSettings.msResultsBox){
+  if(msResultsBox){
+    setMSresultsBoxHeight()
     msResultsBoxResultsContainer.appendChild(msResultsBoxDocFragment)
   }
 }

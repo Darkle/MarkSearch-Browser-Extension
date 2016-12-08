@@ -169,9 +169,9 @@ function init(settings){
   extensionSettings = settings
   searchInput = $('#lst-ib')
   /*****
-  * We wanna exit early if it's not a search page or they dont have integrated results enabled in the settings.
+  * We wanna exit early if it's not a search page or they dont have showOn_____Search results enabled in the settings.
   */
-  if(!settings.integrateWithGoogleSearch || !searchInput){
+  if(!settings.showOnDuckduckgoSearch || !searchInput){
     return
   }
   checkIfInstantSearch()

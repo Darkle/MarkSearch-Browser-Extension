@@ -2,7 +2,7 @@
 // import { getSettings } from './utils'
 //
 // function initBaiduSearchIntegration(settings){
-//   if(!settings.integrateWithBaiduSearch){
+//   if(!settings.showOnBaiduSearch){
 //     return
 //   }
 //   const searchRequestPort = chrome.runtime.connect({name: 'contentScriptSearchRequest'})
