@@ -1,20 +1,6 @@
-import { default as validatorUnescape } from 'validator/lib/unescape'
-
 import { extensionSettings } from './googleSearch_ContentScript'
 import { msResultsBoxResultsContainer, setMSresultsBoxHeight } from './setUpMSresultsBox'
-import { $$ } from '../../utils'
-
-/*
-archiveLink: "https://archive.is/qHKPe"
-dateCreated: 1469506666578
-pageDescription: "The Age has the latest local news on Melbourne, Victoria. Read National News from Australia, World News, Business News and Breaking News stories."
-pageDomain: "theage.com.au"
-pageTitle: "Latest &amp; Breaking News Melbourne, Victoria | The Age"
-pageUrl: "http://www.theage.com.au/"
-rank:-8.023295618319
-safeBrowsing: null
-snippet:"...CARS F
- // */
+import { createMSresultElements } from './createMSresultElements'
 
 function calculateEndResultNumber(){
   let endResultNumberToShowAtTop = 0
@@ -39,54 +25,7 @@ function calculateEndResultNumber(){
   return [endResultNumberToShowAtTop, endResultNumberToIntersperse, endResultNumberToShowAtBottom]
 }
 
-function insertLinkElem(pageUrl, rel){
-  const link = document.createElement('link')
-  link.setAttribute('class', 'prebrowsing')
-  link.setAttribute('href', pageUrl)
-  link.setAttribute('rel', rel)
-  document.head.appendChild(link)
-}
-
-function createMSresultElements(pageUrl, pageTitle, index){
-  const resultDiv = document.createElement('div')
-  resultDiv.setAttribute('id', `marksearchResultsBoxResult_${ index + 1 }`)
-  resultDiv.setAttribute('class', 'marksearchResultsBoxResult')
-
-  const mainDetails = document.createElement('div')
-  mainDetails.className = 'mainDetails'
-  resultDiv.appendChild(mainDetails)
-
-  const mainResultLink = document.createElement('div')
-  mainResultLink.className = 'mainResultLink'
-  mainDetails.appendChild(mainResultLink)
-
-  const resultLink = document.createElement('a')
-  resultLink.setAttribute('href', pageUrl)
-  /*****
-   * If there's no pageTitle text, then just use the page url
-   */
-  let resultLinkTextContent = pageUrl
-  if(typeof pageTitle === 'string'){
-    const pageTitleTrimmed = pageTitle.trim()
-    if(pageTitleTrimmed.length > 0){
-      resultLinkTextContent = pageTitleTrimmed
-    }
-  }
-  /****
-   * unescape should be ok here as we are using textContent and not innerHTML
-   */
-  resultLink.textContent = validatorUnescape(resultLinkTextContent)
-  mainResultLink.appendChild(resultLink)
-
-  const resultUrlText = document.createElement('div')
-  resultUrlText.className = 'resultUrlText'
-  resultUrlText.textContent = pageUrl
-  mainDetails.appendChild(resultUrlText)
-
-  return resultDiv
-}
-
-function renderMarkSearchResults(searchResults, rsoElement, searchEngineResults){
+function renderMarkSearchResults(searchResults, rsoElement, searchEngineResults, searchTerms){
   console.log('renderMarkSearchResults', searchResults)
   console.log('rsoElement', rsoElement)
   console.log('searchEngineResults', searchEngineResults)
@@ -101,17 +40,6 @@ function renderMarkSearchResults(searchResults, rsoElement, searchEngineResults)
   let topResultsContainer
   let bottomResultsContainer
 
-  if(extensionSettings.msResultsPrebrowsing){
-    for(const linkPreBrowsElem of $$('link.prebrowsing')){
-      linkPreBrowsElem.remove()
-    }
-    if(searchResults[0]){
-      insertLinkElem(searchResults[0].pageUrl, 'preconnect')
-    }
-    if(searchResults[1]){
-      insertLinkElem(searchResults[1].pageUrl, 'dns-prefetch')
-    }
-  }
   if(extensionSettings.msResultsBox){
     // for(const msResultsBoxResult of $$('#msResultsBox .marksearchResultsBoxResult')){
     //   msResultsBoxResult.remove()
@@ -144,15 +72,15 @@ function renderMarkSearchResults(searchResults, rsoElement, searchEngineResults)
   if(searchResults[0]){
     tempResults = Array(500)
                     .fill(searchResults[0])
-                    .map(({pageTitle, pageUrl}, index) =>
-                      ({pageTitle: `${ pageTitle } ${ index + 1 }`, pageUrl})
+                    .map((item, index) =>
+                      Object.assign({}, item, {pageTitle: `${ item.pageTitle } ${ index + 1 }`})
                     )
   }
 
   let interspersedNodeToInsertAfter = 0
 
-  tempResults.forEach(({pageTitle, pageUrl}, index) => {
-    const resultDiv = createMSresultElements(pageUrl, pageTitle, index)
+  tempResults.forEach((result, index) => {
+    const resultDiv = createMSresultElements(result, index, searchTerms)
     const resultNumber = index + 1
 
     if(extensionSettings.msResultsBox){

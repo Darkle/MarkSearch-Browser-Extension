@@ -14,6 +14,7 @@ const observerSettings = {
   attributeOldValue: false,
   characterDataOldValue: false
 }
+let latestSearchTerms
 let searchInput
 let searchRequestPort
 let searchInputOldValue
@@ -28,6 +29,7 @@ function sendSearchRequestToMarkSearch(searchTerms, dateFilter){
   if(!searchTerms){
     return
   }
+  latestSearchTerms = searchTerms
   /*****
   * Note: we do a check in the handleSearchRequest.js background script to check if
   * dateFilter.startDate & dateFilter.endDate are not null/undefined
@@ -45,7 +47,7 @@ function sendSearchRequestToMarkSearch(searchTerms, dateFilter){
 
 function renderMarkSearchResultsIfReady(){
   if(searchEngineResultsHaveBeenInserted && markSearchResults){
-    renderMarkSearchResults(markSearchResults, rsoElement, searchEngineResults)
+    renderMarkSearchResults(markSearchResults, rsoElement, searchEngineResults, latestSearchTerms)
   }
 }
 
