@@ -62,8 +62,9 @@ function getCurrentTabId(){
         currentWindow: true
       },
       tabs => {
-        if(tabs && tabs[0] && tabs[0].id){
-          resolve(tabs[0].id)
+        const tabId = safeGetObjectProperty(tabs, '[0].id')
+        if(tabId){
+          resolve(tabId)
         }
         else{
           reject('Unable to get current tab id')

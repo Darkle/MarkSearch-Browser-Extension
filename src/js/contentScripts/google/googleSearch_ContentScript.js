@@ -4,7 +4,7 @@ import { renderMarkSearchResults } from './renderMarkSearchResults'
 import { initMSresultsBox } from './setUpMSresultsBox'
 import { getSettings, $ } from '../../utils'
 
-import debounce from 'lodash.debounce'
+// import debounce from 'lodash.debounce'
 
 const observerSettings = {
   childList: true,
@@ -84,14 +84,14 @@ function searchInputChangeHandler(){
   }
 }
 
-const debouncedSearchInputChangeHandler = debounce(
-  searchInputChangeHandler,
-  200,
-  {
-    'leading': false,
-    'trailing': true
-  }
-)
+// const debouncedSearchInputChangeHandler = debounce(
+//   searchInputChangeHandler,
+//   200,
+//   {
+//     'leading': false,
+//     'trailing': true
+//   }
+// )
 
 function dateFilterDropdownElemListener(event){
   /*****
@@ -196,7 +196,7 @@ function init(){
     initMSresultsBox(isInstantSearch)
   }
   // navigator.serviceWorker.register(chrome.runtime.getURL('js/googleServiceWorker.js'))
-  navigator.serviceWorker.register(chrome.runtime.getURL('js/googleServiceWorker.js'))
+  // navigator.serviceWorker.register(chrome.runtime.getURL('js/googleServiceWorker.js'))
   console.log('isInstantSearch', isInstantSearch)
   if(isInstantSearch){
     /*****

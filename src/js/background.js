@@ -8,9 +8,10 @@ import { getCurrentTabId, /*getSettings,*/ syncServerAddressAndApiTokenInLocalSt
 import { handleSearchRequest } from './handleSearchRequest'
 import { contextMenuOnClickedHandler } from './contextMenuOnClickedHandler'
 import { onInstalledEventHandler } from './onInstalledEventHandler'
+import { googleWebRequestHandler } from './googleWebRequestHandler'
 import { hotReloadInit } from './hotReload'
 import { extensionOptionsDefaultValues } from './extensionOptionsDefaultValues'
-// import { googleUrlPatterns } from './googleUrls'
+import { googleUrlPatterns } from './googleUrls'
 
 /*****
 * Note: using chrome.storage.local in the extension rather than storage.sync in case they have MarkSearch
@@ -98,13 +99,10 @@ chrome.runtime.onConnect.addListener(port => {
 
 chrome.contextMenus.onClicked.addListener(contextMenuOnClickedHandler)
 
-
-// chrome.webRequest.onBeforeRequest.addListener(
-//   requestInfo => {
-//     console.log('requestInfo', requestInfo)
-//   },
-//   {
-//     urls: googleUrlPatterns,
-//     types: ['main_frame', 'xmlhttprequest']
-//   }
-// )
+chrome.webRequest.onBeforeRequest.addListener(
+  googleWebRequestHandler,
+  {
+    urls: googleUrlPatterns,
+    types: ['main_frame', 'xmlhttprequest']
+  }
+)
