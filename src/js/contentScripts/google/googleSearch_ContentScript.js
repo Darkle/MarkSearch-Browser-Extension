@@ -44,7 +44,7 @@ function sendSearchRequestToMarkSearch(searchTerms, dateFilter){
     return
   }
   latestSearchTerms = searchTerms
-    console.log('sendSearchRequestToMarkSearch latestSearchTerms', latestSearchTerms)
+  console.log('sendSearchRequestToMarkSearch latestSearchTerms', latestSearchTerms)
   /*****
   * Note: we do a check in the handleSearchRequest.js background script to check if
   * dateFilter.startDate & dateFilter.endDate are not null/undefined
@@ -214,14 +214,8 @@ function init(){
     //   }
     //   )
     // )
-    // Load: https://www.google.co.uk/search?q=skyrim+walkthrough+ps3#q=boston+map
-// Then click search input and select "tourist map of boston"
-// - It shows results for the previous search terms "boston map"     <-- issue
-//
-// so at the moment, seems like input change isnt being fired when select the autocomplete for search, which means its just the mutation observer that is running and its running with the old search terms cause the input handler hasnt updated them cause it hasnt been fired
-// so it seems that the change event doesnt fire if the input was changed by javascript - ressearch that
-// cant just add a click event, cause the user can also use the keyboard to select a autocomplete
-//     searchInput.addEventListener('change', searchInputChangeHandler)
+    //
+    searchInput.addEventListener('change', searchInputChangeHandler)
 
     const observer = new MutationObserver(mutationObserverHandler)
 
