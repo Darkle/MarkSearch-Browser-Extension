@@ -31,11 +31,20 @@ getSettings().then( settings => {
   extensionSettings = settings
 })
 
+/*****
+* We send a search request to a background script to do the http request for us because
+* although it is possible to make cross-origin requests in a content script, you need to
+* know ahead of time the url/IP of the server address for the manifest for the extension,
+* and there is no way to know ahead of time what IP address the MarkSearch server will be
+* using, so we cant really give the content script cross-origin permissions.
+* https://developer.chrome.com/extensions/xhr
+*/
 function sendSearchRequestToMarkSearch(searchTerms, dateFilter){
   if(!searchTerms){
     return
   }
   latestSearchTerms = searchTerms
+    console.log('sendSearchRequestToMarkSearch latestSearchTerms', latestSearchTerms)
   /*****
   * Note: we do a check in the handleSearchRequest.js background script to check if
   * dateFilter.startDate & dateFilter.endDate are not null/undefined
@@ -53,6 +62,7 @@ function sendSearchRequestToMarkSearch(searchTerms, dateFilter){
 
 function renderMarkSearchResultsIfReady(){
   if(searchEngineResultsHaveBeenInserted && markSearchResults){
+    console.log('renderMarkSearchResultsIfReady latestSearchTerms', latestSearchTerms)
     renderMarkSearchResults(markSearchResults, rsoElement, searchEngineResults, latestSearchTerms)
   }
 }
@@ -63,10 +73,14 @@ function onReceivedMarkSearchResults(searchResults){
 }
 
 function searchInputChangeHandler(){
+  console.log('searchInputChangeHandler called')
   const searchInputValue = searchInput.value.trim().toLowerCase()
+  console.log('searchInputValue', searchInputValue)
+  console.log('searchInputOldValue', searchInputOldValue)
+  console.log('searchInputValue !== searchInputOldValue', searchInputValue !== searchInputOldValue)
   if(searchInputValue !== searchInputOldValue){
     searchInputOldValue = searchInputValue
-    sendSearchRequestToMarkSearch(searchInput.value, getDateFilterFromUrl())
+    sendSearchRequestToMarkSearch(searchInputValue, getDateFilterFromUrl())
   }
 }
 
@@ -191,8 +205,23 @@ function init(){
     *
     * #main is the lowest down element in the tree (of what we want) that's available on DOMContentLoaded.
     */
-    searchInput.addEventListener('input', debouncedSearchInputChangeHandler)
-    searchInput.addEventListener('change', debouncedSearchInputChangeHandler)
+    // searchInput.addEventListener('input', debounce(
+    //   searchInputChangeHandler,
+    //   200,
+    //   {
+    //     'leading': false,
+    //     'trailing': true
+    //   }
+    //   )
+    // )
+    // Load: https://www.google.co.uk/search?q=skyrim+walkthrough+ps3#q=boston+map
+// Then click search input and select "tourist map of boston"
+// - It shows results for the previous search terms "boston map"     <-- issue
+//
+// so at the moment, seems like input change isnt being fired when select the autocomplete for search, which means its just the mutation observer that is running and its running with the old search terms cause the input handler hasnt updated them cause it hasnt been fired
+// so it seems that the change event doesnt fire if the input was changed by javascript - ressearch that
+// cant just add a click event, cause the user can also use the keyboard to select a autocomplete
+//     searchInput.addEventListener('change', searchInputChangeHandler)
 
     const observer = new MutationObserver(mutationObserverHandler)
 
@@ -209,6 +238,10 @@ function init(){
       * to false to get mutation observer above to re-attach event handlers.
       */
       dateFilterDropdownElementsHaveEventHandlers = false
+      // const searchQuery = getSearchQueryFromUrl()
+      // searchInputOldValue = searchQuery
+      console.log('popstate getSearchQueryFromUrl()', getSearchQueryFromUrl())
+      // console.log('popstate searchInput.value', searchInput.value)
       sendSearchRequestToMarkSearch(getSearchQueryFromUrl(), getDateFilterFromUrl())
     })
   }

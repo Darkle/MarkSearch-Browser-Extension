@@ -51,7 +51,12 @@ Google Search Result Example (with some unnedded attrinutes removed/shortened):
     </div>
   </div>
 </div>
- */
+  */
+//height="24" viewBox="0 0 24 24" width="24"
+const svg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0 0h24v24H0z" fill="none"/>
+              <path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>
+            </svg>`
 
 function createResultDescription(result, searchTerms, resultIsForForMSresultsBox){
   let resultDescription = ''
@@ -116,6 +121,7 @@ function createMSresultElements(result, index, searchTerms, resultIsForForMSresu
 
   const resultLink = document.createElement('a')
   resultLink.setAttribute('href', result.pageUrl)
+  resultLink.setAttribute('class', 'MSresultLink')
   /*****
    * If there's no pageTitle text, then just use the page url
    */
@@ -154,36 +160,35 @@ function createMSresultElements(result, index, searchTerms, resultIsForForMSresu
 
   const resultCite = document.createElement('cite')
   resultCite.setAttribute('class', `_Rm MSresultCite`)
-  resultCite.textContent = result.pageUrl
+  /*****
+  * 86 characters is about the longest the url can be befor it gets too big.
+  */
+  resultCite.textContent = result.pageUrl.slice(0, 86)
   resultDetails.appendChild(resultCite)
+
+  if(result.archiveLink){
+    const archiveLinkContainer = document.createElement('div')
+    archiveLinkContainer.setAttribute('class', 'action-menu ab_ctl MSarchiveLinkContainer')
+    resultDetails.appendChild(archiveLinkContainer)
+
+    const archiveLink = document.createElement('a')
+    archiveLink.setAttribute('href', result.archiveLink)
+    archiveLink.setAttribute('class', 'MSarchiveLink')
+    archiveLink.setAttribute('title', 'Archive Link')
+    archiveLink.setAttribute('target', '_blank')
+    /*****
+    * http://bit.ly/2h5Vain
+    */
+    archiveLink.setAttribute('rel', 'noopener noreferrer')
+    archiveLink.innerHTML = svg
+    archiveLinkContainer.appendChild(archiveLink)
+  }
 
   const resultDescription = document.createElement('span')
   resultDescription.setAttribute('class', `st MSresultDescription`)
   const description = createResultDescription(result, searchTerms, resultIsForForMSresultsBox)
   resultDescription.innerHTML = DOMPurify.sanitize(description)
   resultDetailsAndDescriptionInnerContainer.appendChild(resultDescription)
-
-
-  // const metaIconsContainer = document.createElement('div')
-  // metaIconsContainer.className = 'metaIconsContainer'
-  // resultDiv.appendChild(metaIconsContainer)
-  //
-  // const metaIcons = document.createElement('div')
-  // metaIcons.className = 'metaIcons'
-  // metaIconsContainer.appendChild(metaIcons)
-  //
-  // if(result.archiveLink){
-  //   const metaIconArchive = document.createElement('a')
-  //   metaIconArchive.setAttribute('href', result.archiveLink)
-  //   metaIconArchive.setAttribute('title', 'Archive Link')
-  //   // metaIconArchive.setAttribute('data-pt-title', 'Archive Link')
-  //   //metaIconArchive.setAttribute('data-pt-gravity', 'bottom 0 3')
-  //   metaIconArchive.setAttribute('target', '_blank')
-  //   metaIconArchive.setAttribute('rel', 'noopener')
-  //   metaIconArchive.className = 'material-icons protip'
-  //   metaIconArchive.textContent = 'account_balance'
-  //   metaIcons.appendChild(metaIconArchive)
-  // }
 
   return mainResultContainer
 }

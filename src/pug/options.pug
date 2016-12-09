@@ -16,7 +16,7 @@ html
             span You Can Get Help And Information About These Settings Here: 
             a(href='https://github.com/Darkle/MarkSearch#chromeExtensionOptions') MarkSearch Chrome Extension Help
           h3 Search Engines
-          .settingsGroup#integratedSearches
+          .settingsGroup#searchEngines
             span Show MarkSearch Results With The Following Search Engines:
             .flexrow
               .checkbox
@@ -25,48 +25,40 @@ html
                   span Google
               .checkbox
                 label
-                  input(type='checkbox', name='bingSearchCheckbox', id='bingSearchCheckbox', data-setting-key='showOnBingSearch')
-                  span Bing
-              .checkbox
-                label
                   input(type='checkbox', name='duckduckgoSearchCheckbox', id='duckduckgoSearchCheckbox', data-setting-key='showOnDuckduckgoSearch')
                   span DuckDuckGo
-              .checkbox
-                label
-                  input(type='checkbox', name='baiduSearchCheckbox', id='baiduSearchCheckbox', data-setting-key='showOnBaiduSearch')
-                  span Baidu
           h3 Search Page Results Integration
-          .settingsGroup
+          .settingsGroup#integration
             .settingsGroup.flexcolumn#resultsAtTop
               .flexrow
                 label
                   input.msIntegratedResultsRadioElem(type='radio', name='msResultsAtTop', data-setting-key='msResultsAtTop')
-                  span Show MarkSearch Results At The Top Of The The Search Engine Search Results Page
+                  span Show MarkSearch Results At The Top Of The The Search Engine Results
             .settingsGroup.flexcolumn#resultsInterspersed
               .flexrow
                 label
                   input.msIntegratedResultsRadioElem(type='radio', name='msResultsInterspersed', data-setting-key='msResultsInterspersed')
-                  span Intersperse MarkSearch Results On The Search Engine Search Results Page
+                  span Intersperse MarkSearch Results With The Search Engine Results
             .settingsGroup.flexcolumn#resultsAtBottom
               .flexrow
                 label
                   input.msIntegratedResultsRadioElem(type='radio', name='msResultsAtBottom', data-setting-key='msResultsAtBottom')
-                  span Show MarkSearch Results At The Bottom Of The The Search Engine Search Results Page
-              .settingsSubGroup
-                .flexrow
-                  span Number Of Results To Show:
-                  input(
-                    type='number', 
-                    min='1'
-                    name='numberOfIntegratedResultsToShow', 
-                    data-setting-key='numberOfIntegratedResultsToShow'
-                  )
+                  span Show MarkSearch Results At The Bottom Of The The Search Engine Results
+            .settingsGroup#numberOfResults
+              .flexrow
+                span Number Of Results To Show:
+                input(
+                  type='number', 
+                  min='1'
+                  name='numberOfIntegratedResultsToShow', 
+                  data-setting-key='numberOfIntegratedResultsToShow'
+                )
           h3 MarkSearch Results Box
           .settingsGroup#msResultsBox
             .checkbox
               label
                 input(type='checkbox', name='msResultsBox', data-setting-key='msResultsBox')
-                span Show MarkSearch Results Box On The Side Of The Search Engine Search Results Page
+                span Show MarkSearch Results Box On The Side Of The Search Engine Results Page
             .settingsSubGroup
               .flexrow.selectBoxContainer
                 span Box Position:

@@ -1,8 +1,6 @@
 
 const extensionOptionsDefaultValues = {
-  showOnBaiduSearch: true,
   showOnDuckduckgoSearch: true,
-  showOnBingSearch: true,
   showOnGoogleSearch: true,
   extensionToken: '',
   msResultsBox: false,

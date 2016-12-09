@@ -65,3 +65,29 @@
   padding-top: 10px
   padding-left: 25px
   padding-right: 25px
+
+
+// Integrated Results (i.e. results that are inserted in to the search page (not the MS results box))
+
+#rso .MSresultsBoxResult
+  .MSresultLink
+    border-left: 2px solid #3498DB
+    padding-left: 2px
+
+  .MSresultDetailsAndDescription
+    margin-top: 1px
+    .MSresultCite
+      color: #3498DB
+      text-overflow: ellipsis
+      white-space: nowrap
+      display: block
+      overflow: hidden
+      float: left
+    .MSarchiveLink svg
+      fill: hsla(192, 15%, 90%, 1)
+      height: 14.4px
+      margin-top: 0.94px
+    .MSarchiveLink:hover
+      text-decoration: none
+      svg
+        fill: #77BBEB
