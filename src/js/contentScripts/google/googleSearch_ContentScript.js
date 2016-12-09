@@ -195,6 +195,8 @@ function init(){
   if(extensionSettings.msResultsBox){
     initMSresultsBox(isInstantSearch)
   }
+  // navigator.serviceWorker.register(chrome.runtime.getURL('js/googleServiceWorker.js'))
+  navigator.serviceWorker.register(chrome.runtime.getURL('js/googleServiceWorker.js'))
   console.log('isInstantSearch', isInstantSearch)
   if(isInstantSearch){
     /*****

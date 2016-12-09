@@ -9,8 +9,6 @@
   "homepage_url": "https://github.com/Darkle/MarkSearch-Chrome-Extension",
   "permissions": [
     "http://*/*",
-    "https://*/*",
-    "webRequest",
     "storage",
     "tabs",
     "activeTab",
@@ -29,6 +27,9 @@
     "page": "html/options.html",
     "chrome_style": true
   },
+  "web_accessible_resources": [
+    "js/googleServiceWorker.js"
+  ],
   "content_scripts": [
     {
       "js": ["js/googleSearch_ContentScript.build.js"],

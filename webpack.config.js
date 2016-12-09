@@ -119,6 +119,14 @@ module.exports = {
         }
       ]
     ),
+    new CopyWebpackPlugin(
+      [
+        {
+          from: path.join(paths.srcJSContentScript, 'google', 'googleServiceWorker.js'),
+          to: paths.buildJS
+        }
+      ]
+    ),
     new HtmlWebpackPlugin({
       filename: path.resolve(paths.buildHTML, 'options.html'),
       template: path.join(paths.srcPug, 'options.pug'),
