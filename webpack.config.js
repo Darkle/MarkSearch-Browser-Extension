@@ -6,6 +6,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
+// If I wanna minify, maybe use: https://babeljs.io/blog/2016/12/07/the-state-of-babel#minification
+
 const paths = {
   srcBase: path.join(__dirname, 'src'),
   srcJS: path.join(__dirname, 'src', 'js'),

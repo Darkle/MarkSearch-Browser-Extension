@@ -183,13 +183,18 @@ function mutationObserverHandler(mutations){
 }
 
 function init(){
-  searchInput = $('#lst-ib')
   /*****
   * We wanna exit early if it's not a search page or they dont have showOn_____Search results enabled in the extensionSettings.
   */
-  if(!extensionSettings.showOnDuckduckgoSearch || !searchInput){
+  if(!extensionSettings.showOnGoogleSearch){
     return
   }
+  searchInput = $('#lst-ib')
+
+  if(!searchInput){
+    return
+  }
+
   checkIfInstantSearch()
 
   if(extensionSettings.msResultsBox){

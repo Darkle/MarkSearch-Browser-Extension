@@ -77,6 +77,7 @@
         "afterColon": true
       }
     ],
+    "no-await-in-loop": "error",
     "no-caller": "error",
     "no-class-assign": "error",
     "no-confusing-arrow": "warn",
