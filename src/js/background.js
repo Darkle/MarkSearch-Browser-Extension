@@ -2,16 +2,16 @@
 import { checkIfPageIsSaved } from './checkIfPageIsSaved'
 import { updateIcon } from './updateIcon'
 import { browserActionEventHandler } from './browserActionHandler'
-import { backgroundOnMessageHandler } from './backgroundOnMessageHandler'
+import { backgroundContentScriptMessageHandler } from './backgroundContentScriptMessageHandler'
 import { errorLogger } from './errorLogger'
 import { getCurrentTabId, getSettings, syncServerAddressAndApiTokenInLocalStorage, checkIfDev } from './utils'
-import { handleSearchRequest } from './handleSearchRequest'
+// import { contentScriptPageLoadSearchRequest, contentScriptInstantSearchRequest } from './handleContentScriptSearchRequest'
+import { googleSearchRequestHandler } from './googleSearchRequestHandler'
+import { googleUrlPatterns } from './googleUrls'
 import { contextMenuOnClickedHandler } from './contextMenuOnClickedHandler'
 import { onInstalledEventHandler } from './onInstalledEventHandler'
-import { googleWebRequestHandler } from './googleWebRequestHandler'
 import { hotReloadInit } from './hotReload'
 import { extensionOptionsDefaultValues } from './extensionOptionsDefaultValues'
-import { googleUrlPatterns } from './googleUrls'
 
 /*****
 * Note: using chrome.storage.local in the extension rather than storage.sync in case they have MarkSearch
@@ -28,6 +28,7 @@ import { googleUrlPatterns } from './googleUrls'
 * background scripts localStorage. The content scripts can access the chrome.storage API though.
 */
 (async () => {
+  let contentScriptPort = null
   const isDevelopment = await checkIfDev()
   const extensionSettings = await getSettings()
   let extensionTokenToSync = extensionSettings.extensionToken
@@ -41,7 +42,7 @@ import { googleUrlPatterns } from './googleUrls'
     const devExtensionOptions = require('../../config/devExtOptions')
     extensionTokenToSync = devExtensionOptions.extensionToken
     /*****
-    * Put the dev extension options on to the extensionOptionsDefaultValues. This is for if/when we
+    * Put the dev extension options on to the extensionOptionsDefaultValues. This is for when we
     * uninstall, then reinstall when in dev.
     */
     Object.assign(extensionOptionsDefaultValues, devExtensionOptions)
@@ -92,24 +93,23 @@ import { googleUrlPatterns } from './googleUrls'
   })
 
   chrome.browserAction.onClicked.addListener(browserActionEventHandler)
-  chrome.runtime.onMessage.addListener(backgroundOnMessageHandler)
+
+  chrome.runtime.onMessage.addListener(backgroundContentScriptMessageHandler)
 
   chrome.runtime.onConnect.addListener(port => {
-    // if(port.name === 'openOptionsPage'){
-    //   port.onMessage.addListener(() => chrome.runtime.openOptionsPage())
-    // }
-    if(port.name === 'contentScriptSearchRequest'){
-      handleSearchRequest(port)
-    }
+    contentScriptPort = port
   })
 
   chrome.contextMenus.onClicked.addListener(contextMenuOnClickedHandler)
 
   chrome.webRequest.onBeforeRequest.addListener(
-    googleWebRequestHandler,
+    ({tabId: requestTabId, method, type, url}) => {
+      googleSearchRequestHandler(contentScriptPort, requestTabId, method, type, url)
+    },
     {
       urls: googleUrlPatterns,
       types: ['main_frame', 'xmlhttprequest']
     }
   )
+
 })()

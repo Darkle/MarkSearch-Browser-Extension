@@ -45,7 +45,7 @@ async function browserActionEventHandler(tab){
     */
     if(await checkIfPageIsSaved(tab.id)){
       /*****
-      * removePageFromMarkSearch resolves true if it successfully removed the page 
+      * removePageFromMarkSearch resolves true if it successfully removed the page
       */
       action = 'removePage'
       const pageIsSavedInMarkSearch = await !removePageFromMarkSearch(tab.url)
@@ -58,7 +58,7 @@ async function browserActionEventHandler(tab){
     * it doesn't have any message/event listeners and just sends a single message straight away.
     * Note: don't need to await for insertContentScript('sendPageData_ContentScript.build.js')
     * to finish.
-    * Note: the backgroundOnMessageHandler shows the notification that the page was saved (& updates
+    * Note: the backgroundContentScriptMessageHandler shows the notification that the page was saved (& updates
     * the icon) when the sendPageData_ContentScript sends sends the data back, so we dont
     * need to show a notification here or update the icon.
     */
