@@ -95,10 +95,6 @@ function init(){
 
   console.log('isInstantSearch', isInstantSearch)
 
-  rsoElement = $('#rso')
-  searchEngineResults = rsoElement.querySelectorAll('.g:not(#imagebox_bigimages)')
-  searchEngineResultsHaveBeenInserted = true
-
   if(isInstantSearch){
     /*****
     * Set up listeners/observers for instant search.
@@ -132,6 +128,13 @@ function init(){
     * #main is the lowest down element in the tree (of what we want) that's available on DOMContentLoaded.
     */
     observer.observe($('#main'), observerSettings)
+  }
+
+  rsoElement = $('#rso')
+  
+  if(rsoElement){
+    searchEngineResults = rsoElement.querySelectorAll('.g:not(#imagebox_bigimages)')
+    searchEngineResultsHaveBeenInserted = true
   }
 
   /*****
