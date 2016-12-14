@@ -2,7 +2,7 @@ import { sendMessageToNotifyContentScript } from './sendMessageToNotifyContentSc
 import { savePageToMarkSearch } from './savePageToMarkSearch'
 import { updateIcon } from './updateIcon'
 import { errorLogger } from './errorLogger'
-import { getCurrentTabId, createErrorMessageToShowUser } from './utils'
+import { getCurrentTabId, createErrorMessageToShowUser, safeGetObjectProperty } from './utils'
 import { searchMarkSearch } from './searchMarkSearch'
 
 /*****
@@ -18,7 +18,7 @@ async function background_ContentScriptMessageHandler(messageData){
   * If there's a .url property then we know a content script wants to save a page
   * to MarkSearch.
   */
-  if(messageData.url){
+  if(safeGetObjectProperty(messageData, 'url')){
     try{
       await savePageToMarkSearch(messageData)
       await sendMessageToNotifyContentScript({action: 'savePage', actionSucceeded: true})
@@ -40,7 +40,7 @@ async function background_ContentScriptMessageHandler(messageData){
   * If there's a searchTerms property then we know a content script wants to search the
   * MarkSearch server.
   */
-  else if(messageData.searchTerms){
+  else if(safeGetObjectProperty(messageData, 'searchTerms')){
     let searchResults = []
     try{
       searchResults = await searchMarkSearch(messageData.searchTerms, messageData.dateFilter)
