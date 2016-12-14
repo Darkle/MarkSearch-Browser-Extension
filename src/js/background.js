@@ -41,16 +41,12 @@ async function initBackgroundPage() {
     * Put the dev extension options on to the extensionOptionsDefaultValues. This is for when we
     * uninstall, then reinstall when in dev.
     */
-    console.log('extensionTokenToSync', extensionTokenToSync)
-    console.log('devExtensionOptions', devExtensionOptions)
     Object.assign(extensionOptionsDefaultValues, devExtensionOptions)
-    console.log('extensionOptionsDefaultValues', extensionOptionsDefaultValues)
     /*****
     * Hot reload for dev (http://bit.ly/2fXpr1G)
     */
     hotReloadInit()
   }
-
   syncServerAddressAndApiTokenInLocalStorage(extensionTokenToSync)
 }
 
@@ -88,7 +84,6 @@ chrome.tabs.onUpdated.addListener((tabId, {status}, tab) => {
 chrome.windows.onFocusChanged.addListener(() => {
   getCurrentTabId().then(checkIfPageIsSavedAndUpdateIcon).catch(errorLogger)
 })
-
 /*****
 * If user changes the token, update the localStorage reference for server address and server api token
 */
@@ -99,14 +94,12 @@ chrome.storage.onChanged.addListener(({extensionToken}, storageAreaName) => {
 })
 
 chrome.browserAction.onClicked.addListener(browserActionEventHandler)
-
 /*****
 * We use chrome.runtime.onMessage for the one off messages like saving the current
 * page to MarkSearch, or doing a MarkSearch search on page load for the search
 * engine content script.
 */
 chrome.runtime.onMessage.addListener(background_ContentScriptMessageHandler)
-
 /*****
 * chrome.runtime.onConnect is for the instant search as there may be many of those per page
 * load.

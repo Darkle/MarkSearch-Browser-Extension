@@ -2,7 +2,7 @@ import '../../../nonInlineStyles/googleSearch_ContentScript.styl'
 import { isInstantSearch, checkIfInstantSearch, getSearchQueryFromUrl, getDateFilterFromUrl, getAddedResultNodes } from './googleSearchCSutils'
 import { renderMarkSearchResults } from './renderMarkSearchResults'
 import { initMSresultsBox } from './setUpMSresultsBox'
-import { getSettings, $ } from '../../utils'
+import { getSettings, $, safeGetObjectProperty } from '../../utils'
 
 const observerSettings = {
   childList: true,
@@ -102,7 +102,7 @@ function init(){
     const searchRequestPort = chrome.runtime.connect({name: 'googleInstantSearch'})
 
     searchRequestPort.onMessage.addListener(message => {
-      if(message.googleInstantSearchOccured){
+      if(safeGetObjectProperty(message, 'googleInstantSearchOccured')){
         console.log('googleInstantSearchOccured')
         searchEngineResultsHaveBeenInserted = false
         markSearchResults = null
