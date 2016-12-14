@@ -138,6 +138,16 @@ function init(){
   * Do the inital search for the terms on page load.
   * Note: the searchInput.value isn't available quite yet, so grab search terms
   * (and date filter if being used) from window location hash/query params.
+  *
+  * We send a search request to a background script to do the http request for us because
+  * although it is possible to make cross-origin requests in a content script, you need to
+  * know ahead of time the url/IP of the server address for the manifest for the extension,
+  * and there is no way to know ahead of time what IP address the MarkSearch server will be
+  * using, so we cant really give the content script cross-origin permissions.
+  * https://developer.chrome.com/extensions/xhr
+  *
+  * Note: we do a check in the searchMarkSearch.js background script to check if
+  * dateFilter.startDate & dateFilter.endDate are not null/undefined
   */
   chrome.runtime.sendMessage(
     {
