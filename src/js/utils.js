@@ -12,7 +12,7 @@ if(document && document.querySelector){
   $$ = document.querySelectorAll.bind(document)
 }
 
-function isDevelopment(){
+function checkIfDev(){
   return new Promise(resolve => {
     chrome.management.getSelf( ({installType}) => {
       resolve(installType === 'development')
@@ -151,7 +151,7 @@ function syncServerAddressAndApiTokenInLocalStorage(extensionTokenAndServerAddre
 export {
   $,
   $$,
-  isDevelopment,
+  checkIfDev,
   getCurrentTabId,
   getCurrentTabUrl,
   checkIfValidUrl,
