@@ -11,6 +11,7 @@ import { contextMenuOnClickedHandler } from './contextMenuOnClickedHandler'
 import { onInstalledEventHandler } from './onInstalledEventHandler'
 import { hotReloadInit } from './hotReload'
 import { extensionOptionsDefaultValues } from './extensionOptionsDefaultValues'
+import { searchMarkSearch } from './searchMarkSearch'
 
 /*****
 * Note: using chrome.storage.local in the extension rather than storage.sync in case they have MarkSearch
@@ -44,7 +45,7 @@ checkIfDev().then(isDevelopment => {
     * uninstall, then reinstall when in dev.
     */
     Object.assign(extensionOptionsDefaultValues, devExtensionOptions)
-    
+
     syncServerAddressAndApiTokenInLocalStorage(devExtensionOptions.extensionToken)
     /*****
     * Hot reload for dev (http://bit.ly/2fXpr1G)
@@ -106,8 +107,17 @@ chrome.runtime.onMessage.addListener(background_ContentScriptMessageHandler)
 * load.
 */
 chrome.runtime.onConnect.addListener(port => {
-  if(port.name === 'googleInstantSearch'){
+  if(port.name === 'googleContentScriptInstantSearchListener'){
     googleContentScriptPort = port
+  }
+  if(port.name === 'googleContentScriptRequestMSsearch'){
+    port.onMessage.addListener( ({searchTerms, dateFilter}) => {
+      searchMarkSearch(searchTerms, dateFilter)
+        .then(searchResults => {
+          port.postMessage({searchResults, requestId: 0})
+        })
+        .catch(errorLogger)
+    })
   }
   // if(port.name === 'duckDuckGoInstantSearch'){
   //   duckDuckGoContentScriptPort = port

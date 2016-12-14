@@ -23,7 +23,7 @@ async function background_ContentScriptMessageHandler(messageData){
       await savePageToMarkSearch(messageData)
       await sendMessageToNotifyContentScript({action: 'savePage', actionSucceeded: true})
       const pageIsSavedInMarkSearch = true
-      updateIcon(pageIsSavedInMarkSearch, currentTabId)
+      updateIcon(pageIsSavedInMarkSearch, await getCurrentTabId())
     }
     catch(error){
       errorLogger(error)
