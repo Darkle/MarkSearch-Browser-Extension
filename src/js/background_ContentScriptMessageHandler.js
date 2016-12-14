@@ -19,29 +19,22 @@ async function background_ContentScriptMessageHandler(messageData){
   * to MarkSearch.
   */
   if(messageData.url){
-    savePageToMarkSearch(messageData)
-      .then(() =>
-        sendMessageToNotifyContentScript(
-          {
-            action: 'savePage',
-            actionSucceeded: true,
-          }
-        )
+    try{
+      await savePageToMarkSearch(messageData)
+      await sendMessageToNotifyContentScript({action: 'savePage', actionSucceeded: true})
+      const pageIsSavedInMarkSearch = true
+      updateIcon(pageIsSavedInMarkSearch, currentTabId)
+    }
+    catch(error){
+      errorLogger(error)
+      sendMessageToNotifyContentScript(
+        {
+          action: 'savePage',
+          actionSucceeded: false,
+          errorMessage: createErrorMessageToShowUser(error, 'savePage')
+        }
       )
-      .then(() => {
-        const pageIsSavedInMarkSearch = true
-        updateIcon(pageIsSavedInMarkSearch, currentTabId)
-      })
-      .catch(error => {
-        errorLogger(error)
-        sendMessageToNotifyContentScript(
-          {
-            action: 'savePage',
-            actionSucceeded: false,
-            errorMessage: createErrorMessageToShowUser(error, 'savePage')
-          }
-        )
-      })
+    }
   }
   /*****
   * If there's a searchTerms property then we know a content script wants to search the
