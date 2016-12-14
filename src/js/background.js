@@ -28,29 +28,30 @@ let googleContentScriptPort = null
 *
 * We don't use localStorage exclusively for settings as content scripts dont have access to the
 * background scripts localStorage. The content scripts can access the chrome.storage API though.
+*
+* Note: syncServerAddressAndApiTokenInLocalStorage runs a tiny bit after chrome.runtime.onInstalled
+* fires, but it shouldn't be an issue.
 */
-async function initBackgroundPage() {
-  const isDevelopment = await checkIfDev()
-  const extensionSettings = await getSettings()
-  let extensionTokenToSync = extensionSettings.extensionToken
+getSettings().then(({extensionToken}) => {
+  syncServerAddressAndApiTokenInLocalStorage(extensionToken)
+})
 
+checkIfDev().then(isDevelopment => {
   if(isDevelopment){
     const devExtensionOptions = require('../../config/devExtOptions').devExtOptions
-    extensionTokenToSync = devExtensionOptions.extensionToken
     /*****
     * Put the dev extension options on to the extensionOptionsDefaultValues. This is for when we
     * uninstall, then reinstall when in dev.
     */
     Object.assign(extensionOptionsDefaultValues, devExtensionOptions)
+    
+    syncServerAddressAndApiTokenInLocalStorage(devExtensionOptions.extensionToken)
     /*****
     * Hot reload for dev (http://bit.ly/2fXpr1G)
     */
     hotReloadInit()
   }
-  syncServerAddressAndApiTokenInLocalStorage(extensionTokenToSync)
-}
-
-initBackgroundPage()
+})
 
 function checkIfPageIsSavedAndUpdateIcon(tabId){
   checkIfPageIsSaved(tabId)
