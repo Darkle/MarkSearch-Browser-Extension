@@ -55,7 +55,7 @@ async function background_ContentScriptMessageHandler(messageData){
     catch(err){
       errorLogger(err)
     }
-    chrome.tabs.sendMessage(currentTabId, searchResults)
+    chrome.tabs.sendMessage(currentTabId, {searchResults, requestId: 0})
   }
 }
 

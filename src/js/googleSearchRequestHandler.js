@@ -14,7 +14,7 @@ function getDateFilterFromUrl(urlSearchParams){
 /*****
 * request details object details here: https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
 */
-async function googleSearchRequestHandler(contentScriptPort, {tabId: requestTabId, method, type, url}){
+async function googleSearchRequestHandler(contentScriptPort, {requestId, tabId: requestTabId, method, type, url}){
   const currentTabId = await getCurrentTabId()
   /*****
   * tabId will be -1 if the request isn't related to a tab.
@@ -32,7 +32,7 @@ async function googleSearchRequestHandler(contentScriptPort, {tabId: requestTabI
   * We send a message early before querying MarkSearch server so we can reset some
   * things in the content script.
   */
-  contentScriptPort.postMessage({googleInstantSearchOccured: true})
+  contentScriptPort.postMessage({googleInstantSearchOccured: true, requestId})
 
   const requestUrl = new URL(url)
   const urlSearchParams = new URLSearchParams(requestUrl.search)
@@ -48,7 +48,7 @@ async function googleSearchRequestHandler(contentScriptPort, {tabId: requestTabI
     errorLogger(err)
   }
   console.log('searchResults in googleSearchRequestHandler:', searchResults)
-  contentScriptPort.postMessage(searchResults)
+  contentScriptPort.postMessage({searchResults, requestId})
 }
 
 export {

@@ -15,6 +15,7 @@ const observerSettings = {
 let markSearchResults
 let searchEngineResults
 let searchEngineResultsHaveBeenInserted
+let latestInstantSearchRequestId = 0
 let rsoElement
 let extensionSettings
 
@@ -22,17 +23,20 @@ getSettings().then( settings => {
   extensionSettings = settings
 })
 
-function renderMarkSearchResultsIfReady(){
-  if(searchEngineResultsHaveBeenInserted && markSearchResults){
+/*****
+* The first results we get from MarkSearch on page load have a requestId of 0.
+*/
+function renderMarkSearchResultsIfReady(requestId){
+  if(searchEngineResultsHaveBeenInserted && markSearchResults && latestInstantSearchRequestId === requestId){
     console.log('renderMarkSearchResultsIfReady getSearchQueryFromUrl()', getSearchQueryFromUrl())
     renderMarkSearchResults(markSearchResults, rsoElement, searchEngineResults, getSearchQueryFromUrl())
   }
 }
 
-function onReceivedMarkSearchResults(searchResults){
+function onReceivedMarkSearchResults({searchResults, requestId}){
   console.log('onReceivedMarkSearchResults searchResults', searchResults)
   markSearchResults = searchResults
-  renderMarkSearchResultsIfReady()
+  renderMarkSearchResultsIfReady(requestId)
 }
 
 function mutationObserverHandler(mutations){
@@ -102,8 +106,14 @@ function init(){
     const searchRequestPort = chrome.runtime.connect({name: 'googleInstantSearch'})
 
     searchRequestPort.onMessage.addListener(message => {
+      /*****
+      * We set the latestInstantSearchRequestId so that we can compare before we call renderMarkSearchResults.
+      * This is in case a new instant search is initiated before the results from the previous search has
+      * been received from MarkSearch and inserted in to the page.
+      */
       if(safeGetObjectProperty(message, 'googleInstantSearchOccured')){
         console.log('googleInstantSearchOccured')
+        latestInstantSearchRequestId = message.requestId
         searchEngineResultsHaveBeenInserted = false
         markSearchResults = null
       }
