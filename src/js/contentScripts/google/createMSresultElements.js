@@ -8,16 +8,16 @@ import stem from 'stem-porter'
 import truncate from 'lodash.truncate'
 
 /*
-Example result:
-rank: -4.442214486214885,
-dateCreated: 1464889272842,
-pageDomain: ".boston.com",
-pageTitle:"Boston.com - Local breaking news, sports, and culture",
-pageDescription: "The news, sports, and culture that Boston really cares about right now - Boston.com",
-archiveLink: "https://archive.is/0mRK4",
-safeBrowsing: null,
-snippet: "...Boston this November These are the most popular nightclubs in Boston, according to check-in data Watch part two of Jimmy Kimmel’s hilarious ‘I Told My Kids I Ate All Their Halloween Candy’ video Watch Newton’s Priyanka Chopra practice her slo-mo ‘Baywatch’ run Watch the first trailer for Chris Evans and Jenny Slate’s ‘Gifted’ BOSTON GLOBE POLITICS BOSTON GLOBE Trump..."
- */
+Example MarkSearch result:
+  rank:-4.442214486214885,
+  dateCreated:1464889272842,
+  pageDomain:".boston.com",
+  pageTitle:"Boston.com - Local breaking news, sports, and culture",
+  pageDescription:"The news, sports, and culture that Boston really cares about right now - Boston.com",
+  archiveLink:"https://archive.is/0mRK4",
+  safeBrowsing:null,
+  snippet:"...Boston this November These are the most popular nightclubs in Boston, according to check-in data Watch part two of Jimmy Kimmel’s hilarious ‘I Told My Kids I Ate All Their Halloween Candy’ video Watch Newton’s Priyanka Chopra practice her slo-mo ‘Baywatch’ run Watch the first trailer for Chris Evans and Jenny Slate’s ‘Gifted’ BOSTON GLOBE POLITICS BOSTON GLOBE Trump..."
+*/
 
 /*
 Google Search Result Example (with some unnedded attrinutes removed/shortened):
