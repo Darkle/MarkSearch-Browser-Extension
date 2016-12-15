@@ -1,11 +1,13 @@
 
 const path = require('path')
 
+const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
-const webpack = require('webpack')
+const BabiliPlugin = require('babili-webpack-plugin')
+const WebpackCleanupPlugin = require('webpack-cleanup-plugin')
 // const merge = require('webpack-merge')
 
 // If I wanna minify, maybe use: https://babeljs.io/blog/2016/12/07/the-state-of-babel#minification
@@ -135,6 +137,32 @@ const webpackConfig = {
   ]
 }
 
+if(process.env.NODE_ENV === 'production'){
+  console.log('Running production.')
+  /*****
+  * Remove the source maps before build for production.
+  */
+  webpackConfig.plugins.push(new WebpackCleanupPlugin())
+  // https://github.com/babel/babili
+  // http://babeljs.io/blog/2016/08/30/babili
+  // webpackConfig.devtool = false
+  // webpackConfig.module.rules.push(
+  //   {
+  //     test: /\.js$/,
+  //     loader: 'babel-loader',
+  //     query: {
+  //       presets: ['babili'],
+  //       sourceMaps: false,
+  //       babelrc: false,
+  //       inputSourceMap: null
+  //     }
+  //   }
+  // )
+  /*****
+  * The BabiliPlugin seems to generate smaller code.
+  */
+  webpackConfig.plugins.push(new BabiliPlugin({comments: false, sourceMap: false}))
+}
 if(process.env.runBundleAnalyzer === 'true'){
   console.log('Running bundle analyser.')
   webpackConfig.plugins.push(new BundleAnalyzerPlugin())

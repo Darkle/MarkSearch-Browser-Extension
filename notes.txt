@@ -1,0 +1,3 @@
+The analyseMinifiedBundle script isnt working properly - it's reporting the wrong file sizes. The BundleAnalyzerPlugin
+doesn't seem to be working well with BabiliPlugin. Or it might be my file, BundleAnalyzerPlugin is generating an error
+of 'Couldn't parse bundle asset'.
