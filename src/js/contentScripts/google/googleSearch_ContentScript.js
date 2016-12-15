@@ -1,7 +1,7 @@
 import '../../../nonInlineStyles/googleSearch_ContentScript.styl'
 import { isInstantSearch, checkIfInstantSearch, getSearchQueryFromUrl, getDateFilterFromUrl, getAddedResultNodes } from './googleSearchCSutils'
 import { renderMarkSearchResultsBoxResults, renderMarkSearchIntegratedResults } from './renderMarkSearchResults'
-import { initMSresultsBox } from './setUpMSresultsBox'
+import { initMSresultsBox, msResultsBoxResultsContainer } from './setUpMSresultsBox'
 import { getSettings, $, safeGetObjectProperty } from '../../utils'
 
 const observerSettings = {
@@ -22,6 +22,7 @@ let searchEngineResultsHaveBeenInserted = false
 let latestInstantSearchRequestId = 0
 let rsoElement
 let extensionSettings
+let marksearchSearchRequestPort
 
 getSettings().then( settings => {
   extensionSettings = settings
@@ -48,19 +49,26 @@ getSettings().then( settings => {
 * We render the MarkSearch results box seperately because it doen's have to wait for the search engine
 * results to be inserted in to the page.
 */
-function renderMarkSearchResultsBoxResultsIfReady({requestId}){
+function renderMarkSearchResultsBoxResultsIfReady(requestId){
   console.log('renderMarkSearchResultsBoxResultsIfReady********')
   console.log(markSearchResults && latestInstantSearchRequestId === requestId)
   console.log('searchEngineResultsHaveBeenInserted', searchEngineResultsHaveBeenInserted)
   console.log('markSearchResults', markSearchResults)
   console.log('latestInstantSearchRequestId', latestInstantSearchRequestId)
   console.log('requestId', requestId)
-  if(markSearchResults && latestInstantSearchRequestId === requestId){
+  /*****
+  * We also check if the msResultsBoxResultsContainer is undefined because for instant search, we
+  * wait a bit till some of the page is created before we create and insert the MS results box, and
+  * it's possible to receive results from MarkSearch before the MS results box is ready.
+  * We call renderMarkSearchResultsBoxResultsIfReady() from setUpMSresultsBox when it's ready on
+  * page load for instant search.
+  */
+  if(msResultsBoxResultsContainer && markSearchResults && latestInstantSearchRequestId === requestId){
     renderMarkSearchResultsBoxResults(markSearchResults, getSearchQueryFromUrl())
   }
 }
 
-function renderMarkSearchIntegratedResultsIfReady({requestId}){
+function renderMarkSearchIntegratedResultsIfReady(requestId){
   console.log('renderMarkSearchIntegratedResultsIfReady********')
   console.log(searchEngineResultsHaveBeenInserted && markSearchResults && latestInstantSearchRequestId === requestId)
   console.log('searchEngineResultsHaveBeenInserted', searchEngineResultsHaveBeenInserted)
@@ -75,7 +83,8 @@ function renderMarkSearchIntegratedResultsIfReady({requestId}){
 }
 
 function onReceivedMarkSearchResults({searchResults, requestId}){
-  console.log('onReceivedMarkSearchResults ', searchResults)
+  console.log('onReceivedMarkSearchResults searchResults: ', searchResults)
+  console.log('onReceivedMarkSearchResults requestId: ', requestId)
   markSearchResults = searchResults
   renderMarkSearchIntegratedResultsIfReady(requestId)
   renderMarkSearchResultsBoxResultsIfReady(requestId)
@@ -118,7 +127,38 @@ function mutationObserverHandler(mutations){
   searchEngineResults = rsoElement.querySelectorAll('.g:not(#imagebox_bigimages)')
   searchEngineResultsHaveBeenInserted = true
 
-  renderMarkSearchIntegratedResultsIfReady({requestId: latestInstantSearchRequestId})
+  renderMarkSearchIntegratedResultsIfReady(latestInstantSearchRequestId)
+}
+
+function instantSearchListener(message){
+  /*****
+  * We set the latestInstantSearchRequestId so that we can compare before we call renderMarkSearchResults.
+  * This is in case a new instant search is initiated before the results from the previous search has
+  * been received from MarkSearch and inserted in to the page.
+  */
+  if(safeGetObjectProperty(message, 'googleInstantSearchOccured')){
+    console.log('googleInstantSearchOccured')
+    latestInstantSearchRequestId = message.requestId
+    searchEngineResultsHaveBeenInserted = false
+    markSearchResults = null
+  }
+  else{
+    console.log('got search results from marksearch from background', message)
+    onReceivedMarkSearchResults(message)
+  }
+}
+
+function popstateListener(){
+  latestInstantSearchRequestId = 0
+  searchEngineResultsHaveBeenInserted = false
+  markSearchResults = null
+
+  marksearchSearchRequestPort.postMessage(
+    {
+      searchTerms: getSearchQueryFromUrl(),
+      dateFilter: getDateFilterFromUrl()
+    }
+  )
 }
 
 function init(){
@@ -132,12 +172,12 @@ function init(){
   checkIfInstantSearch()
 
   if(extensionSettings.msResultsBox){
-    initMSresultsBox(isInstantSearch)
+    initMSresultsBox()
   }
 
   console.log('isInstantSearch', isInstantSearch)
 
-  const marksearchSearchRequestPort = chrome.runtime.connect({name: 'googleContentScriptRequestMSsearch'})
+  marksearchSearchRequestPort = chrome.runtime.connect({name: 'googleContentScriptRequestMSsearch'})
 
   if(isInstantSearch){
     /*****
@@ -148,23 +188,7 @@ function init(){
     */
     const instantSearchListenerPort = chrome.runtime.connect({name: 'googleContentScriptInstantSearchListener'})
 
-    instantSearchListenerPort.onMessage.addListener(message => {
-      /*****
-      * We set the latestInstantSearchRequestId so that we can compare before we call renderMarkSearchResults.
-      * This is in case a new instant search is initiated before the results from the previous search has
-      * been received from MarkSearch and inserted in to the page.
-      */
-      if(safeGetObjectProperty(message, 'googleInstantSearchOccured')){
-        console.log('googleInstantSearchOccured')
-        latestInstantSearchRequestId = message.requestId
-        searchEngineResultsHaveBeenInserted = false
-        markSearchResults = null
-      }
-      else{
-        console.log('got search results from marksearch from background', message)
-        onReceivedMarkSearchResults(message)
-      }
-    })
+    instantSearchListenerPort.onMessage.addListener(instantSearchListener)
     /*****
     * We need a mutation observer for when we need to insert results in to the page - for each new search with
     * instant search, the page removes the old results and inserts the new results. We need to know when
@@ -179,18 +203,7 @@ function init(){
     * Clicking back/forward in the browser doesn't seem to trigger a xmlhttprequest for search in instant search
     * (i guess the search engine results are stored in the cache or storage?), so need to listen for popstate events.
     */
-    window.addEventListener('popstate', () => {
-      latestInstantSearchRequestId = 0
-      searchEngineResultsHaveBeenInserted = false
-      markSearchResults = null
-
-      marksearchSearchRequestPort.postMessage(
-        {
-          searchTerms: getSearchQueryFromUrl(),
-          dateFilter: getDateFilterFromUrl()
-        }
-      )
-    })
+    window.addEventListener('popstate', popstateListener)
   }
   else{
     rsoElement = $('#rso')
@@ -225,5 +238,7 @@ function init(){
 document.addEventListener('DOMContentLoaded', init)
 
 export {
-  extensionSettings
+  extensionSettings,
+  latestInstantSearchRequestId,
+  renderMarkSearchResultsBoxResultsIfReady
 }

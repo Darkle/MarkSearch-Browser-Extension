@@ -1,5 +1,5 @@
-import { extensionSettings } from './googleSearch_ContentScript'
-import { setMSiconClass, getAddedResultNodes } from './googleSearchCSutils'
+import { extensionSettings, latestInstantSearchRequestId, renderMarkSearchResultsBoxResultsIfReady } from './googleSearch_ContentScript'
+import { setMSiconClass, getAddedResultNodes, isInstantSearch } from './googleSearchCSutils'
 import { $ } from '../../utils'
 
 let msResultsBoxResultsContainer
@@ -81,6 +81,14 @@ function setUpMSresultsBox(){
       passive: true
     }
   )
+  /*****
+  * When it's instant seach, we have had to wait a bit before inserting the results box in to the page,
+  * and there's a good chance the googleSearch_ContentScript has already received the MS search results, so
+  * we need to call to render them if the're ready to be renderd.
+  */
+  if(isInstantSearch){
+    renderMarkSearchResultsBoxResultsIfReady(latestInstantSearchRequestId)
+  }
 }
 
 function instantSearchPageLoadMutationHandler(mutations){
@@ -97,7 +105,7 @@ function instantSearchPageLoadMutationHandler(mutations){
   }
 }
 
-function initMSresultsBox(isInstantSearch){
+function initMSresultsBox(){
   /*****
   * #res element isn't available yet on DOMContentLoaded when it's instant search,
   * so need to set an observer and wait. (we remove the observer once #res is available)
