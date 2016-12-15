@@ -5,7 +5,8 @@
   "main": "build/extensionInit.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack --progress --colors --watch",
+    "start": "set runBundleAnalyzer=false&&webpack --progress --colors --watch",
+    "analyseBundle": "set runBundleAnalyzer=true&&webpack --progress --colors --watch",
     "production": "webpack --optimize-minimize",
     "serve": "webpack-dev-server"
   },
@@ -51,6 +52,7 @@
     "webpack-cleanup-plugin": "^0.4.0",
     "webpack-dev-server": "^1.16.2",
     "webpack-load-plugins": "^0.1.2",
+    "webpack-merge": "^1.1.1",
     "write-json-webpack-plugin": "^1.0.0"
   },
   "dependencies": {

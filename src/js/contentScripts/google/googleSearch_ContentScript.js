@@ -50,7 +50,7 @@ getSettings().then( settings => {
 */
 function renderMarkSearchResultsBoxResultsIfReady({requestId}){
   console.log('renderMarkSearchResultsBoxResultsIfReady********')
-  console.log(searchEngineResultsHaveBeenInserted && markSearchResults && latestInstantSearchRequestId === requestId)
+  console.log(markSearchResults && latestInstantSearchRequestId === requestId)
   console.log('searchEngineResultsHaveBeenInserted', searchEngineResultsHaveBeenInserted)
   console.log('markSearchResults', markSearchResults)
   console.log('latestInstantSearchRequestId', latestInstantSearchRequestId)

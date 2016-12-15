@@ -4,10 +4,12 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
-// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+// const merge = require('webpack-merge')
+const webpack = require('webpack')
 
 // If I wanna minify, maybe use: https://babeljs.io/blog/2016/12/07/the-state-of-babel#minification
-
+console.log(process.env.runBundleAnalyzer)
 const paths = {
   srcBase: path.join(__dirname, 'src'),
   srcJS: path.join(__dirname, 'src', 'js'),
@@ -26,7 +28,7 @@ const paths = {
   buildStylesheets: path.join(__dirname, 'build', 'stylesheets'),
 }
 
-module.exports = {
+const webpackConfig = {
   devtool: 'source-map',
   target: 'web',
   entry: {
@@ -100,7 +102,6 @@ module.exports = {
     extensions: ['.js', '.styl', '.sass', 'woff2']
   },
   plugins: [
-    // new BundleAnalyzerPlugin(),
     new ExtractTextPlugin({filename: '../stylesheets/[name].css'}),
     new CopyWebpackPlugin(
       [
@@ -121,14 +122,6 @@ module.exports = {
         }
       ]
     ),
-    // new CopyWebpackPlugin(
-    //   [
-    //     {
-    //       from: path.join(paths.srcJSContentScript, 'google', 'googleServiceWorker.js'),
-    //       to: paths.buildJS
-    //     }
-    //   ]
-    // ),
     new HtmlWebpackPlugin({
       filename: path.resolve(paths.buildHTML, 'options.html'),
       template: path.join(paths.srcPug, 'options.pug'),
@@ -136,5 +129,16 @@ module.exports = {
         'options'
       ]
     }),
+    // To remove the local file from moment cause they are huge!
+    // https://github.com/moment/moment-timezone/issues/356#issuecomment-225258637
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
   ]
 }
+
+if(process.env.runBundleAnalyzer === 'true'){
+  console.log('Running bundle analyser.')
+  webpackConfig.plugins.push(new BundleAnalyzerPlugin())
+  // merge.smart(webpackConfig, {plugins: [new BundleAnalyzerPlugin()]})
+}
+
+module.exports = webpackConfig
