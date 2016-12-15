@@ -143,7 +143,7 @@ if(process.env.NODE_ENV === 'production'){
   webpackConfig.plugins.push(new WebpackCleanupPlugin())
   // https://github.com/babel/babili
   // http://babeljs.io/blog/2016/08/30/babili
-  // webpackConfig.devtool = false
+  // delete webpackConfig.devtool
   // webpackConfig.module.rules.push(
   //   {
   //     test: /\.js$/,

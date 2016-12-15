@@ -8,7 +8,7 @@ import { getCurrentTabUrl, checkIfValidUrl } from './utils'
 function checkIfPageIsSaved(tabId){
   return new Promise( (resolve, reject) => {
     if(!tabId){
-      return reject(new Error('tabId is undefined'))
+      return reject(new Error('tabId is undefined in checkIfPageIsSaved'))
     }
     if(!localStorage.marksearchServerAddress || !localStorage.marksearchApiToken){
       return reject(new Error('token not saved in extension settings'))

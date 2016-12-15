@@ -4,9 +4,9 @@ function getOptionElementValue(optionElement){
     return optionElement.checked
   }
   if(optionElement.matches('input[type="number"]')){
-    const numInputAsInteger = Number.parseInt(optionElement.value)
+    let numInputAsInteger = Number.parseInt(optionElement.value)
     if(!numInputAsInteger || numInputAsInteger < 1 ){
-      return 1
+      numInputAsInteger = 1
     }
     return numInputAsInteger
   }
