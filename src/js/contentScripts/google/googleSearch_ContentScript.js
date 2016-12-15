@@ -1,6 +1,6 @@
 import '../../../nonInlineStyles/googleSearch_ContentScript.styl'
 import { isInstantSearch, checkIfInstantSearch, getSearchQueryFromUrl, getDateFilterFromUrl, getAddedResultNodes } from './googleSearchCSutils'
-import { renderMarkSearchResults } from './renderMarkSearchResults'
+import { renderMarkSearchResultsBoxResults, renderMarkSearchIntegratedResults } from './renderMarkSearchResults'
 import { initMSresultsBox } from './setUpMSresultsBox'
 import { getSettings, $, safeGetObjectProperty } from '../../utils'
 
@@ -12,6 +12,10 @@ const observerSettings = {
   attributeOldValue: false,
   characterDataOldValue: false
 }
+/*****
+* We need to keep track of the MarkSearch results in a variable because the mutation observer needs to
+* call the renderMarkSearchIntegratedResultsIfReady, but it doesn't know about the MarkSearch results.
+*/
 let markSearchResults
 let searchEngineResults
 let searchEngineResultsHaveBeenInserted = false
@@ -40,8 +44,11 @@ getSettings().then( settings => {
 *
 * Note: For the 'googleContentScriptInstantSearchListener' port, it sends back a requestId of 0.
 *
+*
+* We render the MarkSearch results box seperately because it doen's have to wait for the search engine
+* results to be inserted in to the page.
 */
-function renderMarkSearchResultsBoxResultsIfReady(){
+function renderMarkSearchResultsBoxResultsIfReady({requestId}){
   console.log('renderMarkSearchResultsBoxResultsIfReady********')
   console.log(searchEngineResultsHaveBeenInserted && markSearchResults && latestInstantSearchRequestId === requestId)
   console.log('searchEngineResultsHaveBeenInserted', searchEngineResultsHaveBeenInserted)
@@ -49,11 +56,11 @@ function renderMarkSearchResultsBoxResultsIfReady(){
   console.log('latestInstantSearchRequestId', latestInstantSearchRequestId)
   console.log('requestId', requestId)
   if(markSearchResults && latestInstantSearchRequestId === requestId){
-    renderMarkSearchResultsBoxResults(markSearchResults, rsoElement, getSearchQueryFromUrl())
+    renderMarkSearchResultsBoxResults(markSearchResults, getSearchQueryFromUrl())
   }
 }
 
-function renderMarkSearchIntegratedResultsIfReady(requestId){
+function renderMarkSearchIntegratedResultsIfReady({requestId}){
   console.log('renderMarkSearchIntegratedResultsIfReady********')
   console.log(searchEngineResultsHaveBeenInserted && markSearchResults && latestInstantSearchRequestId === requestId)
   console.log('searchEngineResultsHaveBeenInserted', searchEngineResultsHaveBeenInserted)
@@ -63,15 +70,15 @@ function renderMarkSearchIntegratedResultsIfReady(requestId){
 
   if(searchEngineResultsHaveBeenInserted && markSearchResults && latestInstantSearchRequestId === requestId){
     console.log('renderMarkSearchResultsIfReady getSearchQueryFromUrl()', getSearchQueryFromUrl())
-    renderMarkSearchIntegratedResults(markSearchResults, rsoElement, searchEngineResults, searchQuery)
+    renderMarkSearchIntegratedResults(markSearchResults, rsoElement, searchEngineResults, getSearchQueryFromUrl())
   }
 }
 
 function onReceivedMarkSearchResults({searchResults, requestId}){
-  console.log('onReceivedMarkSearchResults searchResults', searchResults)
-  console.log('onReceivedMarkSearchResults searchEngineResultsHaveBeenInserted', searchEngineResultsHaveBeenInserted)
+  console.log('onReceivedMarkSearchResults ', searchResults)
   markSearchResults = searchResults
-  renderMarkSearchResultsIfReady(requestId)
+  renderMarkSearchIntegratedResultsIfReady(requestId)
+  renderMarkSearchResultsBoxResultsIfReady(requestId)
 }
 
 function mutationObserverHandler(mutations){
@@ -111,7 +118,7 @@ function mutationObserverHandler(mutations){
   searchEngineResults = rsoElement.querySelectorAll('.g:not(#imagebox_bigimages)')
   searchEngineResultsHaveBeenInserted = true
 
-  renderMarkSearchResultsIfReady(latestInstantSearchRequestId)
+  renderMarkSearchIntegratedResultsIfReady({requestId: latestInstantSearchRequestId})
 }
 
 function init(){

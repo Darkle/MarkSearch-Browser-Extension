@@ -1,5 +1,6 @@
 
 const extensionOptionsDefaultValues = {
+  isDevelopment: false,
   showOnDuckduckgoSearch: true,
   showOnGoogleSearch: true,
   extensionToken: '',
