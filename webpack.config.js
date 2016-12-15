@@ -10,8 +10,6 @@ const BabiliPlugin = require('babili-webpack-plugin')
 const WebpackCleanupPlugin = require('webpack-cleanup-plugin')
 // const merge = require('webpack-merge')
 
-// If I wanna minify, maybe use: https://babeljs.io/blog/2016/12/07/the-state-of-babel#minification
-
 const paths = {
   srcBase: path.join(__dirname, 'src'),
   srcJS: path.join(__dirname, 'src', 'js'),
