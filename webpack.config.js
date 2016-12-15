@@ -5,11 +5,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
-// const merge = require('webpack-merge')
 const webpack = require('webpack')
+// const merge = require('webpack-merge')
 
 // If I wanna minify, maybe use: https://babeljs.io/blog/2016/12/07/the-state-of-babel#minification
-console.log(process.env.runBundleAnalyzer)
+
 const paths = {
   srcBase: path.join(__dirname, 'src'),
   srcJS: path.join(__dirname, 'src', 'js'),
@@ -129,7 +129,7 @@ const webpackConfig = {
         'options'
       ]
     }),
-    // To remove the local file from moment cause they are huge!
+    // To remove the locale files from moment cause they are huge!
     // https://github.com/moment/moment-timezone/issues/356#issuecomment-225258637
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
   ]
@@ -138,7 +138,6 @@ const webpackConfig = {
 if(process.env.runBundleAnalyzer === 'true'){
   console.log('Running bundle analyser.')
   webpackConfig.plugins.push(new BundleAnalyzerPlugin())
-  // merge.smart(webpackConfig, {plugins: [new BundleAnalyzerPlugin()]})
 }
 
 module.exports = webpackConfig

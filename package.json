@@ -5,7 +5,7 @@
   "main": "build/extensionInit.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "set runBundleAnalyzer=false&&webpack --progress --colors --watch",
+    "start": "webpack --progress --colors --watch",
     "analyseBundle": "set runBundleAnalyzer=true&&webpack --progress --colors --watch",
     "production": "webpack --optimize-minimize",
     "serve": "webpack-dev-server"
