@@ -117,13 +117,6 @@ function init(){
 
   console.log('isInstantSearch', isInstantSearch)
 
-  rsoElement = $('#rso')
-
-  if(rsoElement){
-    searchEngineResults = rsoElement.querySelectorAll('.g:not(#imagebox_bigimages)')
-    searchEngineResultsHaveBeenInserted = true
-  }
-
   const marksearchSearchRequestPort = chrome.runtime.connect({name: 'googleContentScriptRequestMSsearch'})
 
   if(isInstantSearch){
@@ -160,13 +153,14 @@ function init(){
     */
     observer.observe($('#main'), observerSettings)
     /*****
-    * Clicking back/forward in the browser doesn't seem to trigger a xmlhttprequest for search (i guess the search
-    * engine results are stored in the cache or storage?), so need to listen for popstate events.
+    * Clicking back/forward in the browser doesn't seem to trigger a xmlhttprequest for search in instant search
+    * (i guess the search engine results are stored in the cache or storage?), so need to listen for popstate events.
     */
     window.addEventListener('popstate', () => {
       latestInstantSearchRequestId = 0
       searchEngineResultsHaveBeenInserted = false
       markSearchResults = null
+
       marksearchSearchRequestPort.postMessage(
         {
           searchTerms: getSearchQueryFromUrl(),
@@ -176,6 +170,19 @@ function init(){
     })
   }
   else{
+    rsoElement = $('#rso')
+    /*****
+    * If there are no search engine results, then the #rso element might not be there, so just insert
+    * into #search.
+    */
+    if(!rsoElement){
+      rsoElement = $('#search')
+    }
+    console.log('rsoElement', rsoElement)
+    if(rsoElement){
+      searchEngineResults = rsoElement.querySelectorAll('.g:not(#imagebox_bigimages)')
+      searchEngineResultsHaveBeenInserted = true
+    }
     /*****
     * Grabbing search terms (and date filter if being used) from window location hash/query params.
     */

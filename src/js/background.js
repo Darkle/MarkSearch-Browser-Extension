@@ -2,7 +2,7 @@
 import { checkIfPageIsSaved } from './checkIfPageIsSaved'
 import { updateIcon } from './updateIcon'
 import { browserActionEventHandler } from './browserActionHandler'
-import { background_ContentScriptMessageHandler } from './background_ContentScriptMessageHandler'
+import { background_ContentScriptSavePageMessageHandler } from './background_ContentScriptSavePageMessageHandler'
 import { errorLogger } from './errorLogger'
 import { getCurrentTabId, getSettings, syncServerAddressAndApiTokenInLocalStorage, checkIfDev } from './utils'
 import { googleSearchRequestHandler } from './googleSearchRequestHandler'
@@ -101,7 +101,7 @@ chrome.browserAction.onClicked.addListener(browserActionEventHandler)
 * page to MarkSearch, or doing a MarkSearch search on page load for the search
 * engine content script.
 */
-chrome.runtime.onMessage.addListener(background_ContentScriptMessageHandler)
+chrome.runtime.onMessage.addListener(background_ContentScriptSavePageMessageHandler)
 /*****
 * chrome.runtime.onConnect is for the instant search as there may be many of those per page
 * load.

@@ -14,16 +14,16 @@ function getDateFilterFromUrl(urlSearchParams){
 /*****
 * request details object details here: https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
 */
-async function googleSearchRequestHandler(contentScriptPort, {requestId, tabId: requestTabId, method, type, url}){
+async function googleSearchRequestHandler(contentScriptPort, {requestId, tabId, method, type, url}){
   const currentTabId = await getCurrentTabId()
   /*****
   * tabId will be -1 if the request isn't related to a tab.
   */
   if(!contentScriptPort ||
-    requestTabId === -1 ||
+    tabId === -1 ||
     method.toLowerCase() !== 'get' ||
     type !== 'xmlhttprequest' ||
-    currentTabId !== requestTabId
+    currentTabId !== tabId
   ){
     return
   }
