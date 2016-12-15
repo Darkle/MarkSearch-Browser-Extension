@@ -97,14 +97,13 @@ chrome.storage.onChanged.addListener(({extensionToken}, storageAreaName) => {
 
 chrome.browserAction.onClicked.addListener(browserActionEventHandler)
 /*****
-* We use chrome.runtime.onMessage for the one off messages like saving the current
-* page to MarkSearch, or doing a MarkSearch search on page load for the search
-* engine content script.
+* We use chrome.runtime.onMessage for the one off save page messages.
 */
 chrome.runtime.onMessage.addListener(background_ContentScriptSavePageMessageHandler)
 /*****
-* chrome.runtime.onConnect is for the instant search as there may be many of those per page
-* load.
+* chrome.runtime.onConnect is for the search requests from content script and notifying
+* of an instant xmlhttprequest search as there may be many of both of those if it's an instant
+* search.
 */
 chrome.runtime.onConnect.addListener(port => {
   if(port.name === 'googleContentScriptInstantSearchListener'){

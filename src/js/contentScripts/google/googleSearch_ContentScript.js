@@ -41,16 +41,29 @@ getSettings().then( settings => {
 * Note: For the 'googleContentScriptInstantSearchListener' port, it sends back a requestId of 0.
 *
 */
-function renderMarkSearchResultsIfReady(requestId){
-  console.log('renderMarkSearchResultsIfReady')
+function renderMarkSearchResultsBoxResultsIfReady(){
+  console.log('renderMarkSearchResultsBoxResultsIfReady********')
   console.log(searchEngineResultsHaveBeenInserted && markSearchResults && latestInstantSearchRequestId === requestId)
   console.log('searchEngineResultsHaveBeenInserted', searchEngineResultsHaveBeenInserted)
   console.log('markSearchResults', markSearchResults)
   console.log('latestInstantSearchRequestId', latestInstantSearchRequestId)
   console.log('requestId', requestId)
+  if(markSearchResults && latestInstantSearchRequestId === requestId){
+    renderMarkSearchResultsBoxResults(markSearchResults, rsoElement, getSearchQueryFromUrl())
+  }
+}
+
+function renderMarkSearchIntegratedResultsIfReady(requestId){
+  console.log('renderMarkSearchIntegratedResultsIfReady********')
+  console.log(searchEngineResultsHaveBeenInserted && markSearchResults && latestInstantSearchRequestId === requestId)
+  console.log('searchEngineResultsHaveBeenInserted', searchEngineResultsHaveBeenInserted)
+  console.log('markSearchResults', markSearchResults)
+  console.log('latestInstantSearchRequestId', latestInstantSearchRequestId)
+  console.log('requestId', requestId)
+
   if(searchEngineResultsHaveBeenInserted && markSearchResults && latestInstantSearchRequestId === requestId){
     console.log('renderMarkSearchResultsIfReady getSearchQueryFromUrl()', getSearchQueryFromUrl())
-    renderMarkSearchResults(markSearchResults, rsoElement, searchEngineResults, getSearchQueryFromUrl())
+    renderMarkSearchIntegratedResults(markSearchResults, rsoElement, searchEngineResults, searchQuery)
   }
 }
 
@@ -121,7 +134,10 @@ function init(){
 
   if(isInstantSearch){
     /*****
-    * Set up listeners/observers for instant search.
+    * Instant search pages use both 'googleContentScriptRequestMSsearch' and 'googleContentScriptInstantSearchListener'
+    * messages. 'googleContentScriptRequestMSsearch' is used to manually request a MarkSearch search when the popstate
+    * event fires, and 'googleContentScriptInstantSearchListener' is for listening for messages from the background
+    * webRequest listener that tells us when a xmlhttprequest google search has occured.
     */
     const instantSearchListenerPort = chrome.runtime.connect({name: 'googleContentScriptInstantSearchListener'})
 
