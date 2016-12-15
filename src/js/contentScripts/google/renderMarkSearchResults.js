@@ -45,8 +45,9 @@ function renderMarkSearchResultsBoxResults(markSearchResults, searchTerms){
     markSearchResults = generateMassTempResultsForDev(markSearchResults)  // eslint-disable-line no-param-reassign
   }
 
+  const resultIsForForMSresultsBox = true
+
   for(let index = 0, len = markSearchResults.length; index < len; index++){
-    const resultIsForForMSresultsBox = true
     msResultsBoxDocFragment.appendChild(
       createMSresultElements(markSearchResults[index], index, searchTerms, resultIsForForMSresultsBox)
     )
@@ -88,6 +89,8 @@ function renderMarkSearchIntegratedResults(markSearchResults, rsoElement, search
   if(isDevelopment){
     markSearchResults = generateMassTempResultsForDev(markSearchResults)  // eslint-disable-line no-param-reassign
   }
+
+  const resultIsForForMSresultsBox = false
   /*****
   * Using a for loop so we can break out of it early - say there are 1000 results from MarkSearch, we
   * won't be displaying them all on the page for the integrated results, so having a loop where we
@@ -95,7 +98,6 @@ function renderMarkSearchIntegratedResults(markSearchResults, rsoElement, search
   */
   for(let index = 0, len = markSearchResults.length; index < len; index++){
     const result = markSearchResults[index]
-    const resultIsForForMSresultsBox = false
     const resultNumber = index + 1
     const resultDiv = createMSresultElements(result, index, searchTerms, resultIsForForMSresultsBox)
 
