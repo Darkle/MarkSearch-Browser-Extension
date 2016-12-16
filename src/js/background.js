@@ -31,7 +31,7 @@ let googleContentScriptPort = null
 * background scripts localStorage. The content scripts can access the chrome.storage API though.
 *
 * Note: syncServerAddressAndApiTokenInLocalStorage runs a tiny bit after chrome.runtime.onInstalled
-* fires, but it shouldn't be an issue.
+* fires, but it shouldn't be an issue as onInstalledEventHandler also has to get settings.
 */
 getSettings().then(({extensionToken}) => {
   syncServerAddressAndApiTokenInLocalStorage(extensionToken)
