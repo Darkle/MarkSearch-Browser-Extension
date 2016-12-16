@@ -58,9 +58,9 @@ async function browserActionEventHandler(tab){
     * it doesn't have any message/event listeners and just sends a single message straight away.
     * Note: don't need to await for insertContentScript('sendPageData_ContentScript.build.js')
     * to finish.
-    * Note: the background_ContentScriptMessageHandler shows the notification that the page was saved (& updates
-    * the icon) when the sendPageData_ContentScript sends sends the data back, so we dont
-    * need to show a notification here or update the icon.
+    * Note: the background_ContentScriptSavePageMessageHandler shows the notification that the page
+    * was saved (& updates the icon) when the sendPageData_ContentScript sends sends the data back,
+    * so we dont need to show a notification here or update the icon.
     */
     action = 'savePage'
     insertContentScript('sendPageData_ContentScript.build.js')
