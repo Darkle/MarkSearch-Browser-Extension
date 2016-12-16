@@ -36,7 +36,7 @@ function saveOptions() {
 
 function setInitialDOMoptionValues(options) {
   Array
-    .from(optionElements)  // convert NodeList to Array
+    .from(optionElements)
     .forEach(optionElement => {
       const settingKey = optionElement.dataset.settingKey
       if(optionElement.matches('input[type="checkbox"], input[type="radio"]')){

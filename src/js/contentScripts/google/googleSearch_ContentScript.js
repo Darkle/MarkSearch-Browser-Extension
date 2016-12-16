@@ -98,8 +98,9 @@ function onReceivedMarkSearchResults({searchResults, requestId}){
 
 function mutationObserverHandler(mutations){
   /*****
-  * getAddedNodesForElement finds a mutation that added stuff to the element with the id that we pass,
-  * then returns the addedNodes NodeList from that mutation if it's there.
+  * getAddedNodesForTargetElement finds a mutation that added stuff to a target element that has an id that
+  * we pass in. It then returns the 'addedNodes' property for that mutation if it's there and has a value.
+  * The 'addedNodes' property value is a NodeList.
   */
   const addedResultNodes = getAddedNodesForTargetElement(mutations, 'search')
 
@@ -107,8 +108,8 @@ function mutationObserverHandler(mutations){
     return
   }
   /*****
-  * The first item in the addedResultNodes NodeList is usually a style element,
-  * with the second one being a div (which is the one we want), so find that one.
+  * The first item in the addedResultNodes NodeList (whose target node was #search) is usually a
+  * style element, with the second one being a div (which is the one we want), so find that one.
   * Also, on page load for non instant search, the page inserts comments into the
   * #results element, so just on the off chance it does it sometimes on instant search
   * too, this .find check for nodeName should also filter comment nodes out too, as a
