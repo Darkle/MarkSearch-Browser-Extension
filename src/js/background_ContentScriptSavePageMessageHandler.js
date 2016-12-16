@@ -10,8 +10,7 @@ import { getCurrentTabId, createErrorMessageToShowUser, safeGetObjectProperty } 
 */
 async function background_ContentScriptSavePageMessageHandler(messageData){
   /*****
-  * If there's a .url property then we know a content script wants to save a page
-  * to MarkSearch.
+  * There should always be a .url object property.
   */
   if(safeGetObjectProperty(messageData, 'url')){
     try{
