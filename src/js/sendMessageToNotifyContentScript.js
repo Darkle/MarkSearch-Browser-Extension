@@ -1,4 +1,3 @@
-
 import { getCurrentTabId } from './utils'
 
 /*****

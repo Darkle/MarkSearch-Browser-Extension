@@ -1,6 +1,3 @@
-
-import { checkIfPageIsSaved } from './checkIfPageIsSaved'
-import { updateIcon } from './updateIcon'
 import { browserActionEventHandler } from './browserActionHandler'
 import { background_ContentScriptSavePageMessageHandler } from './background_ContentScriptSavePageMessageHandler'
 import { errorLogger } from './errorLogger'
@@ -53,12 +50,6 @@ checkIfDev().then(isDevelopment => {
     hotReloadInit()
   }
 })
-
-function checkIfPageIsSavedAndUpdateIcon(tabId){
-  checkIfPageIsSaved(tabId)
-    .then( pageIsSavedInMarkSearch => updateIcon(pageIsSavedInMarkSearch, tabId))
-    .catch(errorLogger)
-}
 
 chrome.contextMenus.create(
   {

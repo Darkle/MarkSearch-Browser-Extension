@@ -1,4 +1,3 @@
-
 import path from 'path'
 import { default as lodashGet } from 'lodash.get'
 

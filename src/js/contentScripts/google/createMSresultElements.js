@@ -1,4 +1,3 @@
-
 import { lunrStopwordList } from '../lunrStopwordFilter'
 import { extensionSettings } from './googleSearch_ContentScript'
 

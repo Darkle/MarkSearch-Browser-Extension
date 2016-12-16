@@ -1,4 +1,3 @@
-
 import '../../styles/notie.styl'
 import '../../styles/showNotification_ContentScript.styl'
 

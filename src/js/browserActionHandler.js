@@ -1,4 +1,3 @@
-
 import { removePageFromMarkSearch } from './removePageFromMarkSearch'
 import { checkIfPageIsSaved } from './checkIfPageIsSaved'
 import { updateIcon } from './updateIcon'
