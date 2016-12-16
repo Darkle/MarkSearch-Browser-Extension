@@ -6,7 +6,7 @@ import { background_ContentScriptSavePageMessageHandler } from './background_Con
 import { errorLogger } from './errorLogger'
 import { getCurrentTabId, getSettings, syncServerAddressAndApiTokenInLocalStorage, checkIfDev } from './utils'
 import { googleSearchRequestHandler } from './googleSearchRequestHandler'
-import { googleUrlPatterns } from './googleUrls'
+import { googleInstantSearchXHRurlPatterns } from './googleInstantSearchXHRurlPatterns'
 import { contextMenuOnClickedHandler } from './contextMenuOnClickedHandler'
 import { onInstalledEventHandler } from './onInstalledEventHandler'
 import { hotReloadInit } from './hotReload'
@@ -128,7 +128,7 @@ chrome.webRequest.onBeforeRequest.addListener(
     googleSearchRequestHandler(googleContentScriptPort, webRequestDetails)
   },
   {
-    urls: googleUrlPatterns,
+    urls: googleInstantSearchXHRurlPatterns,
     types: ['main_frame', 'xmlhttprequest']
   }
 )

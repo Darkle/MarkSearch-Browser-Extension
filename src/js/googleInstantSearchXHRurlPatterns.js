@@ -1,5 +1,5 @@
 
-const googleUrlPatterns = [
+const googleInstantSearchXHRurlPatterns = [
   'https://encrypted.google.com/search*psi=*',
   'https://www.google.ad/search*psi=*',
   'https://www.google.ae/search*psi=*',
@@ -216,5 +216,5 @@ const googleUrlPatterns = [
 ]
 
 export {
-  googleUrlPatterns
+  googleInstantSearchXHRurlPatterns
 }
