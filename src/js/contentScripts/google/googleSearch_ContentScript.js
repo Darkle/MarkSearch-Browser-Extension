@@ -56,12 +56,6 @@ getSettings().then( settings => {
 * results to be inserted in to the page.
 */
 function renderMarkSearchResultsBoxResultsIfReady(requestId){
-  console.log('renderMarkSearchResultsBoxResultsIfReady********')
-  console.log(markSearchResults && latestInstantSearchRequestId === requestId)
-  console.log('searchEngineResultsHaveBeenInserted', searchEngineResultsHaveBeenInserted)
-  console.log('markSearchResults', markSearchResults)
-  console.log('latestInstantSearchRequestId', latestInstantSearchRequestId)
-  console.log('requestId', requestId)
   /*****
   * We also check if the msResultsBoxResultsContainer is undefined because for instant search, we
   * wait a bit till some of the page is created before we create and insert the MS results box, and
@@ -75,22 +69,12 @@ function renderMarkSearchResultsBoxResultsIfReady(requestId){
 }
 
 function renderMarkSearchIntegratedResultsIfReady(requestId){
-  console.log('renderMarkSearchIntegratedResultsIfReady********')
-  console.log(searchEngineResultsHaveBeenInserted && markSearchResults && latestInstantSearchRequestId === requestId)
-  console.log('searchEngineResultsHaveBeenInserted', searchEngineResultsHaveBeenInserted)
-  console.log('markSearchResults', markSearchResults)
-  console.log('latestInstantSearchRequestId', latestInstantSearchRequestId)
-  console.log('requestId', requestId)
-
   if(searchEngineResultsHaveBeenInserted && markSearchResults && latestInstantSearchRequestId === requestId){
-    console.log('renderMarkSearchResultsIfReady getSearchQueryFromUrl()', getSearchQueryFromUrl())
     renderMarkSearchIntegratedResults(markSearchResults, rsoElement, searchEngineResults, getSearchQueryFromUrl())
   }
 }
 
 function onReceivedMarkSearchResults({searchResults, requestId}){
-  console.log('onReceivedMarkSearchResults searchResults: ', searchResults)
-  console.log('onReceivedMarkSearchResults requestId: ', requestId)
   markSearchResults = searchResults
   renderMarkSearchIntegratedResultsIfReady(requestId)
   renderMarkSearchResultsBoxResultsIfReady(requestId)
@@ -152,13 +136,11 @@ function instantSearchListener(message){
   * been received from MarkSearch and inserted in to the page.
   */
   if(safeGetObjectProperty(message, 'googleInstantSearchOccured')){
-    console.log('googleInstantSearchOccured')
     latestInstantSearchRequestId = message.requestId
     searchEngineResultsHaveBeenInserted = false
     markSearchResults = null
   }
   else{
-    console.log('got search results from marksearch from background', message)
     onReceivedMarkSearchResults(message)
   }
 }
@@ -189,8 +171,6 @@ function init(){
   if(extensionSettings.msResultsBox){
     initMSresultsBox()
   }
-
-  console.log('isInstantSearch', isInstantSearch)
 
   marksearchSearchRequestPort = chrome.runtime.connect({name: 'googleContentScriptRequestMSsearch'})
 
@@ -229,7 +209,6 @@ function init(){
     if(!rsoElement){
       rsoElement = $('#search')
     }
-    console.log('rsoElement', rsoElement)
     if(rsoElement){
       searchEngineResults = rsoElement.querySelectorAll('.g:not(#imagebox_bigimages)')
       searchEngineResultsHaveBeenInserted = true

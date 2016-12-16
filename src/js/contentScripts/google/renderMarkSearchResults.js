@@ -26,9 +26,6 @@ function renderMarkSearchResultsBoxResults(markSearchResults, searchTerms){
   if(!extensionSettings.msResultsBox){
     return
   }
-  console.log('renderMarkSearchIntegratedResults')
-  console.log('markSearchResults', markSearchResults)
-  console.log('searchTerms', searchTerms)
 
   // for(const msResultsBoxResult of $$('#msResultsBox .marksearchResultsBoxResult')){
   //   msResultsBoxResult.remove()
@@ -72,12 +69,6 @@ function renderMarkSearchIntegratedResults(markSearchResults, rsoElement, search
   if(!msResultsAtTop && !msResultsInterspersed && !msResultsAtBottom){
     return
   }
-  console.log('renderMarkSearchIntegratedResults')
-  console.log('renderMarkSearchResults', markSearchResults)
-  console.log('searchTerms', searchTerms)
-  console.log('rsoElement', rsoElement)
-  console.log('searchEngineResults', searchEngineResults)
-  console.log('searchEngineResults.length', searchEngineResults.length)
 
   let topOrBottomDocFragment
 

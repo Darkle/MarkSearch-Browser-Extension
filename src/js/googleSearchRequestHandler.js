@@ -38,7 +38,6 @@ async function googleSearchRequestHandler(contentScriptPort, {requestId, tabId, 
   const urlSearchParams = new URLSearchParams(requestUrl.search)
   const searchTerms = urlSearchParams.get('q')
   const dateFilter = getDateFilterFromUrl(urlSearchParams)
-  console.log('googleSearchRequestHandler')
 
   let searchResults = []
   try{
@@ -47,7 +46,7 @@ async function googleSearchRequestHandler(contentScriptPort, {requestId, tabId, 
   catch(err){
     errorLogger(err)
   }
-  console.log('searchResults in googleSearchRequestHandler:', searchResults)
+
   contentScriptPort.postMessage({searchResults, requestId})
 }
 
