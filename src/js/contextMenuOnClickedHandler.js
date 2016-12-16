@@ -8,6 +8,10 @@ function contextMenuOnClickedHandler({menuItemId}){
       chrome.tabs.create({url: localStorage.marksearchServerAddress})
       return
     }
+    /*****
+    * If the user tries to open the MarkSearch server before they have set up the
+    * extension settings, notify the user to set it up.
+    */
     sendMessageToNotifyContentScript({notifyScriptRunningCheck: true})
       .then( response => {
         if(!safeGetObjectProperty(response, 'scriptAlreadyInserted')){
