@@ -1,11 +1,8 @@
 
 function updateIcon(pageIsSavedInMarkSearch, tabId){
-  let title = 'Save To MarkSearch'
-  let text = ''
-  if(pageIsSavedInMarkSearch){
-    title = 'Page Saved To MarkSearch'
-    text = 'Saved'
-  }
+  const title = pageIsSavedInMarkSearch ? 'Page Saved To MarkSearch' : 'Save To MarkSearch'
+  const text = pageIsSavedInMarkSearch ? 'Saved' : ''
+  
   chrome.browserAction.setTitle({title, tabId})
   chrome.browserAction.setBadgeText({text, tabId})
 }
