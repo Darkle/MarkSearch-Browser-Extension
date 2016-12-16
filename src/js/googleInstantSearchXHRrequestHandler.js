@@ -1,3 +1,4 @@
+import { googleContentScriptPort } from './background'
 import { searchMarkSearch } from './searchMarkSearch'
 import { getCurrentTabId } from './utils'
 import { parseDateFilter } from './contentScripts/google/googleSearchCSutils'
@@ -14,12 +15,12 @@ function getDateFilterFromUrl(urlSearchParams){
 /*****
 * request details object details here: https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
 */
-async function googleInstantSearchXHRrequestHandler(contentScriptPort, {requestId, tabId, method, type, url}){
+async function googleInstantSearchXHRrequestHandler({requestId, tabId, method, type, url}){
   const currentTabId = await getCurrentTabId()
   /*****
   * tabId will be -1 if the request isn't related to a tab.
   */
-  if(!contentScriptPort ||
+  if(!googleContentScriptPort ||
     tabId === -1 ||
     method.toLowerCase() !== 'get' ||
     type !== 'xmlhttprequest' ||
@@ -32,7 +33,7 @@ async function googleInstantSearchXHRrequestHandler(contentScriptPort, {requestI
   * We send a message early before querying MarkSearch server so we can reset some
   * things in the content script.
   */
-  contentScriptPort.postMessage({googleInstantSearchOccured: true, requestId})
+  googleContentScriptPort.postMessage({googleInstantSearchOccured: true, requestId})
 
   const requestUrl = new URL(url)
   const urlSearchParams = new URLSearchParams(requestUrl.search)
@@ -47,7 +48,7 @@ async function googleInstantSearchXHRrequestHandler(contentScriptPort, {requestI
     errorLogger(err)
   }
 
-  contentScriptPort.postMessage({searchResults, requestId})
+  googleContentScriptPort.postMessage({searchResults, requestId})
 }
 
 export {

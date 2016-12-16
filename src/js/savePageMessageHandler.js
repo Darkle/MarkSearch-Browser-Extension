@@ -5,10 +5,10 @@ import { errorLogger } from './errorLogger'
 import { getCurrentTabId, createErrorMessageToShowUser, safeGetObjectProperty } from './utils'
 
 /*****
-* background_ContentScriptSavePageMessageHandler is run when the sendPageData_ContentScript sends a message
+* savePageMessageHandler is run when the sendPageData_ContentScript sends a message
 * with the pageData back to the background script to be saved to MarkSearch.
 */
-async function background_ContentScriptSavePageMessageHandler(messageData){
+async function savePageMessageHandler(messageData){
   /*****
   * There should always be a .url object property.
   */
@@ -32,4 +32,4 @@ async function background_ContentScriptSavePageMessageHandler(messageData){
   }
 }
 
-export { background_ContentScriptSavePageMessageHandler }
+export { savePageMessageHandler }

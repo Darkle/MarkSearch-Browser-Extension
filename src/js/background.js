@@ -1,5 +1,5 @@
 import { browserActionEventHandler } from './browserActionHandler'
-import { background_ContentScriptSavePageMessageHandler } from './background_ContentScriptSavePageMessageHandler'
+import { savePageMessageHandler } from './savePageMessageHandler'
 import { errorLogger } from './errorLogger'
 import { getCurrentTabId, getSettings, syncServerAddressAndApiTokenInLocalStorage, checkIfDev } from './utils'
 import { googleInstantSearchXHRrequestHandler } from './googleInstantSearchXHRrequestHandler'
@@ -9,6 +9,7 @@ import { onInstalledEventHandler } from './onInstalledEventHandler'
 import { hotReloadInit } from './hotReload'
 import { extensionOptionsDefaultValues } from './extensionOptionsDefaultValues'
 import { searchMarkSearch } from './searchMarkSearch'
+import { checkIfPageIsSavedAndUpdateIcon } from './checkIfPageIsSavedAndUpdateIcon'
 
 /*****
 * Note: using chrome.storage.local in the extension rather than storage.sync in case they have MarkSearch
@@ -88,16 +89,22 @@ chrome.storage.onChanged.addListener(({extensionToken}, storageAreaName) => {
 
 chrome.browserAction.onClicked.addListener(browserActionEventHandler)
 /*****
-* We use chrome.runtime.onMessage for the one off save page messages.
+* We use chrome.runtime.onMessage for the save page messages from sendPageData_ContentScript.
 */
-chrome.runtime.onMessage.addListener(background_ContentScriptSavePageMessageHandler)
+chrome.runtime.onMessage.addListener(savePageMessageHandler)
 /*****
 * chrome.runtime.onConnect is for the search requests from content script and notifying
 * of an instant xmlhttprequest search as there may be many of both of those if it's an instant
 * search.
+* Also for requesting a new port reference back here in background. The port reference
+* is used in the chrome.webRequest.onBeforeRequest listeners to send messages back to the content
+* script with the search terms and to be notified that an xhr instant search happened.
 */
 chrome.runtime.onConnect.addListener(port => {
-  if(port.name === 'googleContentScriptInstantSearchListener'){
+  if(port.name === 'requestNewPortReference'){
+    if(googleContentScriptPort){
+      googleContentScriptPort.disconnect()
+    }
     googleContentScriptPort = port
   }
   if(port.name === 'googleContentScriptRequestMSsearch'){
@@ -116,7 +123,7 @@ chrome.runtime.onConnect.addListener(port => {
 
 chrome.webRequest.onBeforeRequest.addListener(
   webRequestDetails => {
-    googleInstantSearchXHRrequestHandler(googleContentScriptPort, webRequestDetails)
+    googleInstantSearchXHRrequestHandler(webRequestDetails)
   },
   {
     urls: googleInstantSearchXHRurlPatterns,
@@ -135,3 +142,7 @@ chrome.webRequest.onBeforeRequest.addListener(
 // )
 
 chrome.contextMenus.onClicked.addListener(contextMenuOnClickedHandler)
+
+export {
+  googleContentScriptPort
+}

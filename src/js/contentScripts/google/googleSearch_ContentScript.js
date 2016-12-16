@@ -29,6 +29,7 @@ let latestInstantSearchRequestId = 0
 let rsoElement
 let extensionSettings
 let marksearchSearchRequestPort
+let instantSearchPort
 
 getSettings().then( settings => {
   extensionSettings = settings
@@ -176,14 +177,14 @@ function init(){
 
   if(isInstantSearch){
     /*****
-    * Instant search pages use both 'googleContentScriptRequestMSsearch' and 'googleContentScriptInstantSearchListener'
-    * messages. 'googleContentScriptRequestMSsearch' is used to manually request a MarkSearch search when the popstate
-    * event fires, and 'googleContentScriptInstantSearchListener' is for listening for messages from the background
-    * webRequest listener that tells us when a xmlhttprequest google search has occured.
+    * Instant search pages use both marksearchSearchRequestPort and instantSearchPort messages.
+    * marksearchSearchRequestPort is used to manually request a MarkSearch search when the popstate
+    * event fires, and instantSearchPort is for setting the port in the background.js so that
+    * the webRequest listener can send xhr instant search queries here back to this content script.
     */
-    const instantSearchListenerPort = chrome.runtime.connect({name: 'googleContentScriptInstantSearchListener'})
+    instantSearchPort = chrome.runtime.connect({name: 'requestNewPortReference'})
+    instantSearchPort.onMessage.addListener(instantSearchListener)
 
-    instantSearchListenerPort.onMessage.addListener(instantSearchListener)
     /*****
     * We need a mutation observer for when we need to insert results in to the page - for each new search with
     * instant search, the page removes the old results and inserts the new results. We need to know when
@@ -199,6 +200,21 @@ function init(){
     * (i guess the search engine results are stored in the cache or storage?), so need to listen for popstate events.
     */
     window.addEventListener('popstate', popstateListener)
+    /*****
+    * We also need to set a listner for the focus event. This is because we need to update the port reference
+    * in the background.js script. For example, if you have instant search going in one tab and then switch to another,
+    * the port will be set to the old tab's content script.
+    * We don't wanna use page visibility api.
+    */
+    window.addEventListener('focus', () => {
+      /*****
+      * Don't really need to send a message. The background.js script disconnects the old port from the previous
+      * tab that had focus so we're cleaning up afterwards.
+      */
+      instantSearchPort.disconnect()
+      instantSearchPort = chrome.runtime.connect({name: 'requestNewPortReference'})
+      instantSearchPort.onMessage.addListener(instantSearchListener)
+    })
   }
   else{
     rsoElement = $('#rso')
