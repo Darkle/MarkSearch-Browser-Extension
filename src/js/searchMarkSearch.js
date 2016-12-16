@@ -29,7 +29,7 @@ function searchMarkSearch(searchTerms, dateFilter){
     .then( response => {
       /*****
       * Not bothering to check for a 403 Forbidden or other server issue as we dont want to bother the user
-      * when they are doing a google/duckduckgo/baidu search.
+      * when they are doing a google/duckduckgo search.
       */
       if(response.ok){
         return response.json()
