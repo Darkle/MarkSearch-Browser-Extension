@@ -1,19 +1,28 @@
 import { extensionSettings, latestInstantSearchRequestId, renderMarkSearchResultsBoxResultsIfReady } from './googleSearch_ContentScript'
-import { setMSiconClass, getAddedResultNodes, isInstantSearch } from './googleSearchCSutils'
+import { setMSiconClass, getAddedNodesForTargetElement, findElementInNodeList, getRemovedNodesForTargetElement, isInstantSearch } from './googleSearchCSutils'
 import { $ } from '../../utils'
 
 let msResultsBoxResultsContainer
 let msResultsBoxElem
 let resElement
 let observer
+let MSresultsBoxHeight
+let haveSetUpMSresultsBoxOnPageLoad = false
 
 /*****
+* We also reference the MS results box height so we can export it. We do this because
+* we set up the MS results box before the search engine results have been inserted into the
+* page and because of this, sometimes the #res element doesn't yet have a clientHeight, so
+* in the mutationObserverHandler in googleSearch_ContentScript, we check if the MSresultsBoxHeight
+* is 0, and if so, we call setMSresultsBoxHeight().
+*
 * setMSresultsBoxHeight() is also used in renderMarkSearchResults because when we insert
 * MS results into the page, it changes the height of the #res element, so we need to
 * re-set the msResultsBoxElem height.
 */
 function setMSresultsBoxHeight(){
-  msResultsBoxElem.setAttribute('style', `height:${ resElement.clientHeight }px;`)
+  MSresultsBoxHeight = resElement.clientHeight
+  msResultsBoxElem.setAttribute('style', `height:${ MSresultsBoxHeight }px;`)
 }
 
 function setUpMSresultsBox(){
@@ -61,26 +70,32 @@ function setUpMSresultsBox(){
   /*****
   * We wanna have the MS icon in the search box be fixed and stay at the top of the results
   * box sidebar when the user scrolls down past the top of the results box.
-  * Gonna do computedMsSidebarIconTop as a constant rather than computed as it wont change and
-  * still seems to work ok even if the page is zoomed in.
+  * We do this by using position:sticky in the css if the browser supports it, or by checking
+  * manually on scroll where the icon is and and toggling a css class to make it position:fixed.
+  * position:sticky is available in Firefox now and Chrome as of Jan 2017: http://bit.ly/2hCkkW4
   */
-  // const computedMsSidebarIconTop = msSidebarIcon.getBoundingClientRect().top + scrollY
-  const computedMsSidebarIconTop = 167
+  if(!CSS.supports('position', 'sticky')){
+    /*
+    * Gonna do computedMsSidebarIconTop as a constant rather than computed as it wont change and
+    * still seems to work ok even if the page is zoomed in.
+    */
+    // const computedMsSidebarIconTop = msSidebarIcon.getBoundingClientRect().top + scrollY
+    const computedMsSidebarIconTop = 167
+    /*****
+    * Need to check on load in case the page is already scrolled down past the top of the
+    * results box.
+    */
+    setMSiconClass(msSidebarIcon, computedMsSidebarIconTop)
 
-  /*****
-  * Need to check on load in case the page is already scrolled down past the top of the
-  * results box.
-  */
-  setMSiconClass(msSidebarIcon, computedMsSidebarIconTop)
-
-  window.addEventListener('scroll',
-    () => {
-      setMSiconClass(msSidebarIcon, computedMsSidebarIconTop)
-    },
-    {
-      passive: true
-    }
-  )
+    window.addEventListener('scroll',
+      () => {
+        setMSiconClass(msSidebarIcon, computedMsSidebarIconTop)
+      },
+      {
+        passive: true
+      }
+    )
+  }
   /*****
   * When it's instant seach, we have had to wait a bit before inserting the results box in to the page,
   * and there's a good chance the googleSearch_ContentScript has already received the MS search results, so
@@ -91,15 +106,26 @@ function setUpMSresultsBox(){
   }
 }
 
-function instantSearchPageLoadMutationHandler(mutations){
+function instantSearchMutationHandler(mutations){
   /*****
-  * getAddedResultNodes finds a mutation that added stuff to the #search element, then returns
-  * the addedNodes NodeList from that mutation if it's there (returns falsey if not).
-  * Looking for the #search target seems to be the best option as the other mutation targets
-  * don't seem that helpful. #search is not a bad one to check since it's a direct child of #res
+  * getAddedResultNodesForElement finds a mutation that added stuff to the element you're looking for
+  * (in this case the #search element), then returns the addedNodes NodeList from that mutation if it's
+  * there (returns falsey if not).
+  * Looking for the #search target here with the getAddedResultNodesForElement() call for on DOMContentLoaded as
+  * it seems to be the best option as the other mutation targets don't seem that helpful. #search is not a bad
+  * one to check since it's a direct child of #res
   */
-  if(getAddedResultNodes(mutations)){
-    observer.disconnect()
+  if(!haveSetUpMSresultsBoxOnPageLoad && getAddedNodesForTargetElement(mutations, 'search')){
+    haveSetUpMSresultsBoxOnPageLoad = true
+    resElement = $('#res')
+    setUpMSresultsBox()
+  }
+  /*****
+  * #cnt is removed an recreated/reinserted when the user clicks the back/forward button when using
+  * instant search, so since the #cnt element is a parent of the MS results box element, we need to
+  * recreate and reinsert the MS results box.
+  */
+  else if(findElementInNodeList('id', 'cnt', getRemovedNodesForTargetElement(mutations, 'main'))){
     resElement = $('#res')
     setUpMSresultsBox()
   }
@@ -110,9 +136,12 @@ function initMSresultsBox(){
   * #res element isn't available yet on DOMContentLoaded when it's instant search,
   * so need to set an observer and wait. (we remove the observer once #res is available)
   * #main is the lowest down element in the tree (of what we want) that's available on DOMContentLoaded.
+  *
+  * We also use the observer for when the user clicks the back/forward buttons in the browser as that removes
+  * the parent element that the MS results box was in so we have to recreate it.
   */
   if(isInstantSearch){
-    observer = new MutationObserver(instantSearchPageLoadMutationHandler)
+    observer = new MutationObserver(instantSearchMutationHandler)
 
     observer.observe(
       $('#main'),
@@ -134,5 +163,6 @@ function initMSresultsBox(){
 export {
   initMSresultsBox,
   setMSresultsBoxHeight,
-  msResultsBoxResultsContainer
+  msResultsBoxResultsContainer,
+  MSresultsBoxHeight
 }

@@ -1,7 +1,13 @@
 import '../../../nonInlineStyles/googleSearch_ContentScript.styl'
-import { isInstantSearch, checkIfInstantSearch, getSearchQueryFromUrl, getDateFilterFromUrl, getAddedResultNodes } from './googleSearchCSutils'
+import {
+  isInstantSearch,
+  checkIfInstantSearch,
+  getSearchQueryFromUrl,
+  getDateFilterFromUrl,
+  getAddedNodesForTargetElement,
+  findElementInNodeList } from './googleSearchCSutils'
 import { renderMarkSearchResultsBoxResults, renderMarkSearchIntegratedResults } from './renderMarkSearchResults'
-import { initMSresultsBox, msResultsBoxResultsContainer } from './setUpMSresultsBox'
+import { initMSresultsBox, msResultsBoxResultsContainer, MSresultsBoxHeight, setMSresultsBoxHeight } from './setUpMSresultsBox'
 import { getSettings, $, safeGetObjectProperty } from '../../utils'
 
 const observerSettings = {
@@ -92,10 +98,10 @@ function onReceivedMarkSearchResults({searchResults, requestId}){
 
 function mutationObserverHandler(mutations){
   /*****
-  * getAddedResultNodes finds a mutation that added stuff to the #search element, then returns
-  * the addedNodes NodeList from that mutation if it's there.
+  * getAddedNodesForElement finds a mutation that added stuff to the element with the id that we pass,
+  * then returns the addedNodes NodeList from that mutation if it's there.
   */
-  const addedResultNodes = getAddedResultNodes(mutations)
+  const addedResultNodes = getAddedNodesForTargetElement(mutations, 'search')
 
   if(!addedResultNodes){
     return
@@ -109,7 +115,7 @@ function mutationObserverHandler(mutations){
   * nodeName for a comment element is '#comment'.
   * The zomgWeFoundADiv div is a first child of the #search element
   */
-  const zomgWeFoundADiv = Array.from(addedResultNodes).find(elem => elem.nodeName.toLowerCase() === 'div')
+  const zomgWeFoundADiv = findElementInNodeList('nodeName', 'div', addedResultNodes)
 
   if(!zomgWeFoundADiv){
     return
@@ -126,6 +132,14 @@ function mutationObserverHandler(mutations){
 
   searchEngineResults = rsoElement.querySelectorAll('.g:not(#imagebox_bigimages)')
   searchEngineResultsHaveBeenInserted = true
+
+  /*****
+  * See the comments above setMSresultsBoxHeight() in setUpMSresultsBox for why we need to
+  * call setMSresultsBoxHeight() here sometimes.
+  */
+  if(MSresultsBoxHeight === 0){
+    setMSresultsBoxHeight()
+  }
 
   renderMarkSearchIntegratedResultsIfReady(latestInstantSearchRequestId)
 }

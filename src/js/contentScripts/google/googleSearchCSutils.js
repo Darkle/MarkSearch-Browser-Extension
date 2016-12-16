@@ -78,8 +78,28 @@ function getDateFilterFromUrl(){
   return parseDateFilter(tbs)
 }
 
-function getAddedResultNodes(mutations){
-  return safeGetObjectProperty(mutations.find(({target: {id}}) => id === 'search'), 'addedNodes')
+function checkIfMutationOccuredOnTargetElement(mutations, targetId){
+  return mutations.find(({target: {id}}) => id === targetId)
+}
+
+function getAddedNodesForTargetElement(mutations, targetId){
+  return safeGetObjectProperty(checkIfMutationOccuredOnTargetElement(mutations, targetId), 'addedNodes')
+}
+
+function getRemovedNodesForTargetElement(mutations, targetId){
+  return safeGetObjectProperty(checkIfMutationOccuredOnTargetElement(mutations, targetId), 'removedNodes')
+}
+
+function findElementInNodeList(searchType, searchData, nodeList){
+  if(!nodeList){
+    return
+  }
+  if(searchType === 'nodeName'){
+    return Array.from(nodeList).find(elem => elem.nodeName.toLowerCase() === searchData)
+  }
+  if(searchType === 'id'){
+    return Array.from(nodeList).find(elem => elem.id === searchData)
+  }
 }
 
 function setMSiconClass(msSidebarIcon, msSidebarIconTop){
@@ -100,6 +120,9 @@ export {
   parseDateFilter,
   isInstantSearch,
   checkIfInstantSearch,
-  getAddedResultNodes,
+  checkIfMutationOccuredOnTargetElement,
+  getAddedNodesForTargetElement,
+  getRemovedNodesForTargetElement,
+  findElementInNodeList,
   setMSiconClass
 }
