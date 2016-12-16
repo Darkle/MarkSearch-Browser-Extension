@@ -2,8 +2,9 @@
 import { getCurrentTabUrl, checkIfValidUrl } from './utils'
 
 /*****
-* Note: not doing any caching of bookmarkedUrls like http://bit.ly/2fEPFpu because the bookmark could have
-* been deleted on the MarkSearch server webpage and our cache in this extension would not match up.
+* Note: not doing any caching of bookmarks we've already checked like http://bit.ly/2fEPFpu because
+* the bookmark could have been deleted on the MarkSearch server webpage and our cache in this
+* extension would not match up.
 */
 function checkIfPageIsSaved(tabId){
   return new Promise( (resolve, reject) => {
