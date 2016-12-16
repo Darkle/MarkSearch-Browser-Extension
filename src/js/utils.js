@@ -40,7 +40,10 @@ function getSettings(keys = null){
     chrome.storage.local.get(keys, resolve)
   })
 }
-
+/*****
+* https://developer.chrome.com/extensions/tabs#method-executeScript
+* The first param for executeScript is the tabId, which "defaults to the active tab of the current window"
+*/
 function insertContentScript(scriptName){
   return new Promise( resolve => {
     chrome.tabs.executeScript(
