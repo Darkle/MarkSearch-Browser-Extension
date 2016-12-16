@@ -14,7 +14,7 @@ function getDateFilterFromUrl(urlSearchParams){
 /*****
 * request details object details here: https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
 */
-async function googleSearchRequestHandler(contentScriptPort, {requestId, tabId, method, type, url}){
+async function googleInstantSearchXHRrequestHandler(contentScriptPort, {requestId, tabId, method, type, url}){
   const currentTabId = await getCurrentTabId()
   /*****
   * tabId will be -1 if the request isn't related to a tab.
@@ -51,5 +51,5 @@ async function googleSearchRequestHandler(contentScriptPort, {requestId, tabId, 
 }
 
 export {
-  googleSearchRequestHandler
+  googleInstantSearchXHRrequestHandler
 }

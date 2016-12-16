@@ -5,7 +5,7 @@ import { browserActionEventHandler } from './browserActionHandler'
 import { background_ContentScriptSavePageMessageHandler } from './background_ContentScriptSavePageMessageHandler'
 import { errorLogger } from './errorLogger'
 import { getCurrentTabId, getSettings, syncServerAddressAndApiTokenInLocalStorage, checkIfDev } from './utils'
-import { googleSearchRequestHandler } from './googleSearchRequestHandler'
+import { googleInstantSearchXHRrequestHandler } from './googleInstantSearchXHRrequestHandler'
 import { googleInstantSearchXHRurlPatterns } from './googleInstantSearchXHRurlPatterns'
 import { contextMenuOnClickedHandler } from './contextMenuOnClickedHandler'
 import { onInstalledEventHandler } from './onInstalledEventHandler'
@@ -125,7 +125,7 @@ chrome.runtime.onConnect.addListener(port => {
 
 chrome.webRequest.onBeforeRequest.addListener(
   webRequestDetails => {
-    googleSearchRequestHandler(googleContentScriptPort, webRequestDetails)
+    googleInstantSearchXHRrequestHandler(googleContentScriptPort, webRequestDetails)
   },
   {
     urls: googleInstantSearchXHRurlPatterns,
