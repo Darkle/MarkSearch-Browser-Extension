@@ -19,6 +19,7 @@ function checkIfInstantSearch(){
   if(document.querySelector('#tsf>input[value="psy-ab"][name="sclient"]')){
     isInstantSearch = true
   }
+  return isInstantSearch
 }
 
 function getPageHash(){
@@ -113,16 +114,23 @@ function setMSiconClass(msSidebarIcon, msSidebarIconTop){
     msSidebarIcon.classList.remove('msSidebarIconFixed')
   }
 }
+/*****
+* on non instant results page, #searchform has the classes: `jsrp big`
+* on non instant search page, #searchform has the classes: `jhp big`
+* on instant results page, #searchform has the class: `big` or the classes `big mdm`
+* on instant search page, #searchform has the classes: `jhp big`
+*/
+const searchPageIsDisplayed = searchForm => searchForm.classList.contains('jhp')
 
 export {
   getSearchQueryFromUrl,
   getDateFilterFromUrl,
   parseDateFilter,
-  isInstantSearch,
   checkIfInstantSearch,
   checkIfMutationOccuredOnTargetElement,
   getAddedNodesForTargetElement,
   getRemovedNodesForTargetElement,
   findElementInNodeList,
-  setMSiconClass
+  setMSiconClass,
+  searchPageIsDisplayed,
 }

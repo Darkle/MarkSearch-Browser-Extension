@@ -4,7 +4,17 @@ import { $ } from '../../utils'
 
 let msResultsBoxResultsContainer
 let msResultsBoxElem
-let MSresultsBoxHeight
+let msResultsBoxHeight
+
+function hideMSresultsBox(){
+  msResultsBoxElem.classList.add('msResultsBoxHide')
+}
+
+function showMSresultsBox(){
+  if(msResultsBoxElem.classList.contains('msResultsBoxHide')){
+    msResultsBoxElem.classList.remove('msResultsBoxHide')
+  }
+}
 
 /*****
 * We also call setMSresultsBoxHeight() in the mutation observer handler in googleSearch_ContentScript
@@ -24,18 +34,26 @@ function setMSresultsBoxHeight(searchElement){
   /*****
   * If the old height is the same as the new height, just leave it.
   */
-  if(MSresultsBoxHeight !== searchElementClientHeight){
-    MSresultsBoxHeight = searchElementClientHeight
-    msResultsBoxElem.setAttribute('style', `height:${ MSresultsBoxHeight }${ unit };`)
+  if(msResultsBoxHeight !== searchElementClientHeight){
+    msResultsBoxHeight = searchElementClientHeight
+    msResultsBoxElem.setAttribute('style', `height:${ msResultsBoxHeight }${ unit };`)
   }
 }
 
-function setUpMSresultsBox(){
+function setUpMSresultsBox(searchPageIsDisplayed){
 
   msResultsBoxElem = document.createElement('div')
   msResultsBoxElem.setAttribute('id', 'msResultsBox')
 
   setMSresultsBoxHeight($('#search'))
+
+  /*****
+  * If the search page is displayed and we're on instant search, hide the MS results
+  * box for the moment.
+  */
+  if(searchPageIsDisplayed){
+    hideMSresultsBox()
+  }
 
   const resultsBoxSideBar = document.createElement('div')
   resultsBoxSideBar.setAttribute('id', 'msResultsBoxSidebar')
@@ -100,5 +118,7 @@ function setUpMSresultsBox(){
 export {
   setUpMSresultsBox,
   setMSresultsBoxHeight,
-  msResultsBoxResultsContainer
+  msResultsBoxResultsContainer,
+  hideMSresultsBox,
+  showMSresultsBox
 }

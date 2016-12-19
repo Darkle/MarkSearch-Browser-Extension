@@ -1,5 +1,5 @@
 import { extensionSettings } from './googleSearch_ContentScript'
-import { msResultsBoxResultsContainer } from './setUpMSresultsBox'
+import { msResultsBoxResultsContainer } from './markSearchResultsBox'
 import { createMSresultElements } from './createMSresultElements'
 import { generateMassTempResultsForDev } from '../../utils'
 
@@ -12,15 +12,21 @@ function renderMarkSearchResultsBoxResults(markSearchResults, searchTerms){
   resultsAmountDiv.textContent = `${ markSearchResults.length } Results`
   msResultsBoxDocFragment.appendChild(resultsAmountDiv)
 
-  if(extensionSettings.isDevelopment){
-    markSearchResults = generateMassTempResultsForDev(markSearchResults)  // eslint-disable-line no-param-reassign
+  if(markSearchResults.length){
+    /*****
+    * Generate lots of results when in development so we can check ui stuff.
+    */
+    if(extensionSettings.isDevelopment){
+      markSearchResults = generateMassTempResultsForDev(markSearchResults)  // eslint-disable-line no-param-reassign
+    }
+
+    for(let index = 0, len = markSearchResults.length; index < len; index++){
+      msResultsBoxDocFragment.appendChild(
+        createMSresultElements(markSearchResults[index], index, searchTerms)
+      )
+    }
   }
 
-  for(let index = 0, len = markSearchResults.length; index < len; index++){
-    msResultsBoxDocFragment.appendChild(
-      createMSresultElements(markSearchResults[index], index, searchTerms)
-    )
-  }
 
   msResultsBoxResultsContainer.appendChild(msResultsBoxDocFragment)
 }

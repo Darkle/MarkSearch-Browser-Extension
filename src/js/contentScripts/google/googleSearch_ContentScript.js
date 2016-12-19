@@ -1,7 +1,7 @@
 import '../../../nonInlineStyles/googleSearch_ContentScript.styl'
-import { isInstantSearch, checkIfInstantSearch, getSearchQueryFromUrl, getDateFilterFromUrl } from './googleSearchCSutils'
+import { checkIfInstantSearch, getSearchQueryFromUrl, getDateFilterFromUrl, searchPageIsDisplayed} from './googleSearchCSutils'
 import { renderMarkSearchResultsBoxResults } from './renderMarkSearchResults'
-import { setUpMSresultsBox, setMSresultsBoxHeight } from './setUpMSresultsBox'
+import { setUpMSresultsBox, setMSresultsBoxHeight, showMSresultsBox, hideMSresultsBox } from './markSearchResultsBox'
 import { getSettings, $ } from '../../utils'
 
 const observerSettings = {
@@ -15,6 +15,7 @@ const observerSettings = {
 let extensionSettings
 let marksearchSearchRequestPort
 let latestInstantSearchRequestId = 0
+let searchForm
 
 getSettings().then( settings => {
   extensionSettings = settings
@@ -47,15 +48,39 @@ function instantSeachMutationObserverHandler(mutations){
     * are only a few results which would mean the page would be shorter.
     */
     setMSresultsBoxHeight(mutationRecordWithSearchElemAsTarget.target)
+    /*****
+    * We hide the results box if the user is on a search page (either by regular page load or triggered in the
+    * popstateListener by using the back button in the browser), so show it again when there are on the results page.
+    * showMSresultsBox() does a check to see if the hide class is present.
+    */
+    showMSresultsBox()
   }
 }
 
 function popstateListener(){
+  /*****
+  * If we go back to the search page, hide the MS results box and dont bother to do a search.
+  * Most of the time when the popstate event fires and the user is going back to the search page,
+  * the searchForm classes have not yet been changed, so fall back to seeing if getSearchQueryFromUrl()
+  * returns null. The hash in the url seems to be changed at this point so I think it should work - it
+  * should be null (i.e. no search terms if they are back on the search page).
+  */
+  console.log('popstateListener')
+  console.log(`checkIfSearchPageIsDisplayed(searchForm)`, searchPageIsDisplayed(searchForm))
+  console.log(`getSearchQueryFromUrl()`, getSearchQueryFromUrl())
+  const searchQuery = getSearchQueryFromUrl()
+  if(searchPageIsDisplayed(searchForm) || !searchQuery){
+    hideMSresultsBox()
+    return
+  }
+
+  showMSresultsBox()
+
   latestInstantSearchRequestId = 0
 
   marksearchSearchRequestPort.postMessage(
     {
-      searchTerms: getSearchQueryFromUrl(),
+      searchTerms: searchQuery,
       dateFilter: getDateFilterFromUrl()
     }
   )
@@ -63,16 +88,35 @@ function popstateListener(){
 
 function init(){
   /*****
-  * We wanna exit early if they dont have showOn_____Search or msResultsBox enabled in the extensionSettings
-  * or if it's not a search page.
+  * We wanna exit early if they dont have <searchEngine>SearchIntegration enabled in the extensionSettings
+  * or if it's not a search/results page.
+  * Note: we also would not show the MarkSearch search button if <searchEngine>SearchIntegration is false.
   */
-  if(!extensionSettings.showOnGoogleSearch || !extensionSettings.msResultsBox || !$('#lst-ib')){
+  if(!extensionSettings.googleSearchIntegration || !$('#lst-ib')){
     return
   }
 
-  checkIfInstantSearch()
+  searchForm = $('#searchform')
+  const isInstantSearch = checkIfInstantSearch()
+  const onSearchPage = searchPageIsDisplayed(searchForm)
 
-  setUpMSresultsBox()
+  if(extensionSettings.showMSsearchButton){
+    //TODO when i set this up, check that I don't need any of the observers below, if i do, may need to rethink
+    //TODO the if(!extensionSettings.msResultsBox){ return
+    //  setUpMarkSearchSearchButtons(isInstantSearch, onSearchPage)
+  }
+  /*****
+  * If we are on the search page and it is not instant search, exit cause we dont want to show MarkSearch
+  * results on the search page, only on the results page.
+  */
+  if(!isInstantSearch && onSearchPage){
+    return
+  }
+  if(!extensionSettings.msResultsBox){
+    return
+  }
+
+  setUpMSresultsBox(onSearchPage)
 
   marksearchSearchRequestPort = chrome.runtime.connect({name: 'googleContentScriptRequestMSsearch'})
 

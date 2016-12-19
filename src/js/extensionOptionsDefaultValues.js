@@ -1,8 +1,8 @@
 
 const extensionOptionsDefaultValues = {
   isDevelopment: false,
-  showOnDuckduckgoSearch: true,
-  showOnGoogleSearch: true,
+  duckduckgoSearchIntegration: true,
+  googleSearchIntegration: true,
   extensionToken: '',
   msResultsBox: false,
   msResultsBox_Position: 'right',
