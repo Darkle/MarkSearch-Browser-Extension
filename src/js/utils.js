@@ -144,6 +144,26 @@ function syncServerAddressAndApiTokenInLocalStorage(extensionTokenAndServerAddre
   localStorage.marksearchApiToken = splitExtensionTokenAndServerAddressString[1]
 }
 
+function generateMassTempResultsForDev(markSearchResults){
+  let tempResults = []
+  if(markSearchResults[0]){
+    tempResults = Array(500)
+                    .fill(markSearchResults[0])
+                    .map((item, index) =>
+                      Object.assign({}, item, {pageTitle: `${ item.pageTitle } ${ index + 1 }`})
+                      // Object.assign(
+                      //   {},
+                      //   item,
+                      //   {
+                      //     pageTitle: `${ item.pageTitle } ${ index + 1 }`,
+                      //     pageUrl: item.pageUrl.repeat(10)
+                      //   }
+                      // )
+                    )
+  }
+  return tempResults
+}
+
 export {
   $,
   $$,
@@ -155,5 +175,6 @@ export {
   createErrorMessageToShowUser,
   safeGetObjectProperty,
   getSettings,
-  syncServerAddressAndApiTokenInLocalStorage
+  syncServerAddressAndApiTokenInLocalStorage,
+  generateMassTempResultsForDev
 }

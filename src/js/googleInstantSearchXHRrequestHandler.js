@@ -30,7 +30,7 @@ async function googleInstantSearchXHRrequestHandler({requestId, tabId, method, t
   * We send a message early before querying MarkSearch server so we can reset some
   * things in the content script.
   */
-  chrome.tabs.sendMessage(currentTabId, {googleInstantSearchOccured: true, requestId})
+  chrome.tabs.sendMessage(currentTabId, {newGoogleInstantSearchOccured: true, requestId})
 
   const requestUrl = new URL(url)
   const urlSearchParams = new URLSearchParams(requestUrl.search)

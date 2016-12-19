@@ -4,10 +4,10 @@ import { extensionSettings } from './googleSearch_ContentScript'
 import { default as validatorUnescape } from 'validator/lib/unescape'
 import DOMPurify from 'dompurify'
 import stem from 'stem-porter'
-import truncate from 'lodash.truncate'
+// import truncate from 'lodash.truncate'
 
 /*
-Example MarkSearch result:
+Example MarkSearch result: 
   rank:-4.442214486214885,
   dateCreated:1464889272842,
   pageDomain:".boston.com",
@@ -56,7 +56,7 @@ const svg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"/>
             </svg>`
 
-function createResultDescription(result, searchTerms, resultIsForForMSresultsBox){
+function createResultDescription(result, searchTerms){
   let resultDescription = ''
   if(result.snippet && result.snippet.length){
     /****
@@ -98,13 +98,13 @@ function createResultDescription(result, searchTerms, resultIsForForMSresultsBox
   * Using lodash.truncate so dont chop of word halfway through.
   * If it's for the MS results box, don't trim
   */
-  if(!resultIsForForMSresultsBox){
-    resultDescription = truncate(resultDescription.trim(), {length: 250, separator: ' '})
-  }
+  // if(!resultIsForForMSresultsBox){
+  //   resultDescription = truncate(resultDescription.trim(), {length: 250, separator: ' '})
+  // }
   return resultDescription
 }
 
-function createMSresultElements(result, index, searchTerms, resultIsForForMSresultsBox){
+function createMSresultElements(result, index, searchTerms){
 
   const mainResultContainer = document.createElement('div')
   mainResultContainer.setAttribute('class', `g MSresultsBoxResult MSresultsBoxResult_${ index + 1 }`)
@@ -184,7 +184,7 @@ function createMSresultElements(result, index, searchTerms, resultIsForForMSresu
 
   const resultDescription = document.createElement('span')
   resultDescription.setAttribute('class', `st MSresultDescription`)
-  const description = createResultDescription(result, searchTerms, resultIsForForMSresultsBox)
+  const description = createResultDescription(result, searchTerms)
   resultDescription.innerHTML = DOMPurify.sanitize(description)
   resultDetailsAndDescriptionInnerContainer.appendChild(resultDescription)
 
