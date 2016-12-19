@@ -8,7 +8,7 @@ import {
   findElementInNodeList } from './googleSearchCSutils'
 import { renderMarkSearchResultsBoxResults, renderMarkSearchIntegratedResults } from './renderMarkSearchResults'
 import { initMSresultsBox, msResultsBoxResultsContainer, MSresultsBoxHeight, setMSresultsBoxHeight } from './setUpMSresultsBox'
-import { getSettings, $, safeGetObjectProperty } from '../../utils'
+import { getSettings, $ } from '../../utils'
 
 const observerSettings = {
   childList: true,
@@ -29,7 +29,6 @@ let latestInstantSearchRequestId = 0
 let rsoElement
 let extensionSettings
 let marksearchSearchRequestPort
-let instantSearchPort
 
 getSettings().then( settings => {
   extensionSettings = settings
@@ -76,6 +75,7 @@ function renderMarkSearchIntegratedResultsIfReady(requestId){
 }
 
 function onReceivedMarkSearchResults({searchResults, requestId}){
+  console.log('onReceivedMarkSearchResults')
   markSearchResults = searchResults
   renderMarkSearchIntegratedResultsIfReady(requestId)
   renderMarkSearchResultsBoxResultsIfReady(requestId)
@@ -130,19 +130,22 @@ function mutationObserverHandler(mutations){
   renderMarkSearchIntegratedResultsIfReady(latestInstantSearchRequestId)
 }
 
-function instantSearchListener(message){
+function xhrInstantSearchMessageListener({searchResults, requestId, googleInstantSearchOccured}){
   /*****
   * We set the latestInstantSearchRequestId so that we can compare before we call renderMarkSearchResults.
   * This is in case a new instant search is initiated before the results from the previous search has
   * been received from MarkSearch and inserted in to the page.
   */
-  if(safeGetObjectProperty(message, 'googleInstantSearchOccured')){
-    latestInstantSearchRequestId = message.requestId
+  console.log('xhrInstantSearchMessageListener searchResults:', searchResults)
+  console.log('xhrInstantSearchMessageListener requestId:', requestId)
+  console.log('xhrInstantSearchMessageListener googleInstantSearchOccured:', googleInstantSearchOccured)
+  if(googleInstantSearchOccured){
+    latestInstantSearchRequestId = requestId
     searchEngineResultsHaveBeenInserted = false
     markSearchResults = null
   }
-  else{
-    onReceivedMarkSearchResults(message)
+  else if(searchResults){
+    onReceivedMarkSearchResults({searchResults, requestId})
   }
 }
 
@@ -177,13 +180,11 @@ function init(){
 
   if(isInstantSearch){
     /*****
-    * Instant search pages use both marksearchSearchRequestPort and instantSearchPort messages.
-    * marksearchSearchRequestPort is used to manually request a MarkSearch search when the popstate
-    * event fires, and instantSearchPort is for setting the port in the background.js so that
-    * the webRequest listener can send xhr instant search queries here back to this content script.
+    * The webRequest listener in the background sends the content script notifications that an instant search xhr
+    * request has occurred and then later it sends the MarkSearch results using the same search
+    * terms that were used in the instant search xhr request.
     */
-    instantSearchPort = chrome.runtime.connect({name: 'requestNewPortReference'})
-    instantSearchPort.onMessage.addListener(instantSearchListener)
+    chrome.runtime.onMessage.addListener(xhrInstantSearchMessageListener)
 
     /*****
     * We need a mutation observer for when we need to insert results in to the page - for each new search with
@@ -200,21 +201,6 @@ function init(){
     * (i guess the search engine results are stored in the cache or storage?), so need to listen for popstate events.
     */
     window.addEventListener('popstate', popstateListener)
-    /*****
-    * We also need to set a listner for the focus event. This is because we need to update the port reference
-    * in the background.js script. For example, if you have instant search going in one tab and then switch to another,
-    * the port will be set to the old tab's content script.
-    * We don't wanna use page visibility api.
-    */
-    window.addEventListener('focus', () => {
-      /*****
-      * Don't really need to send a message. The background.js script disconnects the old port from the previous
-      * tab that had focus so we're cleaning up afterwards.
-      */
-      instantSearchPort.disconnect()
-      instantSearchPort = chrome.runtime.connect({name: 'requestNewPortReference'})
-      instantSearchPort.onMessage.addListener(instantSearchListener)
-    })
   }
   else{
     rsoElement = $('#rso')
@@ -240,7 +226,7 @@ function init(){
     )
   }
   /*****
-  * For the 'googleContentScriptInstantSearchListener' port, it sends back a requestId of 0.
+  * For the 'googleContentScriptRequestMSsearch' port, it sends back a requestId of 0.
   */
   marksearchSearchRequestPort.onMessage.addListener(onReceivedMarkSearchResults)
 }

@@ -44,6 +44,9 @@ chrome.runtime.onMessage.addListener(
       sendResponse({scriptAlreadyInserted: true})
       return
     }
+    /*****
+    * actionSucceeded can be false, so need to check if undefined to check if it's there.
+    */
     if(typeof actionSucceeded !== 'undefined'){
       showNotification(action, actionSucceeded, errorMessage)
     }

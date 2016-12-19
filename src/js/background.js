@@ -17,9 +17,6 @@ import { checkIfPageIsSavedAndUpdateIcon } from './checkIfPageIsSavedAndUpdateIc
 * port number that MarkSearch is running on)
 */
 
-let googleContentScriptPort = null
-// let duckDuckGoContentScriptPort = null
-
 /*****
 * Using localStorage to store the MarkSearch server address and token as we use them a lot in the
 * background (the content script doesn't need access to these). We update these below in the
@@ -93,20 +90,12 @@ chrome.browserAction.onClicked.addListener(browserActionEventHandler)
 */
 chrome.runtime.onMessage.addListener(savePageMessageHandler)
 /*****
-* chrome.runtime.onConnect is for the search requests from content script and notifying
-* of an instant xmlhttprequest search as there may be many of both of those if it's an instant
-* search.
-* Also for requesting a new port reference back here in background. The port reference
-* is used in the chrome.webRequest.onBeforeRequest listeners to send messages back to the content
-* script with the search terms and to be notified that an xhr instant search happened.
+* chrome.runtime.onConnect is for manually requesting a MarkSearch search from the content script.
+* There may be many of those if it's an instant search because we use it in a popstate event
+* listener as the instant search xhr request does not fire on popstate events, so we need to manually
+* get new MarkSearch search results.
 */
 chrome.runtime.onConnect.addListener(port => {
-  if(port.name === 'requestNewPortReference'){
-    if(googleContentScriptPort){
-      googleContentScriptPort.disconnect()
-    }
-    googleContentScriptPort = port
-  }
   if(port.name === 'googleContentScriptRequestMSsearch'){
     port.onMessage.addListener( ({searchTerms, dateFilter}) => {
       searchMarkSearch(searchTerms, dateFilter)
@@ -122,9 +111,7 @@ chrome.runtime.onConnect.addListener(port => {
 })
 
 chrome.webRequest.onBeforeRequest.addListener(
-  webRequestDetails => {
-    googleInstantSearchXHRrequestHandler(webRequestDetails)
-  },
+  googleInstantSearchXHRrequestHandler,
   {
     urls: googleInstantSearchXHRurlPatterns,
     types: ['main_frame', 'xmlhttprequest']
@@ -142,7 +129,3 @@ chrome.webRequest.onBeforeRequest.addListener(
 // )
 
 chrome.contextMenus.onClicked.addListener(contextMenuOnClickedHandler)
-
-export {
-  googleContentScriptPort
-}

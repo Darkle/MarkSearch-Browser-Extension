@@ -31,6 +31,9 @@ const paths = {
 const webpackConfig = {
   devtool: 'source-map',
   target: 'web',
+  performance: {
+    hints: false   // we enable this in production
+  },
   entry: {
     background: path.join(paths.srcJS, 'background.js'),
     options: path.join(paths.srcJSOptions, 'options.js'),
@@ -137,6 +140,7 @@ const webpackConfig = {
 
 if(process.env.NODE_ENV === 'production'){
   console.log('Running production.')
+  webpackConfig.performance.hints = 'error'
   /*****
   * Remove the source maps before build for production.
   */
