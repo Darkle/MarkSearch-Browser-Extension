@@ -27,10 +27,6 @@ function setMSresultsBoxHeight(searchElement){
   */
   const searchElementClientHeight = searchElement ? searchElement.clientHeight : 100
   const unit = searchElement ? 'px' : 'vh'
-  console.log('setMSresultsBoxHeight')
-  console.log('setMSresultsBoxHeight searchElement: ', searchElement)
-  console.log('setMSresultsBoxHeight searchElementClientHeight: ', searchElementClientHeight)
-  console.log('setMSresultsBoxHeight unit: ', unit)
   /*****
   * If the old height is the same as the new height, just leave it.
   */

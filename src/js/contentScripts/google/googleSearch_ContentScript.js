@@ -22,16 +22,12 @@ getSettings().then( settings => {
 })
 
 function onReceivedMarkSearchResults({searchResults: markSearchResults, requestId}){
-  console.log('onReceivedMarkSearchResults')
-  console.log('onReceivedMarkSearchResults markSearchResults: ', markSearchResults)
-  console.log('onReceivedMarkSearchResults requestId: ', requestId)
   if(latestInstantSearchRequestId === requestId){
     renderMarkSearchResultsBoxResults(markSearchResults, getSearchQueryFromUrl())
   }
 }
 
 function xhrInstantSearchMessageListener({searchResults, requestId, newGoogleInstantSearchOccured}){
-  console.log('xhrInstantSearchMessageListener newGoogleInstantSearchOccured: ', newGoogleInstantSearchOccured)
   if(newGoogleInstantSearchOccured){
     latestInstantSearchRequestId = requestId
   }
@@ -65,9 +61,6 @@ function popstateListener(){
   * returns null. The hash in the url seems to be changed at this point so I think it should work - it
   * should be null (i.e. no search terms if they are back on the search page).
   */
-  console.log('popstateListener')
-  console.log(`checkIfSearchPageIsDisplayed(searchForm)`, searchPageIsDisplayed(searchForm))
-  console.log(`getSearchQueryFromUrl()`, getSearchQueryFromUrl())
   const searchQuery = getSearchQueryFromUrl()
   if(searchPageIsDisplayed(searchForm) || !searchQuery){
     hideMSresultsBox()
