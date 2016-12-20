@@ -58,7 +58,6 @@ function instantSeachMutationObserverHandler(mutations){
     /*****
     * We hide the results box if the user is on a search page (either by regular page load or triggered in the
     * popstateListener by using the back button in the browser), so show it again when there are on the results page.
-    * showMSresultsBox() does a check to see if the hide class is present.
     */
     showMSresultsBox()
   }
