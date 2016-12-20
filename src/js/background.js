@@ -8,7 +8,7 @@ import { contextMenuOnClickedHandler } from './contextMenuOnClickedHandler'
 import { onInstalledEventHandler } from './onInstalledEventHandler'
 import { hotReloadInit } from './hotReload'
 import { extensionOptionsDefaultValues } from './extensionOptionsDefaultValues'
-import { searchMarkSearch } from './searchMarkSearch'
+// import { searchMarkSearch } from './searchMarkSearch'
 import { checkIfPageIsSavedAndUpdateIcon } from './checkIfPageIsSavedAndUpdateIcon'
 
 /*****
@@ -89,26 +89,26 @@ chrome.browserAction.onClicked.addListener(browserActionEventHandler)
 * We use chrome.runtime.onMessage for the save page messages from sendPageData_ContentScript.
 */
 chrome.runtime.onMessage.addListener(savePageMessageHandler)
-/*****
-* chrome.runtime.onConnect is for manually requesting a MarkSearch search from the content script.
-* There may be many of those if it's an instant search because we use it in a popstate event
-* listener as the instant search xhr request does not fire on popstate events, so we need to manually
-* get new MarkSearch search results. 
-*/
-chrome.runtime.onConnect.addListener(port => {
-  if(port.name === 'googleContentScriptRequestMSsearch'){
-    port.onMessage.addListener( ({searchTerms, dateFilter}) => {
-      searchMarkSearch(searchTerms, dateFilter)
-        .then(searchResults => {
-          port.postMessage({searchResults, requestId: 0})
-        })
-        .catch(errorLogger)
-    })
-  }
-  // if(port.name === 'duckDuckGoInstantSearch'){
-  //   duckDuckGoContentScriptPort = port
-  // }
-})
+// /*****
+// * chrome.runtime.onConnect is for manually requesting a MarkSearch search from the content script.
+// * There may be many of those if it's an instant search because we use it in a popstate event
+// * listener as the instant search xhr request does not fire on popstate events, so we need to manually
+// * get new MarkSearch search results.
+// */
+// chrome.runtime.onConnect.addListener(port => {
+//   if(port.name === 'googleContentScriptRequestMSsearch'){
+//     port.onMessage.addListener( ({searchTerms, dateFilter}) => {
+//       searchMarkSearch(searchTerms, dateFilter)
+//         .then(searchResults => {
+//           port.postMessage({searchResults, requestId: 0})
+//         })
+//         .catch(errorLogger)
+//     })
+//   }
+//   // if(port.name === 'duckDuckGoInstantSearch'){
+//   //   duckDuckGoContentScriptPort = port
+//   // }
+// })
 
 chrome.webRequest.onBeforeRequest.addListener(
   googleInstantSearchXHRrequestHandler,

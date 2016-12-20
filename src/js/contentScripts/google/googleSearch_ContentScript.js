@@ -1,8 +1,10 @@
 import '../../../nonInlineStyles/googleSearch_ContentScript.styl'
+import { getSetting } from '../CS_utils'
 import { checkIfInstantSearch, getSearchQueryFromUrl, getDateFilterFromUrl, searchPageIsDisplayed} from './googleSearchCSutils'
 import { renderMarkSearchResultsBoxResults } from './renderMarkSearchResults'
 import { setUpMSresultsBox, setMSresultsBoxHeight, showMSresultsBox, hideMSresultsBox } from './markSearchResultsBox'
-import { getSettings, $ } from '../../utils'
+import { searchMarkSearch_CS } from '../searchMarkSearch_CS'
+import { $ } from '../../utils'
 
 const observerSettings = {
   childList: true,
@@ -12,24 +14,22 @@ const observerSettings = {
   attributeOldValue: false,
   characterDataOldValue: false
 }
-let extensionSettings
+
 let marksearchSearchRequestPort
 let latestInstantSearchRequestId = 0
 let searchForm
-
-getSettings().then( settings => {
-  extensionSettings = settings
-})
-
 /*****
 * The xhrInstantSearchMessageListener recieves the search terms as well as the MarkSearch results from
 * the webRequest listener in the background.js. marksearchSearchRequestPort does not though, so in that case
 * we get it from the url.
-* marksearchSearchRequestPort sends messages to the background to request a search of the MarkSearch server.
 * We do it this way because if the user is on the search page and its instant search, even if they start typing
 * into the search box and google starts making instant xhr search requests, the search terms are not added to
 * the url hash until they press enter, so we need to grab the search terms in the background webRequest listener
 * and send it here with the MarkSearch results.
+*
+* We are also checking the requestId in the content script, cause there is a chance
+* that a new instant search could happen before we got results from MS and the background script sent
+* them back, so check.
 */
 function onReceivedMarkSearchResults({searchResults: markSearchResults, requestId, searchTerms}){
   if(latestInstantSearchRequestId === requestId){
@@ -51,8 +51,8 @@ function instantSeachMutationObserverHandler(mutations){
   const mutationRecordWithSearchElemAsTarget = mutations.find(({target: {id}}) => id === 'search')
   if(mutationRecordWithSearchElemAsTarget){
     /*****
-    * We re-set the MS results box height here on insertion of new search engine results in case there
-    * are only a few results which would mean the page would be shorter.
+    * We re-set the MS results box height here on insertion of new search engine results as new resutls have
+    * different snippets (or amount of results), which makes the page height different.
     */
     setMSresultsBoxHeight(mutationRecordWithSearchElemAsTarget.target)
     /*****
@@ -91,11 +91,11 @@ function popstateListener(){
 
 function init(){
   /*****
-  * We wanna exit early if they dont have <searchEngine>SearchIntegration enabled in the extensionSettings
+  * We wanna exit early if they dont have <searchEngine>SearchIntegration enabled in the extension settings
   * or if it's not a search/results page.
   * Note: we also would not show the MarkSearch search button if <searchEngine>SearchIntegration is false.
   */
-  if(!extensionSettings.googleSearchIntegration || !$('#lst-ib')){
+  if(!getSetting('googleSearchIntegration') || !$('#lst-ib')){
     return
   }
 
@@ -103,9 +103,9 @@ function init(){
   const isInstantSearch = checkIfInstantSearch()
   const onSearchPage = searchPageIsDisplayed(searchForm)
 
-  if(extensionSettings.showMSsearchButton){
+  if(getSetting('showMSsearchButton')){
     //TODO when i set this up, check that I don't need any of the observers below, if i do, may need to rethink
-    //TODO the if(!extensionSettings.msResultsBox){ return
+    //TODO the if(!getSetting('msResultsBox')){ return
     //  setUpMarkSearchSearchButtons(isInstantSearch, onSearchPage)
   }
   /*****
@@ -115,7 +115,7 @@ function init(){
   if(!isInstantSearch && onSearchPage){
     return
   }
-  if(!extensionSettings.msResultsBox){
+  if(!getSetting('msResultsBox')){
     return
   }
 
@@ -124,11 +124,17 @@ function init(){
   marksearchSearchRequestPort = chrome.runtime.connect({name: 'googleContentScriptRequestMSsearch'})
 
   if(isInstantSearch){
-
+    /*****
+    * The webRequest listener in the background sends the content script notifications that an instant search xhr
+    * request has occurred and then later it sends the MarkSearch results using the same search
+    * terms that were used in the instant search xhr request.
+    */
     chrome.runtime.onMessage.addListener(xhrInstantSearchMessageListener)
 
     const observer = new MutationObserver(instantSeachMutationObserverHandler)
-
+    /*****
+    * #main is the lowest down element in the tree (of what we want) that's available on DOMContentLoaded.
+    */
     observer.observe($('#main'), observerSettings)
 
     window.addEventListener('popstate', popstateListener)
@@ -153,7 +159,3 @@ function init(){
 }
 
 document.addEventListener('DOMContentLoaded', init)
-
-export {
-  extensionSettings
-}

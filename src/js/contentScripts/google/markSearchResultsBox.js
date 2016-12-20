@@ -1,4 +1,4 @@
-import { extensionSettings } from './googleSearch_ContentScript'
+import { getSetting } from '../CS_utils'
 import { setMSiconClass } from './googleSearchCSutils'
 import { $ } from '../../utils'
 
@@ -101,10 +101,10 @@ function setUpMSresultsBox(searchPageIsDisplayed){
   msResultsBoxResultsContainer.setAttribute('id', 'msResultsBoxResultsContainer')
   msResultsBoxElem.appendChild(msResultsBoxResultsContainer)
 
-  if(extensionSettings.msResultsBox_Position === 'left'){
+  if(getSetting('msResultsBox_Position') === 'left'){
     msResultsBoxElem.classList.add('showMsResultsBoxOnLeft')
   }
-  if(extensionSettings.msResultsBox_ShowViaAlwaysShow){
+  if(getSetting('msResultsBox_ShowViaAlwaysShow')){
     msResultsBoxElem.classList.add('forceShowMsResultsBox')
   }
   /*****

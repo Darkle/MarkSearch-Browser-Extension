@@ -1,5 +1,5 @@
 import { lunrStopwordList } from '../lunrStopwordFilter'
-import { extensionSettings } from './googleSearch_ContentScript'
+import { getSetting } from '../CS_utils'
 
 import { default as validatorUnescape } from 'validator/lib/unescape'
 import DOMPurify from 'dompurify'
@@ -7,7 +7,7 @@ import stem from 'stem-porter'
 // import truncate from 'lodash.truncate'
 
 /*
-Example MarkSearch result: 
+Example MarkSearch result:
   rank:-4.442214486214885,
   dateCreated:1464889272842,
   pageDomain:".boston.com",
@@ -135,7 +135,7 @@ function createMSresultElements(result, index, searchTerms){
    */
   resultLink.textContent = validatorUnescape(resultLinkTextContent)
 
-  if(extensionSettings.msResultsPrebrowsing){
+  if(getSetting('msResultsPrebrowsing')){
     if(index === 0){
       resultLink.setAttribute('rel', 'preconnect')
     }

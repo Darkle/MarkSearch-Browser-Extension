@@ -1,4 +1,4 @@
-import { extensionSettings } from './googleSearch_ContentScript'
+import { getSetting } from '../CS_utils'
 import { msResultsBoxResultsContainer } from './markSearchResultsBox'
 import { createMSresultElements } from './createMSresultElements'
 import { generateMassTempResultsForDev } from '../../utils'
@@ -19,7 +19,7 @@ function renderMarkSearchResultsBoxResults(markSearchResults, searchTerms){
     /*****
     * Generate lots of results when in development so we can check ui stuff.
     */
-    if(extensionSettings.isDevelopment){
+    if(getSetting('isDevelopment')){
       markSearchResults = generateMassTempResultsForDev(markSearchResults)  // eslint-disable-line no-param-reassign
     }
 
