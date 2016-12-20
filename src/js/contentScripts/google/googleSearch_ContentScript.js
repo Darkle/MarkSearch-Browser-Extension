@@ -1,7 +1,8 @@
 import '../../../nonInlineStyles/googleSearch_ContentScript.styl'
-import { checkIfInstantSearch, getSearchQueryFromUrl, getDateFilterFromUrl, searchPageIsDisplayed} from './googleSearchCSutils'
-import { renderMarkSearchResultsBoxResults } from './renderMarkSearchResults'
-import { setUpMSresultsBox, setMSresultsBoxHeight, showMSresultsBox, hideMSresultsBox } from './markSearchResultsBox'
+import { checkIfInstantSearch, getSearchQueryFromUrl, getDateFilterFromUrl, searchPageIsDisplayed } from './googleSearchCSutils'
+import { renderMarkSearchResultsBoxResults } from '../renderMarkSearchResults'
+import { showMSresultsBox, hideMSresultsBox } from '../markSearchResultsBox'
+import { setUpMSresultsBoxForGoogle, setMSresultsBoxHeightForGoogle } from './setUpMSresultsBoxForGoogle'
 import { $ } from '../../utils'
 import { getSetting } from '../CS_utils'
 
@@ -18,13 +19,19 @@ let marksearchSearchRequestPort
 let latestInstantSearchRequestId = 0
 let searchForm
 /*****
+* The marksearchSearchRequestPort sends messages to the background requesting it to search the MarkSearch
+* server and send back the results to the content script. We don't query the MarkSearch server directly
+* here in the content script because the MarkSearch server is not https and we would run in to this
+* issue: https://bugs.chromium.org/p/chromium/issues/detail?id=421990
+*
 * The xhrInstantSearchMessageListener recieves the search terms as well as the MarkSearch results from
-* the webRequest listener in the background.js. marksearchSearchRequestPort does not though, so in that case
-* we get it from the url.
-* We do it this way because if the user is on the search page and its instant search, even if they start typing
-* into the search box and google starts making instant xhr search requests, the search terms are not added to
-* the url hash until they press enter, so we need to grab the search terms in the background webRequest listener
-* and send it here with the MarkSearch results.
+* the webRequest listener in the background.js. We send back the search terms to xhrInstantSearchMessageListener
+* because if the user is on the search page and its instant search, even if they start typing into the search box
+* and google starts making instant xhr search requests, the search terms are not added to the url hash until they
+* press enter, so we need to grab the search terms in the background webRequest listener and send it here with the
+* MarkSearch results.
+*
+* marksearchSearchRequestPort does not though, so in that case we get it from the url.
 *
 * We are also checking the requestId in the content script, cause there is a chance
 * that a new instant search could happen before we got results from MS and the background script sent
@@ -53,7 +60,7 @@ function instantSeachMutationObserverHandler(mutations){
     * We re-set the MS results box height here on insertion of new search engine results as new resutls have
     * different snippets (or amount of results), which makes the page height different.
     */
-    setMSresultsBoxHeight(mutationRecordWithSearchElemAsTarget.target)
+    setMSresultsBoxHeightForGoogle(mutationRecordWithSearchElemAsTarget.target)
     /*****
     * We hide the results box if the user is on a search page (either by regular page load or triggered in the
     * popstateListener by using the back button in the browser), so show it again when there are on the results page.
@@ -118,7 +125,7 @@ function init(){
     return
   }
 
-  setUpMSresultsBox(onSearchPage)
+  setUpMSresultsBoxForGoogle(onSearchPage)
 
   marksearchSearchRequestPort = chrome.runtime.connect({name: 'googleContentScriptRequestMSsearch'})
 

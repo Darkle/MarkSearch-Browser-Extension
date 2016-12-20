@@ -1,5 +1,5 @@
-import { lunrStopwordList } from '../lunrStopwordFilter'
-import { getSetting } from '../CS_utils'
+import { lunrStopwordList } from './lunrStopwordFilter'
+import { getSetting } from './CS_utils'
 
 import { default as validatorUnescape } from 'validator/lib/unescape'
 import DOMPurify from 'dompurify'

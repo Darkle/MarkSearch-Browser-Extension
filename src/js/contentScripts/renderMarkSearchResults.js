@@ -1,7 +1,7 @@
-import { getSetting } from '../CS_utils'
+import { getSetting } from './CS_utils'
 import { msResultsBoxResultsContainer } from './markSearchResultsBox'
 import { createMSresultElements } from './createMSresultElements'
-import { generateMassTempResultsForDev } from '../../utils'
+import { generateMassTempResultsForDev } from '../utils'
 
 function renderMarkSearchResultsBoxResults(markSearchResults, searchTerms){
   console.log('renderMarkSearchResultsBoxResults')
