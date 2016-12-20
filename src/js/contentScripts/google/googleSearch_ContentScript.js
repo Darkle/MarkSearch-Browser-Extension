@@ -146,7 +146,8 @@ function init(){
   }
 
   /*****
-  * Calls to the marksearchSearchRequestPort port send back a requestId of 0.
+  * Messages back to the marksearchSearchRequestPort port from the background script send back a requestId
+  * of 0.
   */
   marksearchSearchRequestPort.onMessage.addListener(onReceivedMarkSearchResults)
 }
