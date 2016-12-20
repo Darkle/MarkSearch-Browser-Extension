@@ -90,6 +90,8 @@ function setUpMSresultsBox(searchPageIsDisplayed){
   /*****
   * Setting the MS results box top value as a constant seems to work ok even if the page is zoomed in.
   * So have set it to top: 169px in the css.
+  * Note: if you need to bring this back and use it, make sure to also call if from the
+  * instantSeachMutationObserverHandler as seen here: http://bit.ly/2hTGxPz
   */
   // setMSResultsBoxTopStyle()
 
