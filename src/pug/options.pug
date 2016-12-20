@@ -17,7 +17,7 @@ html
             a(href='https://github.com/Darkle/MarkSearch#chromeExtensionOptions') MarkSearch Chrome Extension Help
           h3 Search Engines
           .settingsGroup#searchEngines
-            span Integrate MarkSearch With The Following Search Engines:
+            span Show MarkSearch Results Box On The Following Search Engines:
             .flexrow
               .checkbox
                 label
@@ -29,20 +29,15 @@ html
                   span DuckDuckGo
           h3 MarkSearch Results Box
           .settingsGroup#msResultsBox
+            .selectBoxContainer
+              span Box Position:
+              select#msResultsBoxPosition(data-setting-key='msResultsBox_Position')
+                option(value="right") Right
+                option(value="left") Left
             .checkbox
               label
-                input(type='checkbox', name='msResultsBox', data-setting-key='msResultsBox')
-                span Show MarkSearch Results Box On The Side Of The Search Engine Results Page
-            .settingsSubGroup
-              .flexrow.selectBoxContainer
-                span Box Position:
-                select#msResultsBoxPosition(data-setting-key='msResultsBox_Position')
-                  option(value="right") Right
-                  option(value="left") Left
-              .checkbox
-                label
-                  input(type='checkbox', name='msResultsBox_AutoExpand', data-setting-key='msResultsBox_AutoExpand')
-                  span Autoexpand The MarkSearch Results Box On Page Load
+                input(type='checkbox', name='msResultsBox_AutoExpand', data-setting-key='msResultsBox_AutoExpand')
+                span Autoexpand The MarkSearch Results Box On Page Load
           h3 MarkSearch Search Button
           .settingsGroup#msButtonOptionContainer
             .checkbox

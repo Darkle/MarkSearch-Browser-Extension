@@ -121,9 +121,6 @@ function init(){
   if(!isInstantSearch && onSearchPage){
     return
   }
-  if(!getSetting('msResultsBox')){
-    return
-  }
 
   setUpMSresultsBoxForGoogle(onSearchPage)
 
