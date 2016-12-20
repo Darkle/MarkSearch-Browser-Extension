@@ -1,4 +1,4 @@
-import { searchMarkSearch_BG } from './searchMarkSearch_BG'
+import { searchMarkSearch } from './searchMarkSearch'
 import { getCurrentTabId } from './utils'
 import { parseDateFilter } from './contentScripts/google/googleSearchCSutils'
 import { errorLogger } from './errorLogger'
@@ -15,7 +15,7 @@ function getDateFilterFromUrl(urlSearchParams){
 * request details object details here: https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
 *
 * Note: if you're worried about variables being overwritten by successive calls to googleInstantSearchXHRrequestHandler
-* before searchMarkSearch_BG() has completed, it seems that async functions take care of
+* before searchMarkSearch() has completed, it seems that async functions take care of
 * that: http://stackoverflow.com/a/28250697, also you can check with the following code:http://bit.ly/2hLxYX1 on https://esnextb.in/
 */
 async function googleInstantSearchXHRrequestHandler({requestId, tabId, method, type, url}){
@@ -39,7 +39,7 @@ async function googleInstantSearchXHRrequestHandler({requestId, tabId, method, t
 
   let searchResults = []
   try{
-    searchResults = await searchMarkSearch_BG(searchTerms, dateFilter)
+    searchResults = await searchMarkSearch(searchTerms, dateFilter)
   }
   catch(err){
     errorLogger(err)
