@@ -11,9 +11,7 @@ function hideMSresultsBox(){
 }
 
 function showMSresultsBox(){
-  if(msResultsBoxElem.classList.contains('msResultsBoxHide')){
-    msResultsBoxElem.classList.remove('msResultsBoxHide')
-  }
+  msResultsBoxElem.classList.remove('msResultsBoxHide')
 }
 
 /*****
