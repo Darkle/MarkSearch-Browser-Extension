@@ -5,7 +5,6 @@ import { $ } from '../../utils'
 let msResultsBoxResultsContainer
 let msResultsBoxElem
 let msResultsBoxOldHeight
-let msResultsBoxTopStyleSet = false
 
 function hideMSresultsBox(){
   msResultsBoxElem.classList.add('msResultsBoxHide')
@@ -17,31 +16,13 @@ function showMSresultsBox(){
   }
 }
 
-function setMSResultsBoxTopStyle(){
-  if(msResultsBoxTopStyleSet){
-    return
-  }
-
-  const rcntElement = $('#rcnt')
-
-  if(rcntElement){
-    /*****
-    * We're calculating instead of using a constant in case the user has zoomed in the page.
-    * It's only set once per content script load so it shouldn't be too expenisve in terms of
-    * layout re-calc.
-    */
-    msResultsBoxElem.style.top = `${ rcntElement.getBoundingClientRect().top }px`
-    msResultsBoxTopStyleSet = true
-  }
-}
-
 /*****
 * We also call setMSresultsBoxHeight() in the mutation observer handler in googleSearch_ContentScript
-* after new search engine results have been inserted as that could change the height of the page.
+* (for instant search) after new search engine results have been inserted as that could change the height of the page.
 */
 function setMSresultsBoxHeight(searchElement){
   /*****
-  * On DOMContentLoaded for instant search the searchElement is not yet there so fall back to a height of
+  * On DOMContentLoaded (for instant search) the searchElement is not yet there so fall back to a height of
   * calc(100vh - 166px - 84px - 20px).
   *
   * If the search engine has no results, the no results message isn't put in to the #search
@@ -63,7 +44,6 @@ function setMSresultsBoxHeight(searchElement){
   * on page load. Also, a lot of the page dom is removed and recreated/inserted when the user clicks the back/forward
   * browser buttons (with instant search), so we would have to keep recreating/re-inserting the MS results box.
   */
-
   let msResultsBoxNewHeight = 'calc(100vh - 166px - 84px - 20px)'
 
   if(searchElement){
@@ -169,5 +149,4 @@ export {
   msResultsBoxResultsContainer,
   hideMSresultsBox,
   showMSresultsBox,
-  setMSResultsBoxTopStyle,
 }

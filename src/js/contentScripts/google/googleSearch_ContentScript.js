@@ -1,7 +1,7 @@
 import '../../../nonInlineStyles/googleSearch_ContentScript.styl'
 import { checkIfInstantSearch, getSearchQueryFromUrl, getDateFilterFromUrl, searchPageIsDisplayed} from './googleSearchCSutils'
 import { renderMarkSearchResultsBoxResults } from './renderMarkSearchResults'
-import { setUpMSresultsBox, setMSresultsBoxHeight, showMSresultsBox, hideMSresultsBox, setMSResultsBoxTopStyle } from './markSearchResultsBox'
+import { setUpMSresultsBox, setMSresultsBoxHeight, showMSresultsBox, hideMSresultsBox } from './markSearchResultsBox'
 import { getSettings, $ } from '../../utils'
 
 const observerSettings = {
@@ -61,13 +61,6 @@ function instantSeachMutationObserverHandler(mutations){
     * showMSresultsBox() does a check to see if the hide class is present.
     */
     showMSresultsBox()
-    /*****
-    * If we started on a search page with instant search, we haven't yet set up the MS results box .style.top
-    * value yet as the elements we measure on the page haven't been inserted yet, so on insertion of results, we
-    * can assume the #rcnt element is there.
-    * setMSResultsBoxTopStyle() has a quick non-costly check in it so we're not always setting it.
-    */
-    setMSResultsBoxTopStyle()
   }
 }
 
