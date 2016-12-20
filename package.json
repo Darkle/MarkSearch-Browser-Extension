@@ -2,7 +2,6 @@
   "name": "marksearch-chrome-extension",
   "version": "2017.1.15",
   "description": "MarkSearch Chrome Extension",
-  "main": "build/extensionInit.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack --progress --colors --watch",

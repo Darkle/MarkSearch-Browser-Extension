@@ -1,10 +1,9 @@
 import '../../../nonInlineStyles/googleSearch_ContentScript.styl'
-import { getSetting } from '../CS_utils'
 import { checkIfInstantSearch, getSearchQueryFromUrl, getDateFilterFromUrl, searchPageIsDisplayed} from './googleSearchCSutils'
 import { renderMarkSearchResultsBoxResults } from './renderMarkSearchResults'
 import { setUpMSresultsBox, setMSresultsBoxHeight, showMSresultsBox, hideMSresultsBox } from './markSearchResultsBox'
-import { searchMarkSearch_CS } from '../searchMarkSearch_CS'
 import { $ } from '../../utils'
+import { getSetting } from '../CS_utils'
 
 const observerSettings = {
   childList: true,
