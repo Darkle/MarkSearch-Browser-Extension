@@ -45,7 +45,7 @@ async function googleInstantSearchXHRrequestHandler({requestId, tabId, method, t
     errorLogger(err)
   }
 
-  chrome.tabs.sendMessage(currentTabId, {searchResults, requestId})
+  chrome.tabs.sendMessage(currentTabId, {searchResults, requestId, searchTerms})
 }
 
 export {

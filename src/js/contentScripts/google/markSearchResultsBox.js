@@ -4,7 +4,8 @@ import { $ } from '../../utils'
 
 let msResultsBoxResultsContainer
 let msResultsBoxElem
-let msResultsBoxHeight
+let msResultsBoxOldHeight
+let msResultsBoxTopStyleSet = false
 
 function hideMSresultsBox(){
   msResultsBoxElem.classList.add('msResultsBoxHide')
@@ -16,23 +17,67 @@ function showMSresultsBox(){
   }
 }
 
+function setMSResultsBoxTopStyle(){
+  if(msResultsBoxTopStyleSet){
+    return
+  }
+
+  const rcntElement = $('#rcnt')
+
+  if(rcntElement){
+    /*****
+    * We're calculating instead of using a constant in case the user has zoomed in the page.
+    * It's only set once per content script load so it shouldn't be too expenisve in terms of
+    * layout re-calc.
+    */
+    msResultsBoxElem.style.top = `${ rcntElement.getBoundingClientRect().top }px`
+    msResultsBoxTopStyleSet = true
+  }
+}
+
 /*****
 * We also call setMSresultsBoxHeight() in the mutation observer handler in googleSearch_ContentScript
 * after new search engine results have been inserted as that could change the height of the page.
 */
 function setMSresultsBoxHeight(searchElement){
   /*****
-  * On DOMContentLoaded for instant search the searchElement is not yet there so fall
-  * back to using 100vh.
+  * On DOMContentLoaded for instant search the searchElement is not yet there so fall back to a height of
+  * calc(100vh - 166px - 84px - 20px).
+  *
+  * If the search engine has no results, the no results message isn't put in to the #search
+  * element, it is put in to another element, which means the #search element has a height of 0, so when it is 0,
+  * also fall back to calc(100vh - 166px - 84px - 20px).
+  *
+  * So there are two conditions here:
+  *   1 - the searchElement is not yet available (searchElement is null/undefined).
+  *   2 - the searchElement has a .clientHeight of 0.
+  *
+  * Note: the calc height is a bit of a guess, but should be ok for most occasions. It is
+  * 100vh minus the bottom (aka .getBoundingClientRect().bottom) of the '#appbar' element (which is 166) minus
+  * the '#fbar' .offsetHeight (which is about 84) minus a little bit of padding (20px) for the bottom.
+  * The calc seems to work ok with the page zoomed in too.
+  *
+  * Re-setting the MS results box height on each new instant search may seem a little inefficient, but we are doing
+  * it for simplicity, otherwise we would need to insert the MS results box in to one of the #search elements parents
+  * and make sure to insert it after the first search engine results had been inserted into the page (for instant search)
+  * on page load. Also, a lot of the page dom is removed and recreated/inserted when the user clicks the back/forward
+  * browser buttons (with instant search), so we would have to keep recreating/re-inserting the MS results box.
   */
-  const searchElementClientHeight = searchElement ? searchElement.clientHeight : 100
-  const unit = searchElement ? 'px' : 'vh'
+
+  let msResultsBoxNewHeight = 'calc(100vh - 166px - 84px - 20px)'
+
+  if(searchElement){
+    const searchElementClientHeight = searchElement.clientHeight
+    if(searchElementClientHeight !== 0){
+      msResultsBoxNewHeight = `${ searchElementClientHeight }px`
+    }
+  }
   /*****
-  * If the old height is the same as the new height, just leave it.
+  * If the old height value is the same as the new height value, just leave it.
   */
-  if(msResultsBoxHeight !== searchElementClientHeight){
-    msResultsBoxHeight = searchElementClientHeight
-    msResultsBoxElem.setAttribute('style', `height:${ msResultsBoxHeight }${ unit };`)
+  if(msResultsBoxOldHeight !== msResultsBoxNewHeight){
+    msResultsBoxOldHeight = msResultsBoxNewHeight
+    msResultsBoxElem.style.height = msResultsBoxNewHeight
   }
 }
 
@@ -42,6 +87,11 @@ function setUpMSresultsBox(searchPageIsDisplayed){
   msResultsBoxElem.setAttribute('id', 'msResultsBox')
 
   setMSresultsBoxHeight($('#search'))
+  /*****
+  * Setting the MS results box top value as a constant seems to work ok even if the page is zoomed in.
+  * So have set it to top: 169px in the css.
+  */
+  // setMSResultsBoxTopStyle()
 
   /*****
   * If the search page is displayed and we're on instant search, hide the MS results
@@ -116,5 +166,6 @@ export {
   setMSresultsBoxHeight,
   msResultsBoxResultsContainer,
   hideMSresultsBox,
-  showMSresultsBox
+  showMSresultsBox,
+  setMSResultsBoxTopStyle,
 }

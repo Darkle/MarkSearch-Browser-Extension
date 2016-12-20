@@ -1,7 +1,7 @@
 import '../../../nonInlineStyles/googleSearch_ContentScript.styl'
 import { checkIfInstantSearch, getSearchQueryFromUrl, getDateFilterFromUrl, searchPageIsDisplayed} from './googleSearchCSutils'
 import { renderMarkSearchResultsBoxResults } from './renderMarkSearchResults'
-import { setUpMSresultsBox, setMSresultsBoxHeight, showMSresultsBox, hideMSresultsBox } from './markSearchResultsBox'
+import { setUpMSresultsBox, setMSresultsBoxHeight, showMSresultsBox, hideMSresultsBox, setMSResultsBoxTopStyle } from './markSearchResultsBox'
 import { getSettings, $ } from '../../utils'
 
 const observerSettings = {
@@ -21,18 +21,29 @@ getSettings().then( settings => {
   extensionSettings = settings
 })
 
-function onReceivedMarkSearchResults({searchResults: markSearchResults, requestId}){
+/*****
+* The xhrInstantSearchMessageListener recieves the searchTerms as well as the MarkSearch results from
+* the webRequest listner in the background.js. marksearchSearchRequestPort does not though, so in that case
+* we get it from the url.
+* marksearchSearchRequestPort sends messages to the background to request a search of the MarkSearch server.
+* We do it this way because if the user is on the search page and its instant search, even if they start typing
+* into the search box and google starts making instant xhr search requests, the searchTerms is not added to
+* the url hash untill they press enter, so we need to grab the searchTerms in the background webRequest listener
+* and send it here with the MarkSearch results.
+*/
+function onReceivedMarkSearchResults({searchResults: markSearchResults, requestId, searchTerms}){
   if(latestInstantSearchRequestId === requestId){
-    renderMarkSearchResultsBoxResults(markSearchResults, getSearchQueryFromUrl())
+    const latestSearchTerms = searchTerms ? searchTerms : getSearchQueryFromUrl()
+    renderMarkSearchResultsBoxResults(markSearchResults, latestSearchTerms)
   }
 }
 
-function xhrInstantSearchMessageListener({searchResults, requestId, newGoogleInstantSearchOccured}){
+function xhrInstantSearchMessageListener({searchResults, requestId, newGoogleInstantSearchOccured, searchTerms}){
   if(newGoogleInstantSearchOccured){
     latestInstantSearchRequestId = requestId
   }
   else if(searchResults){
-    onReceivedMarkSearchResults({searchResults, requestId})
+    onReceivedMarkSearchResults({searchResults, requestId, searchTerms})
   }
 }
 
@@ -50,6 +61,13 @@ function instantSeachMutationObserverHandler(mutations){
     * showMSresultsBox() does a check to see if the hide class is present.
     */
     showMSresultsBox()
+    /*****
+    * If we started on a search page with instant search, we haven't yet set up the MS results box .style.top
+    * value yet as the elements we measure on the page haven't been inserted yet, so on insertion of results, we
+    * can assume the #rcnt element is there.
+    * setMSResultsBoxTopStyle() has a quick non-costly check in it so we're not always setting it.
+    */
+    setMSResultsBoxTopStyle()
   }
 }
 
