@@ -22,13 +22,13 @@ getSettings().then( settings => {
 })
 
 /*****
-* The xhrInstantSearchMessageListener recieves the searchTerms as well as the MarkSearch results from
-* the webRequest listner in the background.js. marksearchSearchRequestPort does not though, so in that case
+* The xhrInstantSearchMessageListener recieves the search terms as well as the MarkSearch results from
+* the webRequest listener in the background.js. marksearchSearchRequestPort does not though, so in that case
 * we get it from the url.
 * marksearchSearchRequestPort sends messages to the background to request a search of the MarkSearch server.
 * We do it this way because if the user is on the search page and its instant search, even if they start typing
-* into the search box and google starts making instant xhr search requests, the searchTerms is not added to
-* the url hash untill they press enter, so we need to grab the searchTerms in the background webRequest listener
+* into the search box and google starts making instant xhr search requests, the search terms are not added to
+* the url hash until they press enter, so we need to grab the search terms in the background webRequest listener
 * and send it here with the MarkSearch results.
 */
 function onReceivedMarkSearchResults({searchResults: markSearchResults, requestId, searchTerms}){

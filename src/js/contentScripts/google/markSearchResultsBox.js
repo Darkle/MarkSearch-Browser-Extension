@@ -13,7 +13,6 @@ function hideMSresultsBox(){
 function showMSresultsBox(){
   msResultsBoxElem.classList.remove('msResultsBoxHide')
 }
-
 /*****
 * We also call setMSresultsBoxHeight() in the mutation observer handler in googleSearch_ContentScript
 * (for instant search) after new search engine results have been inserted as that could change the height of the page.
