@@ -3,7 +3,7 @@
   "version": "2017.1.15",
   "description": "MarkSearch Chrome Extension",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "precommit": "eslint -c .eslintrc.json src/js/**",
     "start": "webpack --progress --colors --watch",
     "analyseBundle": "cross-env runBundleAnalyzer=true webpack --progress --colors --watch",
     "analyseMinifiedBundle": "cross-env NODE_ENV=production runBundleAnalyzer=true webpack --progress --colors",
@@ -43,6 +43,7 @@
     "extract-text-webpack-plugin": "^2.0.0-beta.4",
     "file-loader": "^0.9.0",
     "html-webpack-plugin": "^2.24.1",
+    "husky": "^0.12.0",
     "json-loader": "^0.5.4",
     "pug": "^2.0.0-beta6",
     "pug-loader": "^2.3.0",
@@ -60,7 +61,6 @@
     "write-json-webpack-plugin": "^1.0.0"
   },
   "dependencies": {
-    "flexboxgrid": "^6.3.1",
     "lodash.get": "^4.4.2",
     "lodash.truncate": "^4.4.2",
     "moment": "^2.17.1",

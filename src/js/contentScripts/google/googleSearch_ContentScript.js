@@ -1,4 +1,3 @@
-import 'flexboxgrid'
 import '../../../nonInlineStyles/CS_commonStyles.styl'
 import '../../../nonInlineStyles/googleSearch_ContentScript.styl'
 import { checkIfInstantSearch, getSearchQueryFromUrl, getDateFilterFromUrl, searchPageIsDisplayed } from './googleSearchCSutils'

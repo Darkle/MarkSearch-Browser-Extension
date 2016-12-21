@@ -54,10 +54,7 @@ function setUpHelpAboutPage() {
 }
 
 function settingsTabsBehaviour(selectedListElement) {
-  /*****
-  * const seems to be valid in for of loops - http://bit.ly/2eYKQd1 http://bit.ly/2eYECtO
-  */
-  for(const liElem of $$('#optionsPanel nav li')){
+  for(let liElem of $$('#optionsPanel nav li')){  // eslint-disable-line prefer-const
     const elDataSet = liElem.dataset.showHideDivId
     if(selectedListElement === liElem){
       liElem.className = 'selected'
@@ -78,7 +75,7 @@ function radioInputEventHandler(event){
   * on an already checked radio input will not de-check & will not
   * fire a change event.
   */
-  for(const radioElem of $$(selector)){
+  for(let radioElem of $$(selector)){  // eslint-disable-line prefer-const
     radioElem.checked = false
   }
   saveOptions()
@@ -89,10 +86,8 @@ function setUpEventListeners() {
   * settingsTabsBehaviour(evt.target) - needs to be even.target on this one
   */
   $('#optionsPanel nav').addEventListener('click', evt => settingsTabsBehaviour(evt.target))
-  /*****
-  * const seems to be valid in for of loops - http://bit.ly/2eYKQd1 http://bit.ly/2eYECtO
-  */
-  for(const inputElem of optionElements){
+
+  for(let inputElem of optionElements){  // eslint-disable-line prefer-const
     /*****
     * For the #msResultsBox radio buttons, if the user clicks on one and the other is checked, uncheck
     * the other one and leave the one they clicked on checked (and ignore if the one they clicked on is alrady checked).
