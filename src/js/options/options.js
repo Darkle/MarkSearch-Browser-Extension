@@ -1,4 +1,4 @@
-import '../../styles/options.styl'
+import '../../inlineStyles/options.styl'
 import { getSettings, $, $$ } from '../utils'
 import { getOptionElementValue } from './optionUtils'
 

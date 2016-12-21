@@ -18,7 +18,7 @@ const paths = {
   srcPug: path.join(__dirname, 'src', 'pug'),
   srcImages: path.join(__dirname, 'src', 'images'),
   srcFonts: path.join(__dirname, 'src', 'fonts'),
-  srcStyles: path.join(__dirname, 'src', 'styles'),
+  inlineStyles: path.join(__dirname, 'src', 'inlineStyles'),
   nonInlineStyles: path.join(__dirname, 'src', 'nonInlineStyles'),
   buildBase: path.join(__dirname, 'build'),
   buildJS: path.join(__dirname, 'build', 'js'),
@@ -38,7 +38,9 @@ const webpackConfig = {
     background: path.join(paths.srcJS, 'background.js'),
     options: path.join(paths.srcJSOptions, 'options.js'),
     googleSearch_ContentScript: path.join(paths.srcJSContentScript, 'google', 'googleSearch_ContentScript.js'),
+    // googleSearch_ContentScriptStyleSheet: path.join(paths.nonInlineStyles, 'googleSearch_ContentScript.styl'),
     duckduckgoSearch_ContentScript: path.join(paths.srcJSContentScript, 'duckduckgo', 'duckduckgoSearch_ContentScript.js'),
+    // duckduckgoSearch_ContentScriptStyleSheet: path.join(paths.nonInlineStyles, 'duckduckgoSearch_ContentScript.styl'),
     sendPageData_ContentScript: path.join(paths.srcJSContentScript, 'sendPageData_ContentScript.js'),
     showNotification_ContentScript: path.join(paths.srcJSContentScript, 'showNotification_ContentScript.js'),
   },
@@ -68,21 +70,45 @@ const webpackConfig = {
           pretty: true
         }
       },
+      /*****
+      * These are inline styles. We execute the now notification script dynamically, so putting the CSS in the JS
+      * makes things easy.
+      */
       {
         test: /\.styl$/,
         include: [
-          paths.srcStyles
+          paths.inlineStyles
+        ],
+        exclude: [
+          paths.nonInlineStyles
         ],
         loader: 'style-loader!css-loader?sourceMap!stylus-loader'
       },
+      /*****
+      * These styles are for the main content scripts for google and duckduckgo. We don't run them dynamically, so
+      * we can declare them in the manifest and have them as regular seperate CSS stylesheets.
+      */
       {
         test: /\.styl$/,
         include: [
           paths.nonInlineStyles
         ],
+        exclude: [
+          paths.inlineStyles
+        ],
         loader: ExtractTextPlugin.extract({
           fallbackLoader: 'style-loader',
           loader: 'css-loader?sourceMap!stylus-loader'
+        })
+      },
+      /*****
+      * This is for the flexboxgrid css we are using.
+      */
+      {
+        test: /\.css$/,
+        loader: ExtractTextPlugin.extract({
+          fallbackLoader: 'style-loader',
+          loader: 'css-loader'
         })
       },
       /*****
@@ -102,7 +128,7 @@ const webpackConfig = {
     ]
   },
   resolve: {
-    extensions: ['.js', '.styl', '.sass', 'woff2']
+    extensions: ['.js', '.styl', '.sass', '.woff2', '.css']
   },
   plugins: [
     new ExtractTextPlugin({filename: '../stylesheets/[name].css'}),

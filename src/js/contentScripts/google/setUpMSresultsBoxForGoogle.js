@@ -84,6 +84,10 @@ function setUpMSresultsBoxForGoogle(onSearchPage){
   resultsBoxSideBar.addEventListener('click', () => {
     //will need to be http://caniuse.com/#search=animation
   })
+  /*****
+  * The msResultsBox_google class is for google specific styles for the MS results box.
+  */
+  msResultsBoxElem.classList.add('msResultsBox_google')
 
   document.body.appendChild(msResultsBoxElem)
 }

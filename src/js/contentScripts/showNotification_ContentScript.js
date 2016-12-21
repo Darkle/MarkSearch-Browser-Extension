@@ -1,5 +1,5 @@
-import '../../styles/notie.styl'
-import '../../styles/showNotification_ContentScript.styl'
+import '../../inlineStyles/notie.styl'
+import '../../inlineStyles/showNotification_ContentScript.styl'
 
 import { alert as notieAlert, setOptions as notieSetOptions } from 'notie'
 

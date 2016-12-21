@@ -18,38 +18,6 @@ Example MarkSearch result:
   snippet:"...Boston this November These are the most popular nightclubs in Boston, according to check-in data Watch part two of Jimmy Kimmel’s hilarious ‘I Told My Kids I Ate All Their Halloween Candy’ video Watch Newton’s Priyanka Chopra practice her slo-mo ‘Baywatch’ run Watch the first trailer for Chris Evans and Jenny Slate’s ‘Gifted’ BOSTON GLOBE POLITICS BOSTON GLOBE Trump..."
 */
 
-/*
-Google Search Result Example (with some unnedded attrinutes removed/shortened):
-<div class="g">
-  <div class="rc" data-hveid="89" data-ved="0ahUKEwjvi9H77-PQAhVFjZQKHZo_D2wQFQhZKAAwDg">
-    <h3 class="r">
-      <a href="https://www.lonelyplanet.com/usa/boston" ">Boston - Lonely Planet</a>
-    </h3>
-    <div class="s">
-      <div>
-        <div class="f kv _SWb" style="white-space:nowrap">
-          <cite class="_Rm">https://www.lonelyplanet.com/usa/<b>boston</b></cite>
-          <div class="action-menu ab_ctl">
-            <a class="_Fmb ab_button" href="#" id="am-b14" aria-label="Result details" aria-expanded="false" aria-haspopup="true" role="button">
-              <span class="mn-dwn-arw"></span>
-            </a>
-            <div class="action-menu-panel ab_dropdown" role="menu" tabindex="-1">
-              <ol>
-                <li class="action-menu-item ab_dropdownitem" role="menuitem">
-                  <a class="fl" href="https://webcache.googleusercontent.com/search" ">Cached</a>
-                </li>
-              </ol>
-            </div>
-          </div>
-        </div>
-        <span class="st">
-          <em>Boston's</em> history recalls revolution and transformation, and still today it is among the country's most forward-thinking and barrier-breaking cities.
-        </span>
-      </div>
-    </div>
-  </div>
-</div>
-  */
 //height="24" viewBox="0 0 24 24" width="24"
 const svg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path d="M0 0h24v24H0z" fill="none"/>
@@ -104,37 +72,21 @@ function createResultDescription(result, searchTerms){
   return resultDescription
 }
 
-function createMSresultElements(result, index, searchTerms){
-
-  const mainResultContainer = document.createElement('div')
-  mainResultContainer.setAttribute('class', `g MSresultsBoxResult MSresultsBoxResult_${ index + 1 }`)
-
-  const resultLinkContainer = document.createElement('div')
-  resultLinkContainer.setAttribute('class', 'rc')
-  mainResultContainer.appendChild(resultLinkContainer)
-
-  const resultLinkHeader = document.createElement('h3')
-  resultLinkHeader.setAttribute('class', 'r')
-  resultLinkContainer.appendChild(resultLinkHeader)
-
-  const resultLink = document.createElement('a')
-  resultLink.setAttribute('href', result.pageUrl)
-  resultLink.setAttribute('class', 'MSresultLink')
+function createResultLinkText({pageUrl, pageTitle}){
   /*****
    * If there's no pageTitle text, then just use the page url
    */
-  let resultLinkTextContent = result.pageUrl
-  if(typeof result.pageTitle === 'string'){
-    const pageTitleTrimmed = result.pageTitle.trim()
+  let resultLinkTextContent = pageUrl
+  if(typeof pageTitle === 'string'){
+    const pageTitleTrimmed = pageTitle.trim()
     if(pageTitleTrimmed.length > 0){
       resultLinkTextContent = pageTitleTrimmed
     }
   }
-  /****
-   * unescape should be ok here as we are using textContent and not innerHTML
-   */
-  resultLink.textContent = validatorUnescape(resultLinkTextContent)
+  return resultLinkTextContent
+}
 
+function setPreBrowsing(index, resultLink){
   if(getSetting('msResultsPrebrowsing')){
     if(index === 0){
       resultLink.setAttribute('rel', 'preconnect')
@@ -143,32 +95,32 @@ function createMSresultElements(result, index, searchTerms){
       resultLink.setAttribute('rel', 'dns-prefetch')
     }
   }
-  resultLinkHeader.appendChild(resultLink)
+}
 
-  const resultDetailsAndDescription = document.createElement('div')
-  resultDetailsAndDescription.setAttribute('class', `s MSresultDetailsAndDescription`)
-  mainResultContainer.appendChild(resultDetailsAndDescription)
+function createMSresultElements(result, index, searchTerms){
 
-  const resultDetailsAndDescriptionInnerContainer = document.createElement('div')
-  resultDetailsAndDescription.appendChild(resultDetailsAndDescriptionInnerContainer)
+  const mainResultContainer = document.createElement('div')
+  mainResultContainer.setAttribute('class', `MSresultsBoxResult MSresultsBoxResultNumber_${ index + 1 }`)
 
-  const resultDetails = document.createElement('div')
-  resultDetails.setAttribute('class', `f kv _SWb MSresultDetails`)
-  resultDetailsAndDescriptionInnerContainer.appendChild(resultDetails)
+  const resultLink = document.createElement('a')
+  resultLink.setAttribute('href', result.pageUrl)
+  resultLink.setAttribute('class', 'MSresultLink')
+  /****
+   * unescape should be ok here as we are using textContent and not innerHTML
+   */
+  resultLink.textContent = validatorUnescape(createResultLinkText(result))
+  setPreBrowsing(index, resultLink)
+  mainResultContainer.appendChild(resultLink)
 
-  const resultCite = document.createElement('cite')
-  resultCite.setAttribute('class', `_Rm MSresultCite`)
-  /*****
-  * 86 characters is about the longest the url can be befor it gets too big.
-  */
-  resultCite.textContent = result.pageUrl.slice(0, 86)
-  resultDetails.appendChild(resultCite)
+  const resultMetaDataContainer = document.createElement('div')
+  resultMetaDataContainer.setAttribute('class', 'MSresultMetaDataContainer')
+  mainResultContainer.appendChild(resultMetaDataContainer)
+
+  const resultUrlText = document.createElement('div')
+  resultUrlText.setAttribute('class', 'MSresultUrlText')
+  resultMetaDataContainer.appendChild(resultUrlText)
 
   if(result.archiveLink){
-    const archiveLinkContainer = document.createElement('div')
-    archiveLinkContainer.setAttribute('class', 'action-menu ab_ctl MSarchiveLinkContainer')
-    resultDetails.appendChild(archiveLinkContainer)
-
     const archiveLink = document.createElement('a')
     archiveLink.setAttribute('href', result.archiveLink)
     archiveLink.setAttribute('class', 'MSarchiveLink')
@@ -179,14 +131,16 @@ function createMSresultElements(result, index, searchTerms){
     */
     archiveLink.setAttribute('rel', 'noopener noreferrer')
     archiveLink.innerHTML = svg
-    archiveLinkContainer.appendChild(archiveLink)
+    resultMetaDataContainer.appendChild(archiveLink)
   }
 
-  const resultDescription = document.createElement('span')
-  resultDescription.setAttribute('class', `st MSresultDescription`)
+  const resultDescription = document.createElement('div')
+  resultDescription.setAttribute('class', `MSresultDescription`)
+
   const description = createResultDescription(result, searchTerms)
   resultDescription.innerHTML = DOMPurify.sanitize(description)
-  resultDetailsAndDescriptionInnerContainer.appendChild(resultDescription)
+
+  mainResultContainer.appendChild(resultDescription)
 
   return mainResultContainer
 }

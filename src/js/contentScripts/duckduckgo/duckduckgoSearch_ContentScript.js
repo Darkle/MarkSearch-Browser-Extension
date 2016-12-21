@@ -1,5 +1,5 @@
 
-// import '../styles/duckduckgoSearch_ContentScript.styl'
+// import '../nonInlineStyles/duckduckgoSearch_ContentScript.styl'
 // import { getSettings } from './utils'
 //
 // function initDuckduckgoSearchIntegration(settings){
