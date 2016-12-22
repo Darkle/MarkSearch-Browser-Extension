@@ -54,7 +54,7 @@ function setUpHelpAboutPage() {
 }
 
 function settingsTabsBehaviour(selectedListElement) {
-  for(let liElem of $$('#optionsPanel nav li')){  // eslint-disable-line prefer-const
+  Array.from($$('#optionsPanel nav li')).forEach(liElem => {
     const elDataSet = liElem.dataset.showHideDivId
     if(selectedListElement === liElem){
       liElem.className = 'selected'
@@ -64,7 +64,7 @@ function settingsTabsBehaviour(selectedListElement) {
       liElem.className = ''
       $(elDataSet).className = 'hide'
     }
-  }
+  })
 }
 
 function radioInputEventHandler(event){
@@ -75,9 +75,10 @@ function radioInputEventHandler(event){
   * on an already checked radio input will not de-check & will not
   * fire a change event.
   */
-  for(let radioElem of $$(selector)){  // eslint-disable-line prefer-const
+  Array.from($$(selector)).forEach(radioElem => {
     radioElem.checked = false
-  }
+  })
+  
   saveOptions()
 }
 
@@ -87,7 +88,7 @@ function setUpEventListeners() {
   */
   $('#optionsPanel nav').addEventListener('click', evt => settingsTabsBehaviour(evt.target))
 
-  for(let inputElem of optionElements){  // eslint-disable-line prefer-const
+  Array.from(optionElements).forEach(inputElem => {
     /*****
     * For the #msResultsBox radio buttons, if the user clicks on one and the other is checked, uncheck
     * the other one and leave the one they clicked on checked (and ignore if the one they clicked on is alrady checked).
@@ -106,7 +107,7 @@ function setUpEventListeners() {
       */
       inputElem.addEventListener('input', saveOptions)
     }
-  }
+  })
 }
 
 getSettings()

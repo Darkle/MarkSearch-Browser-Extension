@@ -35,7 +35,7 @@ function createResultDescription(result, searchTerms){
      * to the tokens (search terms), so gonna manually add them if not already there
      * in the snippet.
      */
-    const highlightOpeningSpan = '<em>'
+    const highlightOpeningSpan = '<span class="searchHighlight">'
     if(result.snippet.indexOf(highlightOpeningSpan) < 0){
       searchTerms
         .toLowerCase()
@@ -46,10 +46,38 @@ function createResultDescription(result, searchTerms){
         .forEach( searchWord => {
           const stemmedSearchWord = stem(searchWord)
           const regex = new RegExp(`(${ stemmedSearchWord }[a-z]*)`, 'gi')
-          const replacement = `${ highlightOpeningSpan }$1</em>`
+          const replacement = `${ highlightOpeningSpan }$1</span>`
           result.snippet = result.snippet.replace(regex, replacement)
         })
     }
+    /*****
+    * The preceding ellipse (...) for the snippets doesn't look as good in the results box as it does on the MarkSearch
+    * server search page, so gonna remove it if the first letter is a capital letter.
+    * Start of the snippet could be one of the following:
+    *    1. `A`
+    *    2. `a`
+    *    3. `<span class="searchHighlight">A`
+    *    4. `<span class="searchHighlight">a`
+    *    5. `...A`
+    *    6. `...a`
+    *    7. `...<span class="searchHighlight">A`
+    *    8. `...<span class="searchHighlight">a`
+    */
+    let snippetTestCopy = result.snippet
+    /*****
+    * Remove the preceding elipse and/or opening span tag so we can test if the first letter is a capital letter.
+    */
+    if(snippetTestCopy.startsWith('...')){
+      snippetTestCopy = snippetTestCopy.slice(3)
+    }
+    if(snippetTestCopy.startsWith('<span class="searchHighlight">')){
+      snippetTestCopy = snippetTestCopy.slice(30)
+    }
+
+    if(snippetTestCopy[0] === snippetTestCopy[0].toUpperCase()){
+      result.snippet = result.snippet.slice(3)
+    }
+
     resultDescription = result.snippet
   }
   /****

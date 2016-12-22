@@ -1,4 +1,3 @@
-import '../../../nonInlineStyles/CS_commonStyles.styl'
 import '../../../nonInlineStyles/googleSearch_ContentScript.styl'
 import { checkIfInstantSearch, getSearchQueryFromUrl, getDateFilterFromUrl, searchPageIsDisplayed } from './googleSearchCSutils'
 import { renderMarkSearchResultsBoxResults } from '../renderMarkSearchResults'
@@ -15,7 +14,6 @@ const observerSettings = {
   attributeOldValue: false,
   characterDataOldValue: false
 }
-
 let marksearchSearchRequestPort
 let latestInstantSearchRequestId = 0
 let searchForm

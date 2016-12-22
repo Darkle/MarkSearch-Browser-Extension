@@ -12,7 +12,10 @@
   font-style: normal
 
 #msResultsBox
-  // font-family: "open_sansregular"
+  /*
+  * Cause we are existing in 3 browsers, gonna use normilize.css
+  */
+  @import 'normalize'
   // overflow-y: scroll
   // border: 1px solid #ebebeb
   display: flex
@@ -38,6 +41,10 @@
   position: sticky
   top: 0
 
+/*
+* This is so that the width of the icon stays the same when we switch to position: fixed in the js when the browser
+* doesn't support position: sticky.
+*/
 #msSidebarIconHidden
   text-align: center
   font-family: "exoregular"
@@ -61,7 +68,7 @@
   padding-right: 25px
   .MSresultsBoxResult
     .MSresultLink
-      font-family: "open_sansregular"
+      font-family: "open_sansregular", sans-serif
       // border-left: 2px solid #3498DB
       // padding-left: 2px
     .MSresultMetaDataContainer

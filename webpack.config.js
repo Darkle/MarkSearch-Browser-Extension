@@ -98,19 +98,16 @@ const webpackConfig = {
         ],
         loader: ExtractTextPlugin.extract({
           fallbackLoader: 'style-loader',
-          loader: 'css-loader?sourceMap!stylus-loader'
+          loader: `css-loader?sourceMap!stylus-loader?paths=${ paths.nonInlineStyles }`
         })
       },
-      /*****
-      * This is for the flexboxgrid css we are using.
-      */
-      {
-        test: /\.css$/,
-        loader: ExtractTextPlugin.extract({
-          fallbackLoader: 'style-loader',
-          loader: 'css-loader'
-        })
-      },
+      // {
+      //   test: /\.css$/,
+      //   loader: ExtractTextPlugin.extract({
+      //     fallbackLoader: 'style-loader',
+      //     loader: 'css-loader'
+      //   })
+      // },
       /*****
       * url-loader lets us load the opensans-regular.woff2 font file as a base64 data:application/font-woff2
       * url.
@@ -128,7 +125,8 @@ const webpackConfig = {
     ]
   },
   resolve: {
-    extensions: ['.js', '.styl', '.sass', '.woff2', '.css']
+    // modules: [path.resolve('src' 'nonInlineStyles'), 'node_modules'],
+    extensions: ['.js', '.styl', '.sass', '.woff2']
   },
   plugins: [
     new ExtractTextPlugin({filename: '../stylesheets/[name].css'}),
