@@ -121,7 +121,17 @@ const webpackConfig = {
         options: {
           mimetype: 'application/font-woff2'
         }
-      }
+      },
+      // {
+      //   test: /\.ttf$/,
+      //   include: [
+      //     paths.srcFonts
+      //   ],
+      //   loader: 'url-loader',
+      //   options: {
+      //     mimetype: 'application/x-font-ttf'
+      //   }
+      // }
     ]
   },
   resolve: {

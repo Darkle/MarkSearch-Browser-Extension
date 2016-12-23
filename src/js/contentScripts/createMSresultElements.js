@@ -145,6 +145,7 @@ function createMSresultElements(result, index, searchTerms){
   mainResultContainer.appendChild(resultMetaDataContainer)
 
   const resultUrlText = document.createElement('div')
+  resultUrlText.textContent = result.pageUrl
   resultUrlText.setAttribute('class', 'MSresultUrlText')
   resultMetaDataContainer.appendChild(resultUrlText)
 

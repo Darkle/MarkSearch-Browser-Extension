@@ -1,41 +1,78 @@
 
 @font-face
-  font-family: 'open_sansregular'
+  font-family: 'opensans_regular'
   src: url('../fonts/opensans-regular.woff2') format('woff2')
   font-weight: normal
   font-style: normal
 
 @font-face
-  font-family: 'exoregular'
+  font-family: 'exo_regular'
   src: url('../fonts/Exo-regular-MS-text-only.woff2') format('woff2')
   font-weight: normal
   font-style: normal
 
+// @font-face
+//   font-family: 'roboto_regular'
+//   src: url('../fonts/Roboto-Regular.woff2') format('woff2')
+//   font-weight: normal
+//   font-style: normal
+//
+// @font-face
+//   font-family: 'opensans_bold'
+//   src: url('../fonts/OpenSans-Bold.woff2') format('woff2')
+//
+// @font-face
+//   font-family: 'opensans_condbold'
+//   src: url('../fonts/OpenSans-CondBold.woff2') format('woff2')
+//
+// @font-face
+//   font-family: 'opensans_condlight'
+//   src: url('../fonts/OpenSans-CondLight.woff2') format('woff2')
+//
+// @font-face
+//   font-family: 'opensans_extrabold'
+//   src: url('../fonts/OpenSans-ExtraBold.woff2') format('woff2')
+//
+// @font-face
+//   font-family: 'opensans_light'
+//   src: url('../fonts/OpenSans-Light.woff2') format('woff2')
+//
+// @font-face
+//   font-family: 'opensans_semibold'
+//   src: url('../fonts/OpenSans-Semibold.woff2') format('woff2')
+
+
+break-long-words()
+  word-wrap: break-word
+  overflow-wrap: break-word
+  word-break: break-word
+  hyphens: auto
+
 #msResultsBox
   /*
-  * Cause we are existing in 3 browsers, gonna use normilize.css 
+  * Cause we are existing in 3 browsers, gonna use normilize.css
   */
   @import 'normalize'
-  // overflow-y: scroll
-  // border: 1px solid #ebebeb
   display: flex
+  width: 620px
   background-color: #fff
+  // outline: 2px solid LightCoral
 
 .msResultsBoxHide
   display: none !important
 
 #msResultsBoxSidebar
   width: 40px
-  // float: left
   height: 100%
   background-color: #3498DB
   &:hover
     cursor: pointer
+  // outline: 2px solid DeepPink
 
 #msSidebarIcon
   text-align: center
-  font-family: "exoregular"
-  font-size: 1.9em
+  font-family: "exo_regular"
+  font-size: 24.7px
   color: white
   width: 40px
   position: sticky
@@ -47,8 +84,8 @@
 */
 #msSidebarIconHidden
   text-align: center
-  font-family: "exoregular"
-  font-size: 1.9em
+  font-family: "exo_regular"
+  font-size: 24.7px
   color: white
   width: 40px
   visibility: hidden
@@ -58,7 +95,9 @@
   top: 0
 
 #msResultsBoxResultsContainer
-  // padding-left: 50px
+  display: flex
+  flex-direction: column
+  font-family:  "opensans_regular", wingdings
   border-top: 1px solid #ebebeb
   border-bottom: 1px solid #ebebeb
   overflow-y: auto
@@ -66,27 +105,70 @@
   padding-top: 10px
   padding-left: 25px
   padding-right: 25px
+  #resultsBoxCount
+    text-align: center
+    margin-bottom: 16px
+    width: 100%
+    opacity: 0.2
+    color: #444
+    // outline: 1px solid DARKCYAN
   .MSresultsBoxResult
+    // display: block
+    // display: flex
+    // flex-direction: column
+    margin-bottom: 26px
+    // outline: 1px solid LIGHTSLATEGREY
+    border-bottom: 50px
     .MSresultLink
-      font-family: "open_sansregular", sans-serif
-      // border-left: 2px solid #3498DB
-      // padding-left: 2px
+      // outline: 2px solid MEDIUMSEAGREEN
+      break-long-words()
+      text-decoration: none
+      color: #3498DB
+      &:hover
+        color: #2670A2
+        text-decoration: none
     .MSresultMetaDataContainer
+      display: flex
+      flex-direction: row
+      min-height: 20px
+      // outline: 1px solid PLUM
       .MSresultUrlText
+        // display: inline-flex
+        // outline: 1px solid DEEPSKYBLUE
+        max-width: 504px
+        overflow-x: hidden
+        text-overflow: ellipsis
+        color: #92C8EF
+        vertical-align: middle
+        // justify-content: center
+        // display: flex
+        // flex-direction: column
+
       .MSarchiveLink
+        // outline: 1px solid PERU
+        margin-left: 10px
+        display: flex
+        flex-direction: column
+        justify-content: center
         svg
           fill: hsla(192, 15%, 90%, 1)
           height: 14.4px
-          margin-top: 0.94px
-      .MSarchiveLink:hover
-        text-decoration: none
-        svg
-          fill: #77BBEB
+          // margin-top: 0.94px
+        &:hover
+          text-decoration: none
+          svg
+            fill: #77BBEB
     .MSresultDescription
+      // outline: 1px solid BLUEVIOLET
+      // font-family: 'roboto_regular', wingdings
+      // font-family: 'opensans_bold', wingdings
+      // font-family: 'opensans_condbold', wingdings
+      // font-family: 'opensans_condlight', wingdings
+      // font-family: 'opensans_extrabold', wingdings
+      // font-family: 'opensans_light', wingdings
+      // font-family: 'opensans_semibold', wingdings
       margin-top: 1px
-      color: #3498DB
-      text-overflow: ellipsis
-      white-space: nowrap
-      display: block
-      overflow: hidden
-      float: left
+      color: #444
+      break-long-words()
+      .searchHighlight
+        ////
