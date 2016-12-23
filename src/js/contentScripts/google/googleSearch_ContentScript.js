@@ -141,17 +141,22 @@ function init(){
 
     window.addEventListener('popstate', popstateListener)
   }
-  else{
-    /*****
-    * Grabbing search terms (and date filter if being used) from window location hash/query params.
-    */
-    marksearchSearchRequestPort.postMessage(
-      {
-        searchTerms: getSearchQueryFromUrl(),
-        dateFilter: getDateFilterFromUrl()
-      }
-    )
-  }
+
+  /*****
+  * We send a request for a MarkSearch search on page load for both non-instant search and instant search.
+  *
+  * We do this because sometimes the xhr instant search request isn't sent on page load. This occurs when
+  * you click on a result, then click the browser back button to go back to the search - I guess cause it
+  * just uses the browser cache, so in that instance, we need to manualy requests a MarkSearch search.
+  *
+  * Grabbing search terms (and date filter if being used) from window location hash/query params.
+  */
+  marksearchSearchRequestPort.postMessage(
+    {
+      searchTerms: getSearchQueryFromUrl(),
+      dateFilter: getDateFilterFromUrl()
+    }
+  )
 
   /*****
   * Messages back to the marksearchSearchRequestPort port from the background script send back a requestId
