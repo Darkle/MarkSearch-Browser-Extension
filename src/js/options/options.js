@@ -67,20 +67,20 @@ function settingsTabsBehaviour(selectedListElement) {
   })
 }
 
-function radioInputEventHandler(event){
-  const {currentTarget: { dataset: { settingKey }}} = event
-  const selector = `.msIntegratedResultsRadioElem:not([data-setting-key='${ settingKey }'])`
-  /*****
-  * The currentTarget will always be checked, as clicking
-  * on an already checked radio input will not de-check & will not
-  * fire a change event.
-  */
-  Array.from($$(selector)).forEach(radioElem => {
-    radioElem.checked = false
-  })
-  
-  saveOptions()
-}
+// function radioInputEventHandler(event){
+//   const {currentTarget: { dataset: { settingKey }}} = event
+//   const selector = `.msIntegratedResultsRadioElem:not([data-setting-key='${ settingKey }'])`
+//   /*****
+//   * The currentTarget will always be checked, as clicking
+//   * on an already checked radio input will not de-check & will not
+//   * fire a change event.
+//   */
+//   Array.from($$(selector)).forEach(radioElem => {
+//     radioElem.checked = false
+//   })
+//
+//   saveOptions()
+// }
 
 function setUpEventListeners() {
   /*****
@@ -89,16 +89,9 @@ function setUpEventListeners() {
   $('#optionsPanel nav').addEventListener('click', evt => settingsTabsBehaviour(evt.target))
 
   Array.from(optionElements).forEach(inputElem => {
-    /*****
-    * For the #msResultsBox radio buttons, if the user clicks on one and the other is checked, uncheck
-    * the other one and leave the one they clicked on checked (and ignore if the one they clicked on is alrady checked).
-    */
-    if(inputElem.className === 'msIntegratedResultsRadioElem'){
-      inputElem.addEventListener('change', radioInputEventHandler)
-    }
-    else{
-      inputElem.addEventListener('change', saveOptions)
-    }
+    
+    inputElem.addEventListener('change', saveOptions)
+
     if(inputElem.dataset.settingKey === 'extensionToken'){
       /*****
       * Also need .addEventListener('input' for extensionToken Input as $('input').addEventListener('change'
