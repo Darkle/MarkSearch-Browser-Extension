@@ -179,6 +179,13 @@ if(process.env.NODE_ENV === 'production'){
   * Remove the source maps before build for production.
   */
   webpackConfig.plugins.push(new WebpackCleanupPlugin())
+  webpackConfig.plugins.push(
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+      }
+    })
+  )
   // https://github.com/babel/babili
   // http://babeljs.io/blog/2016/08/30/babili
   // delete webpackConfig.devtool

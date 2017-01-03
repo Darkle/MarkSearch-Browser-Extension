@@ -36,12 +36,17 @@ function setMSresultsBoxHeightForGoogle(searchElement){
   * and make sure to insert it after the first search engine results had been inserted into the page (for instant search)
   * on page load. Also, a lot of the page dom is removed and recreated/inserted when the user clicks the back/forward
   * browser buttons (with instant search), so we would have to keep recreating/re-inserting the MS results box.
+  *
+  * Also, in the event that there is only say 1-2 search engine results, the #search element height is not really
+  * enough for the MS results box to look decent, so if the #search element height is less than 360px, fall back
+  * to the 'calc(100vh - 166px - 84px - 20px)'
   */
   let msResultsBoxNewHeight = 'calc(100vh - 166px - 84px - 20px)'
 
   if(searchElement){
     const searchElementClientHeight = searchElement.clientHeight
-    if(searchElementClientHeight !== 0){
+    console.log('searchElementClientHeight', searchElementClientHeight)
+    if(searchElementClientHeight !== 0 && searchElementClientHeight > 360){
       msResultsBoxNewHeight = `${ searchElementClientHeight }px`
     }
   }
@@ -80,8 +85,10 @@ function setUpMSresultsBoxForGoogle(onSearchPage){
   const computedMsSidebarIconTop = 167
 
   setUpMSresultsBoxIcon(computedMsSidebarIconTop)
-
+  // msResultsBoxElem.classList.add('msResultsBoxShowTabOnly')
   resultsBoxSideBar.addEventListener('click', () => {
+    console.log(`resultsBoxSideBar.addEventListener('click'`)
+    msResultsBoxElem.classList.toggle('msResultsBoxShowTabOnly')
     //will need to be http://caniuse.com/#search=animation
   })
   /*****

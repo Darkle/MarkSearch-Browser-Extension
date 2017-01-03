@@ -25,7 +25,7 @@ function setMSiconClass(msSidebarIcon, msSidebarIconTop){
 function generateMassTempResultsForDev(markSearchResults){
   let tempResults = []
   if(markSearchResults[0]){
-    tempResults = Array(500)
+    tempResults = Array(100)
                     .fill(markSearchResults[0])
                     .map((item, index) =>
                       Object.assign({}, item, {pageTitle: `${ item.pageTitle } ${ index + 1 }`})

@@ -159,7 +159,7 @@
     "no-unexpected-multiline": "error",
     "no-unneeded-ternary": "error",
     "no-unsafe-finally": "error",
-    "no-use-before-define": "error",
+    "no-use-before-define": ["error", { "functions": false, "classes": true }],
     "no-useless-call": "error",
     "no-useless-concat": "error",
     "no-useless-constructor": "error",
