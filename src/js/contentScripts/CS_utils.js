@@ -45,5 +45,5 @@ function generateMassTempResultsForDev(markSearchResults){
 export {
   getSetting,
   setMSiconClass,
-  generateMassTempResultsForDev
+  generateMassTempResultsForDev,
 }

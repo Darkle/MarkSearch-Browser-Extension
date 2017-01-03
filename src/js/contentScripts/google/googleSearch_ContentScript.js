@@ -17,6 +17,77 @@ const observerSettings = {
 let marksearchSearchRequestPort
 let latestInstantSearchRequestId = 0
 let searchForm
+
+function init(){
+  /*****
+  * We wanna exit early if they dont have <searchEngine>SearchIntegration enabled in the extension settings
+  * or if it's not a search/results page.
+  * Note: we also would not show the MarkSearch search button if <searchEngine>SearchIntegration is false.
+  */
+  if(!getSetting('googleSearchIntegration') || !$('#lst-ib')){
+    return
+  }
+
+  searchForm = $('#searchform')
+  const isInstantSearch = checkIfInstantSearch()
+  const onSearchPage = searchPageIsDisplayed(searchForm)
+
+  if(getSetting('showMSsearchButton')){
+    //TODO when i set this up, check that I don't need any of the observers below, if i do, may need to rethink
+    //TODO the if(!getSetting('msResultsBox')){ return
+    //  setUpMarkSearchSearchButtons(isInstantSearch, onSearchPage)
+  }
+  /*****
+  * If we are on the search page and it is not instant search, exit cause we dont want to show MarkSearch
+  * results on the search page, only on the results page.
+  */
+  if(!isInstantSearch && onSearchPage){
+    return
+  }
+
+  setUpMSresultsBoxForGoogle(onSearchPage)
+
+  marksearchSearchRequestPort = chrome.runtime.connect({name: 'googleContentScriptRequestMSsearch'})
+
+  if(isInstantSearch){
+    /*****
+    * The webRequest listener in the background sends the content script notifications that an instant search xhr
+    * request has occurred and then later it sends the MarkSearch results using the same search
+    * terms that were used in the instant search xhr request.
+    */
+    chrome.runtime.onMessage.addListener(xhrInstantSearchMessageListener)
+
+    const observer = new MutationObserver(instantSeachMutationObserverHandler)
+    /*****
+    * #main is the lowest down element in the tree (of what we want) that's available on DOMContentLoaded.
+    */
+    observer.observe($('#main'), observerSettings)
+
+    window.addEventListener('popstate', popstateListener)
+  }
+
+  /*****
+  * We send a request for a MarkSearch search on page load for both non-instant search and instant search.
+  *
+  * We do this because sometimes the xhr instant search request isn't sent on page load. This occurs when
+  * you click on a result, then click the browser back button to go back to the search - I guess cause it
+  * just uses the browser cache, so in that instance, we need to manualy requests a MarkSearch search.
+  *
+  * Grabbing search terms (and date filter if being used) from window location hash/query params.
+  */
+  marksearchSearchRequestPort.postMessage(
+    {
+      searchTerms: getSearchQueryFromUrl(),
+      dateFilter: getDateFilterFromUrl()
+    }
+  )
+
+  /*****
+  * Messages back to the marksearchSearchRequestPort port from the background script send back a requestId
+  * of 0.
+  */
+  marksearchSearchRequestPort.onMessage.addListener(onReceivedMarkSearchResults)
+}
 /*****
 * The marksearchSearchRequestPort sends messages to the background requesting it to search the MarkSearch
 * server and send back the results to the content script. We don't query the MarkSearch server directly
@@ -92,77 +163,6 @@ function popstateListener(){
       dateFilter: getDateFilterFromUrl()
     }
   )
-}
-
-function init(){
-  /*****
-  * We wanna exit early if they dont have <searchEngine>SearchIntegration enabled in the extension settings
-  * or if it's not a search/results page.
-  * Note: we also would not show the MarkSearch search button if <searchEngine>SearchIntegration is false.
-  */
-  if(!getSetting('googleSearchIntegration') || !$('#lst-ib')){
-    return
-  }
-
-  searchForm = $('#searchform')
-  const isInstantSearch = checkIfInstantSearch()
-  const onSearchPage = searchPageIsDisplayed(searchForm)
-
-  if(getSetting('showMSsearchButton')){
-    //TODO when i set this up, check that I don't need any of the observers below, if i do, may need to rethink
-    //TODO the if(!getSetting('msResultsBox')){ return
-    //  setUpMarkSearchSearchButtons(isInstantSearch, onSearchPage)
-  }
-  /*****
-  * If we are on the search page and it is not instant search, exit cause we dont want to show MarkSearch
-  * results on the search page, only on the results page.
-  */
-  if(!isInstantSearch && onSearchPage){
-    return
-  }
-
-  setUpMSresultsBoxForGoogle(onSearchPage)
-
-  marksearchSearchRequestPort = chrome.runtime.connect({name: 'googleContentScriptRequestMSsearch'})
-
-  if(isInstantSearch){
-    /*****
-    * The webRequest listener in the background sends the content script notifications that an instant search xhr
-    * request has occurred and then later it sends the MarkSearch results using the same search
-    * terms that were used in the instant search xhr request.
-    */
-    chrome.runtime.onMessage.addListener(xhrInstantSearchMessageListener)
-
-    const observer = new MutationObserver(instantSeachMutationObserverHandler)
-    /*****
-    * #main is the lowest down element in the tree (of what we want) that's available on DOMContentLoaded.
-    */
-    observer.observe($('#main'), observerSettings)
-
-    window.addEventListener('popstate', popstateListener)
-  }
-
-  /*****
-  * We send a request for a MarkSearch search on page load for both non-instant search and instant search.
-  *
-  * We do this because sometimes the xhr instant search request isn't sent on page load. This occurs when
-  * you click on a result, then click the browser back button to go back to the search - I guess cause it
-  * just uses the browser cache, so in that instance, we need to manualy requests a MarkSearch search.
-  *
-  * Grabbing search terms (and date filter if being used) from window location hash/query params.
-  */
-  marksearchSearchRequestPort.postMessage(
-    {
-      searchTerms: getSearchQueryFromUrl(),
-      dateFilter: getDateFilterFromUrl()
-    }
-  )
-
-  /*****
-  * Messages back to the marksearchSearchRequestPort port from the background script send back a requestId
-  * of 0.
-  */
-  marksearchSearchRequestPort.onMessage.addListener(onReceivedMarkSearchResults)
 }
 
 document.addEventListener('DOMContentLoaded', init)

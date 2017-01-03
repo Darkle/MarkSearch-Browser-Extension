@@ -5,9 +5,114 @@ import {
   createMSresultsBox,
   setUpMSresultsBoxIcon
 } from '../markSearchResultsBox'
+import { getSetting } from '../CS_utils'
 import { $ } from '../../utils'
 
+import debounce from 'lodash.debounce'
+import Velocity from 'velocity-animate'
+
 let msResultsBoxOldHeight
+let documentClientWidth
+
+function setUpMSresultsBoxForGoogle(onSearchPage){
+
+  createMSresultsBox()
+  setMSresultsBoxHeightForGoogle($('#search'))
+  /*****
+  * Setting the MS results box top value as a constant seems to work ok even if the page is zoomed in.
+  * So have set it to top: 169px in the css.
+  * Note: if you need to bring this back and use it, make sure to also call if from the
+  * instantSeachMutationObserverHandler as seen here: http://bit.ly/2hTGxPz
+  */
+  // setMSResultsBoxTopStyle()
+  /*****
+  * If the search page is displayed and we're on instant search, hide the MS results
+  * box for the moment.
+  */
+  if(onSearchPage){
+    hideMSresultsBox()
+  }
+  /*
+  * Gonna do computedMsSidebarIconTop as a constant rather than computed as it wont change and
+  * still seems to work ok even if the page is zoomed in.
+  */
+  // const computedMsSidebarIconTop = msSidebarIcon.getBoundingClientRect().top + scrollY
+  const computedMsSidebarIconTop = 167
+
+  setUpMSresultsBoxIcon(computedMsSidebarIconTop)
+
+  documentClientWidth = document.documentElement.clientWidth
+  /*****
+  * We show the MS results box as a tab on load if:
+  *   1: They have it set in the extension options to show the MS results box on the left - we show as a
+  *   tab so that it doesn't obscure the search engine results.
+  *   2: They do not have it set in the extension options to Autoexpand the results box.
+  *   3: They have it set in the extension options to show the MS results box on the left, but the width
+  *   of the page is too small to show the MS results box without obscuring the search engine results.
+  *     The minimum width we want the MS results box to have is 490px.
+  */
+  if(getSetting('msResultsBox_Position') === 'left' ||
+      !getSetting('msResultsBox_AutoExpand') ||
+      (documentClientWidth - (632 + 140 + 55)) < 490
+    ){
+    msResultsBoxElem.classList.add('msResultsBoxShowTabOnly')
+  }
+
+  setMSresultsBoxWidth()
+
+  resultsBoxSideBar.addEventListener('click', () => {
+    console.log(`resultsBoxSideBar.addEventListener('click'`)
+    toggleShowMSresultBoxAsTab()
+
+    setMSresultsBoxWidth()
+  })
+
+  window.addEventListener('resize', debounce(() => {
+    documentClientWidth = document.documentElement.clientWidth
+    /*****
+    * Only update the width of the MS results box on resize if it is currently shown in full
+    * and not just as a tab.
+    */
+    if(!msResultsBoxElem.classList.contains('msResultsBoxShowTabOnly')){
+      setMSresultsBoxWidth()
+    }
+  }, 150))
+  /*****
+  * The msResultsBox_google class is for google specific styles for the MS results box.
+  */
+  msResultsBoxElem.classList.add('msResultsBox_google')
+
+  document.body.appendChild(msResultsBoxElem)
+}
+
+/*****
+* For setting the MS results box width, if the browser window is wide enough, show it on the right of the
+* search engine results, otherwise, let show on top of the search engine results.
+*/
+function setMSresultsBoxWidth(){
+  /*****
+  * #center_col is the element we don't want to obescure. It's width is 632px and it's left-margin is 150px, plus a
+  * bit of margin on the right - 55px.
+  * documentClientWidth (aka document.documentElement.clientWidth) gets us the browser page width without the
+  * scrollbar interfering.
+  */
+  const widthAvailableForMSresultsBox = documentClientWidth - (632 + 140 + 55)
+
+  if(widthAvailableForMSresultsBox < 490){
+    msResultsBoxElem.style.width = `initial`
+  }
+  else{
+    // msResultsBoxElem.style.width = `${ widthAvailableForMSresultsBox }px`
+    Velocity(msResultsBoxElem, { width: widthAvailableForMSresultsBox }, { duration: 1000 })
+  }
+}
+
+/*****
+* This if for clicking on the tab and for using the keyboard shortcut.
+*/
+function toggleShowMSresultBoxAsTab(){
+  msResultsBoxElem.classList.toggle('msResultsBoxShowTabOnly')
+}
 
 /*****
 * We also call setMSresultsBoxHeightForGoogle() in the mutation observer handler in googleSearch_ContentScript
@@ -59,47 +164,8 @@ function setMSresultsBoxHeightForGoogle(searchElement){
   }
 }
 
-function setUpMSresultsBoxForGoogle(onSearchPage){
-
-  createMSresultsBox()
-  setMSresultsBoxHeightForGoogle($('#search'))
-  /*****
-  * Setting the MS results box top value as a constant seems to work ok even if the page is zoomed in.
-  * So have set it to top: 169px in the css.
-  * Note: if you need to bring this back and use it, make sure to also call if from the
-  * instantSeachMutationObserverHandler as seen here: http://bit.ly/2hTGxPz
-  */
-  // setMSResultsBoxTopStyle()
-  /*****
-  * If the search page is displayed and we're on instant search, hide the MS results
-  * box for the moment.
-  */
-  if(onSearchPage){
-    hideMSresultsBox()
-  }
-  /*
-  * Gonna do computedMsSidebarIconTop as a constant rather than computed as it wont change and
-  * still seems to work ok even if the page is zoomed in.
-  */
-  // const computedMsSidebarIconTop = msSidebarIcon.getBoundingClientRect().top + scrollY
-  const computedMsSidebarIconTop = 167
-
-  setUpMSresultsBoxIcon(computedMsSidebarIconTop)
-  // msResultsBoxElem.classList.add('msResultsBoxShowTabOnly')
-  resultsBoxSideBar.addEventListener('click', () => {
-    console.log(`resultsBoxSideBar.addEventListener('click'`)
-    msResultsBoxElem.classList.toggle('msResultsBoxShowTabOnly')
-    //will need to be http://caniuse.com/#search=animation
-  })
-  /*****
-  * The msResultsBox_google class is for google specific styles for the MS results box.
-  */
-  msResultsBoxElem.classList.add('msResultsBox_google')
-
-  document.body.appendChild(msResultsBoxElem)
-}
-
 export {
   setUpMSresultsBoxForGoogle,
-  setMSresultsBoxHeightForGoogle
+  setMSresultsBoxHeightForGoogle,
+  setMSresultsBoxWidth,
 }

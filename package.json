@@ -50,7 +50,7 @@
     "stylus": "^0.54.5",
     "stylus-loader": "^2.4.0",
     "url-loader": "^0.5.7",
-    "webpack": "^2.2.0-rc.1",
+    "webpack": "^2.2.0-rc.3",
     "webpack-bundle-analyzer": "^2.2.0",
     "webpack-cleanup-plugin": "^0.4.0",
     "webpack-dev-server": "^1.16.2",
@@ -59,12 +59,14 @@
     "write-json-webpack-plugin": "^1.0.0"
   },
   "dependencies": {
+    "lodash.debounce": "^4.0.8",
     "lodash.get": "^4.4.2",
     "lodash.truncate": "^4.4.2",
     "moment": "^2.17.1",
     "notie": "^3.9.5",
     "schema-inspector": "^1.6.8",
     "valid-url": "^1.0.9",
-    "validator": "^6.2.0"
+    "validator": "^6.2.0",
+    "velocity-animate": "^1.4.0"
   }
 }
