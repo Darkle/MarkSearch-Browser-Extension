@@ -35,6 +35,10 @@ function setUpMSresultsBoxForGoogle(onSearchPage){
 
   setUpMSresultsBoxIcon(computedMsSidebarIconTop)
 
+  if(showingOnLeft()){
+    msResultsBoxElem.classList.add('msResultsBoxShowOnLeft')
+  }
+
   documentClientWidth = document.documentElement.clientWidth
   /*****
   * We show the MS results box as a tab on load if:
@@ -62,26 +66,28 @@ function setUpMSresultsBoxForGoogle(onSearchPage){
   document.body.appendChild(msResultsBoxElem)
 }
 
-function shouldShowMSresultsBoxAsTabOnLoad(){
-  const showAsTab = getSetting('msResultsBox_Position') === 'left' ||
-      !getSetting('msResultsBox_AutoExpand') ||
-      (documentClientWidth - (632 + 140 + 55)) < 490;   // eslint-disable-line semi
+function showingOnLeft(){
+  return getSetting('msResultsBox_Position') === 'left'
+}
 
-  return showAsTab
+function shouldShowMSresultsBoxAsTabOnLoad(){
+  return showingOnLeft() || !getSetting('msResultsBox_AutoExpand') || (documentClientWidth - (632 + 140 + 55)) < 490
 }
 
 /*****
 * For setting the MS results box width, if the browser window is wide enough, show it on the right of the
-* search engine results, otherwise, let show on top of the search engine results.
+* search engine results, otherwise, let it show on top of the search engine results.
 */
 function setMSresultsBoxWidth(){
   /*****
-  * #center_col is the element we don't want to obescure. It's width is 632px and it's left-margin is 150px, plus a
-  * bit of margin on the right - 55px.
+  * #center_col is the element we don't want to obescure (if the browser is wide enough and it is shown on the right).
+  * It's width is 632px and it's left-margin is 150px, plus a bit of margin on the right - 55px.
   * documentClientWidth (aka document.documentElement.clientWidth) gets us the browser page width without the
   * scrollbar interfering.
+  * If we are showing the MS results box on the left, have the width be the width of the #center_col.
   */
-  const widthAvailableForMSresultsBox = documentClientWidth - (632 + 140 + 55)
+  const centerColWidth = 632 + 140 + 55
+  const widthAvailableForMSresultsBox = documentClientWidth - centerColWidth
 
   if(widthAvailableForMSresultsBox < 490){
     msResultsBoxElem.style.width = `initial`
@@ -96,7 +102,7 @@ function setMSresultsBoxWidth(){
 */
 function toggleShowMSresultBoxAsTab(){
   msResultsBoxElem.classList.toggle('msResultsBoxShowTabOnly')
-  if(!msResultsBoxElem.classList.contains('msResultsBoxShowTabOnly')){
+  if(!showingOnLeft() && !msResultsBoxElem.classList.contains('msResultsBoxShowTabOnly')){
     setMSresultsBoxWidth()
   }
 }
@@ -105,6 +111,9 @@ function toggleShowMSresultBoxAsTab(){
 * Change the width of the MS results box if the user resizes the browser window.
 */
 function windowResizeHandler(){
+  if(showingOnLeft()){
+    return
+  }
   documentClientWidth = document.documentElement.clientWidth
   /*****
   * Only update the width of the MS results box on resize if it is currently shown in full
