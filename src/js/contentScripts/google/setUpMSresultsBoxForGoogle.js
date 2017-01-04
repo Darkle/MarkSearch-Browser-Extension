@@ -9,11 +9,9 @@ import { getSetting } from '../CS_utils'
 import { $ } from '../../utils'
 
 import debounce from 'lodash.debounce'
-import Velocity from 'velocity-animate'
 
 let msResultsBoxOldHeight
 let documentClientWidth
-let msResultsBoxShownAsTab = false
 
 function setUpMSresultsBoxForGoogle(onSearchPage){
   createMSresultsBox()
@@ -47,8 +45,12 @@ function setUpMSresultsBoxForGoogle(onSearchPage){
   *   of the page is too small to show the MS results box without obscuring the search engine results.
   *     The minimum width we want the MS results box to have is 490px.
   */
-  const animate = false
-  setMSresultsBoxWidth(animate, shouldShowMSresultsBoxAsTabOnLoad())
+  if(shouldShowMSresultsBoxAsTabOnLoad()){
+    msResultsBoxElem.classList.add('msResultsBoxShowTabOnly')
+  }
+  else{
+    setMSresultsBoxWidth()
+  }
 
   setMSresultsBoxHeight($('#search'))
   /*****
@@ -72,33 +74,20 @@ function shouldShowMSresultsBoxAsTabOnLoad(){
 * For setting the MS results box width, if the browser window is wide enough, show it on the right of the
 * search engine results, otherwise, let show on top of the search engine results.
 */
-function setMSresultsBoxWidth(animate, showAsTab){
+function setMSresultsBoxWidth(){
   /*****
   * #center_col is the element we don't want to obescure. It's width is 632px and it's left-margin is 150px, plus a
   * bit of margin on the right - 55px.
   * documentClientWidth (aka document.documentElement.clientWidth) gets us the browser page width without the
   * scrollbar interfering.
-  * If we want to show the MS results box as a tab, we set the width to 40px, which is the width of the
-  * resultsBoxSideBar.
   */
-  let widthAvailableForMSresultsBox = documentClientWidth - (632 + 140 + 55)
-  msResultsBoxShownAsTab = true
+  const widthAvailableForMSresultsBox = documentClientWidth - (632 + 140 + 55)
 
-  if(showAsTab){
-    widthAvailableForMSresultsBox = 40
-  }
-
-  if(!showAsTab && widthAvailableForMSresultsBox < 490){
+  if(widthAvailableForMSresultsBox < 490){
     msResultsBoxElem.style.width = `initial`
   }
   else{
-    if(animate){
-      Velocity(msResultsBoxElem, { width: widthAvailableForMSresultsBox }, { duration: 500 })
-    }
-    else{
-      console.log('else')
-      msResultsBoxElem.style.width = `${ widthAvailableForMSresultsBox }px`
-    }
+    msResultsBoxElem.style.width = `${ widthAvailableForMSresultsBox }px`
   }
 }
 
@@ -106,9 +95,10 @@ function setMSresultsBoxWidth(animate, showAsTab){
 * This if for clicking on the tab and for using the keyboard shortcut.
 */
 function toggleShowMSresultBoxAsTab(){
-  const animate = true
-  const showAsTab = !msResultsBoxShownAsTab
-  setMSresultsBoxWidth(animate, showAsTab)
+  msResultsBoxElem.classList.toggle('msResultsBoxShowTabOnly')
+  if(!msResultsBoxElem.classList.contains('msResultsBoxShowTabOnly')){
+    setMSresultsBoxWidth()
+  }
 }
 
 /*****
@@ -120,9 +110,8 @@ function windowResizeHandler(){
   * Only update the width of the MS results box on resize if it is currently shown in full
   * and not just as a tab.
   */
-  if(!msResultsBoxShownAsTab){
-    const animate = true
-    setMSresultsBoxWidth(animate)
+  if(!msResultsBoxElem.classList.contains('msResultsBoxShowTabOnly')){
+    setMSresultsBoxWidth()
   }
 }
 

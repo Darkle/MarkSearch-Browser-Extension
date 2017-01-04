@@ -66,7 +66,6 @@
     "notie": "^3.9.5",
     "schema-inspector": "^1.6.8",
     "valid-url": "^1.0.9",
-    "validator": "^6.2.0",
-    "velocity-animate": "^1.4.0"
+    "validator": "^6.2.0"
   }
 }
