@@ -16,14 +16,10 @@ let documentClientWidth
 
 function setUpMSresultsBoxForGoogle(onSearchPage){
   createMSresultsBox()
-  setMSresultsBoxHeightForGoogle($('#search'))
   /*****
-  * Setting the MS results box top value as a constant seems to work ok even if the page is zoomed in.
-  * So have set it to top: 169px in the css.
-  * Note: if you need to bring this back and use it, make sure to also call if from the
-  * instantSeachMutationObserverHandler as seen here: http://bit.ly/2hTGxPz
+  * The msResultsBox_google class is for google specific styles for the MS results box.
   */
-  // setMSResultsBoxTopStyle()
+  msResultsBoxElem.classList.add('msResultsBox_google')
   /*****
   * If the search page is displayed and we're on instant search, hide the MS results
   * box for the moment.
@@ -53,16 +49,16 @@ function setUpMSresultsBoxForGoogle(onSearchPage){
   if(shouldShowMSresultsBoxAsTabOnLoad()){
     msResultsBoxElem.classList.add('msResultsBoxShowTabOnly')
   }
+  else{
+    setMSresultsBoxWidth()
+  }
 
-  setMSresultsBoxWidth()
-
-  resultsBoxSideBar.addEventListener('click', resultsBoxSideBarClickHandler)
-
-  window.addEventListener('resize', debounce(windowResizeHandler, 150))
+  setMSresultsBoxHeightForGoogle($('#search'))
   /*****
-  * The msResultsBox_google class is for google specific styles for the MS results box.
+  * Event listeners for MS results box.
   */
-  msResultsBoxElem.classList.add('msResultsBox_google')
+  resultsBoxSideBar.addEventListener('click', resultsBoxSideBarClickHandler)
+  window.addEventListener('resize', debounce(windowResizeHandler, 150))
 
   document.body.appendChild(msResultsBoxElem)
 }

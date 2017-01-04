@@ -11,10 +11,7 @@ function renderMarkSearchResultsBoxResults(markSearchResults, searchTerms){
   /*****
   * If it's 0 or more than 1, we want plural, otherwise if it's 1, just 'Result'
   */
-  let resultPluralText = 'Results'
-  if(markSearchResults.length === 1){
-    resultPluralText = 'Result'
-  }
+  const resultPluralText = markSearchResults.length === 1 ? 'Result' : 'Results'
   const resultsAmountDiv = document.createElement('div')
   resultsAmountDiv.setAttribute('id', 'resultsBoxCount')
   resultsAmountDiv.textContent = `${ markSearchResults.length } ${ resultPluralText } From MarkSearch`
