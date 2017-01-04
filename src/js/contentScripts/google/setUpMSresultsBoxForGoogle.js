@@ -15,7 +15,6 @@ let msResultsBoxOldHeight
 let documentClientWidth
 
 function setUpMSresultsBoxForGoogle(onSearchPage){
-
   createMSresultsBox()
   setMSresultsBoxHeightForGoogle($('#search'))
   /*****
