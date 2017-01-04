@@ -13,6 +13,7 @@ import Velocity from 'velocity-animate'
 
 let msResultsBoxOldHeight
 let documentClientWidth
+let msResultsBoxShownAsTab = false
 
 function setUpMSresultsBoxForGoogle(onSearchPage){
   createMSresultsBox()
@@ -46,18 +47,14 @@ function setUpMSresultsBoxForGoogle(onSearchPage){
   *   of the page is too small to show the MS results box without obscuring the search engine results.
   *     The minimum width we want the MS results box to have is 490px.
   */
-  if(shouldShowMSresultsBoxAsTabOnLoad()){
-    msResultsBoxElem.classList.add('msResultsBoxShowTabOnly')
-  }
-  else{
-    setMSresultsBoxWidth()
-  }
+  const animate = false
+  setMSresultsBoxWidth(animate, shouldShowMSresultsBoxAsTabOnLoad())
 
-  setMSresultsBoxHeightForGoogle($('#search'))
+  setMSresultsBoxHeight($('#search'))
   /*****
   * Event listeners for MS results box.
   */
-  resultsBoxSideBar.addEventListener('click', resultsBoxSideBarClickHandler)
+  resultsBoxSideBar.addEventListener('click', toggleShowMSresultBoxAsTab)
   window.addEventListener('resize', debounce(windowResizeHandler, 150))
 
   document.body.appendChild(msResultsBoxElem)
@@ -75,21 +72,33 @@ function shouldShowMSresultsBoxAsTabOnLoad(){
 * For setting the MS results box width, if the browser window is wide enough, show it on the right of the
 * search engine results, otherwise, let show on top of the search engine results.
 */
-function setMSresultsBoxWidth(){
+function setMSresultsBoxWidth(animate, showAsTab){
   /*****
   * #center_col is the element we don't want to obescure. It's width is 632px and it's left-margin is 150px, plus a
   * bit of margin on the right - 55px.
   * documentClientWidth (aka document.documentElement.clientWidth) gets us the browser page width without the
   * scrollbar interfering.
+  * If we want to show the MS results box as a tab, we set the width to 40px, which is the width of the
+  * resultsBoxSideBar.
   */
-  const widthAvailableForMSresultsBox = documentClientWidth - (632 + 140 + 55)
+  let widthAvailableForMSresultsBox = documentClientWidth - (632 + 140 + 55)
+  msResultsBoxShownAsTab = true
 
-  if(widthAvailableForMSresultsBox < 490){
+  if(showAsTab){
+    widthAvailableForMSresultsBox = 40
+  }
+
+  if(!showAsTab && widthAvailableForMSresultsBox < 490){
     msResultsBoxElem.style.width = `initial`
   }
   else{
-    // msResultsBoxElem.style.width = `${ widthAvailableForMSresultsBox }px`
-    Velocity(msResultsBoxElem, { width: widthAvailableForMSresultsBox }, { duration: 1000 })
+    if(animate){
+      Velocity(msResultsBoxElem, { width: widthAvailableForMSresultsBox }, { duration: 500 })
+    }
+    else{
+      console.log('else')
+      msResultsBoxElem.style.width = `${ widthAvailableForMSresultsBox }px`
+    }
   }
 }
 
@@ -97,7 +106,9 @@ function setMSresultsBoxWidth(){
 * This if for clicking on the tab and for using the keyboard shortcut.
 */
 function toggleShowMSresultBoxAsTab(){
-  msResultsBoxElem.classList.toggle('msResultsBoxShowTabOnly')
+  const animate = true
+  const showAsTab = !msResultsBoxShownAsTab
+  setMSresultsBoxWidth(animate, showAsTab)
 }
 
 /*****
@@ -109,22 +120,17 @@ function windowResizeHandler(){
   * Only update the width of the MS results box on resize if it is currently shown in full
   * and not just as a tab.
   */
-  if(!msResultsBoxElem.classList.contains('msResultsBoxShowTabOnly')){
-    setMSresultsBoxWidth()
+  if(!msResultsBoxShownAsTab){
+    const animate = true
+    setMSresultsBoxWidth(animate)
   }
 }
 
-function resultsBoxSideBarClickHandler(){
-  console.log(`resultsBoxSideBar.addEventListener('click'`)
-  toggleShowMSresultBoxAsTab()
-  setMSresultsBoxWidth()
-}
-
 /*****
-* Note: we also call setMSresultsBoxHeightForGoogle() in the mutation observer handler in googleSearch_ContentScript
+* Note: we also call setMSresultsBoxHeight() in the mutation observer handler in googleSearch_ContentScript
 * (for instant search) after new search engine results have been inserted as that could change the height of the page.
 */
-function setMSresultsBoxHeightForGoogle(searchElement){
+function setMSresultsBoxHeight(searchElement){
   /*****
   * On DOMContentLoaded (for instant search) the searchElement is not yet there so fall back to a height of
   * calc(100vh - 166px - 84px - 20px).
@@ -172,6 +178,5 @@ function setMSresultsBoxHeightForGoogle(searchElement){
 
 export {
   setUpMSresultsBoxForGoogle,
-  setMSresultsBoxHeightForGoogle,
-  setMSresultsBoxWidth,
+  setMSresultsBoxHeight,
 }

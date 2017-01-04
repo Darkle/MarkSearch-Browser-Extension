@@ -2,7 +2,7 @@ import '../../../nonInlineStyles/googleSearch_ContentScript.styl'
 import { checkIfInstantSearch, getSearchQueryFromUrl, getDateFilterFromUrl, searchPageIsDisplayed } from './googleSearchCSutils'
 import { renderMarkSearchResultsBoxResults } from '../renderMarkSearchResults'
 import { showMSresultsBox, hideMSresultsBox } from '../markSearchResultsBox'
-import { setUpMSresultsBoxForGoogle, setMSresultsBoxHeightForGoogle } from './setUpMSresultsBoxForGoogle'
+import { setUpMSresultsBoxForGoogle, setMSresultsBoxHeight } from './setUpMSresultsBoxForGoogle'
 import { $ } from '../../utils'
 import { getSetting } from '../CS_utils'
 
@@ -130,7 +130,7 @@ function instantSeachMutationObserverHandler(mutations){
     * We re-set the MS results box height here on insertion of new search engine results as new resutls have
     * different snippets (or amount of results), which makes the page height different.
     */
-    setMSresultsBoxHeightForGoogle(mutationRecordWithSearchElemAsTarget.target)
+    setMSresultsBoxHeight(mutationRecordWithSearchElemAsTarget.target)
     /*****
     * We hide the results box if the user is on a search page (either by regular page load or triggered in the
     * popstateListener by using the back button in the browser), so show it again when there are on the results page.
