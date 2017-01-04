@@ -51,38 +51,29 @@ function setUpMSresultsBoxForGoogle(onSearchPage){
   *   of the page is too small to show the MS results box without obscuring the search engine results.
   *     The minimum width we want the MS results box to have is 490px.
   */
-  if(getSetting('msResultsBox_Position') === 'left' ||
-      !getSetting('msResultsBox_AutoExpand') ||
-      (documentClientWidth - (632 + 140 + 55)) < 490
-    ){
+  if(shouldShowMSresultsBoxAsTabOnLoad()){
     msResultsBoxElem.classList.add('msResultsBoxShowTabOnly')
   }
 
   setMSresultsBoxWidth()
 
-  resultsBoxSideBar.addEventListener('click', () => {
-    console.log(`resultsBoxSideBar.addEventListener('click'`)
-    toggleShowMSresultBoxAsTab()
+  resultsBoxSideBar.addEventListener('click', resultsBoxSideBarClickHandler)
 
-    setMSresultsBoxWidth()
-  })
-
-  window.addEventListener('resize', debounce(() => {
-    documentClientWidth = document.documentElement.clientWidth
-    /*****
-    * Only update the width of the MS results box on resize if it is currently shown in full
-    * and not just as a tab.
-    */
-    if(!msResultsBoxElem.classList.contains('msResultsBoxShowTabOnly')){
-      setMSresultsBoxWidth()
-    }
-  }, 150))
+  window.addEventListener('resize', debounce(windowResizeHandler, 150))
   /*****
   * The msResultsBox_google class is for google specific styles for the MS results box.
   */
   msResultsBoxElem.classList.add('msResultsBox_google')
 
   document.body.appendChild(msResultsBoxElem)
+}
+
+function shouldShowMSresultsBoxAsTabOnLoad(){
+  const showAsTab = getSetting('msResultsBox_Position') === 'left' ||
+      !getSetting('msResultsBox_AutoExpand') ||
+      (documentClientWidth - (632 + 140 + 55)) < 490;   // eslint-disable-line semi
+
+  return showAsTab
 }
 
 /*****
@@ -115,7 +106,27 @@ function toggleShowMSresultBoxAsTab(){
 }
 
 /*****
-* We also call setMSresultsBoxHeightForGoogle() in the mutation observer handler in googleSearch_ContentScript
+* Change the width of the MS results box if the user resizes the browser window.
+*/
+function windowResizeHandler(){
+  documentClientWidth = document.documentElement.clientWidth
+  /*****
+  * Only update the width of the MS results box on resize if it is currently shown in full
+  * and not just as a tab.
+  */
+  if(!msResultsBoxElem.classList.contains('msResultsBoxShowTabOnly')){
+    setMSresultsBoxWidth()
+  }
+}
+
+function resultsBoxSideBarClickHandler(){
+  console.log(`resultsBoxSideBar.addEventListener('click'`)
+  toggleShowMSresultBoxAsTab()
+  setMSresultsBoxWidth()
+}
+
+/*****
+* Note: we also call setMSresultsBoxHeightForGoogle() in the mutation observer handler in googleSearch_ContentScript
 * (for instant search) after new search engine results have been inserted as that could change the height of the page.
 */
 function setMSresultsBoxHeightForGoogle(searchElement){
