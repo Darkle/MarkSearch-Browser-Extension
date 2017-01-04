@@ -5,6 +5,36 @@ let msResultsBoxElem
 let msSidebarIcon
 let resultsBoxSideBar
 
+function createMSresultsBox(){
+  msResultsBoxElem = document.createElement('div')
+  msResultsBoxElem.setAttribute('id', 'msResultsBox')
+
+  resultsBoxSideBar = document.createElement('div')
+  resultsBoxSideBar.setAttribute('id', 'msResultsBoxSidebar')
+  msResultsBoxElem.appendChild(resultsBoxSideBar)
+
+  msSidebarIcon = document.createElement('div')
+  msSidebarIcon.setAttribute('id', 'msSidebarIcon')
+  msSidebarIcon.textContent = 'MS'
+  resultsBoxSideBar.appendChild(msSidebarIcon)
+
+  const msSidebarIconHidden = document.createElement('div')
+  msSidebarIconHidden.setAttribute('id', 'msSidebarIconHidden')
+  msSidebarIconHidden.textContent = 'MS'
+  resultsBoxSideBar.appendChild(msSidebarIconHidden)
+
+  msResultsBoxResultsContainer = document.createElement('div')
+  msResultsBoxResultsContainer.setAttribute('id', 'msResultsBoxResultsContainer')
+  msResultsBoxElem.appendChild(msResultsBoxResultsContainer)
+
+  if(getSetting('msResultsBox_Position') === 'left'){
+    msResultsBoxElem.classList.add('showMsResultsBoxOnLeft')
+  }
+  if(getSetting('msResultsBox_ShowViaAlwaysShow')){
+    msResultsBoxElem.classList.add('forceShowMsResultsBox')
+  }
+}
+
 function hideMSresultsBox(){
   msResultsBoxElem.classList.add('msResultsBoxHide')
 }
@@ -36,36 +66,6 @@ function setUpMSresultsBoxIcon(topValue){
         passive: true
       }
     )
-  }
-}
-
-function createMSresultsBox(){
-  msResultsBoxElem = document.createElement('div')
-  msResultsBoxElem.setAttribute('id', 'msResultsBox')
-
-  resultsBoxSideBar = document.createElement('div')
-  resultsBoxSideBar.setAttribute('id', 'msResultsBoxSidebar')
-  msResultsBoxElem.appendChild(resultsBoxSideBar)
-
-  msSidebarIcon = document.createElement('div')
-  msSidebarIcon.setAttribute('id', 'msSidebarIcon')
-  msSidebarIcon.textContent = 'MS'
-  resultsBoxSideBar.appendChild(msSidebarIcon)
-
-  const msSidebarIconHidden = document.createElement('div')
-  msSidebarIconHidden.setAttribute('id', 'msSidebarIconHidden')
-  msSidebarIconHidden.textContent = 'MS'
-  resultsBoxSideBar.appendChild(msSidebarIconHidden)
-
-  msResultsBoxResultsContainer = document.createElement('div')
-  msResultsBoxResultsContainer.setAttribute('id', 'msResultsBoxResultsContainer')
-  msResultsBoxElem.appendChild(msResultsBoxResultsContainer)
-
-  if(getSetting('msResultsBox_Position') === 'left'){
-    msResultsBoxElem.classList.add('showMsResultsBoxOnLeft')
-  }
-  if(getSetting('msResultsBox_ShowViaAlwaysShow')){
-    msResultsBoxElem.classList.add('forceShowMsResultsBox')
   }
 }
 
