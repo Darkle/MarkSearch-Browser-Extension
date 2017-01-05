@@ -1,6 +1,7 @@
 // import { getSetting, generateMassTempResultsForDev } from './CS_utils'
 import { msResultsBoxResultsContainer } from './markSearchResultsBox'
 import { createMSresultElements } from './createMSresultElements'
+import { getMSserverAddress, createMSserverSearchLink } from './CS_utils'
 
 function renderMarkSearchResultsBoxResults(markSearchResults, searchTerms){
   console.log('renderMarkSearchResultsBoxResults')
@@ -8,14 +9,8 @@ function renderMarkSearchResultsBoxResults(markSearchResults, searchTerms){
   console.log('renderMarkSearchResultsBoxResults searchTerms:', searchTerms)
 
   const msResultsBoxDocFragment = document.createDocumentFragment()
-  /*****
-  * If it's 0 or more than 1, we want plural, otherwise if it's 1, just 'Result'
-  */
-  const resultPluralText = markSearchResults.length === 1 ? 'Result' : 'Results'
-  const resultsAmountDiv = document.createElement('div')
-  resultsAmountDiv.setAttribute('id', 'resultsBoxCount')
-  resultsAmountDiv.textContent = `${ markSearchResults.length } ${ resultPluralText } From MarkSearch`
-  msResultsBoxDocFragment.appendChild(resultsAmountDiv)
+
+  msResultsBoxDocFragment.appendChild(createResultsAmountElement(markSearchResults, searchTerms))
 
   if(markSearchResults.length > 0){
     /*****
@@ -36,6 +31,38 @@ function renderMarkSearchResultsBoxResults(markSearchResults, searchTerms){
   */
   msResultsBoxResultsContainer.innerHTML = ''
   msResultsBoxResultsContainer.appendChild(msResultsBoxDocFragment)
+}
+/*****
+* We create a link for the top of the MS results (in the results amount details) so that the user can
+* click on it and have the current search be openined in the MarkSearch server search page.
+*/
+function createResultsAmountElement(markSearchResults, searchTerms){
+  const resultsAmountDiv = document.createElement('div')
+  resultsAmountDiv.setAttribute('id', 'resultsBoxCount')
+
+  /*****
+  * If it's 0 or more than 1, we want plural, otherwise if it's 1, just 'Result'
+  */
+  const resultPluralText = markSearchResults.length === 1 ? 'Result' : 'Results'
+
+  const resultsAmountStartingText = document.createElement('span')
+  resultsAmountStartingText.textContent = `${ markSearchResults.length } ${ resultPluralText } From `
+
+  resultsAmountDiv.appendChild(resultsAmountStartingText)
+
+  const msServerAddress = getMSserverAddress()
+
+  if(!msServerAddress){
+    resultsAmountDiv.appendChild(document.createTextNode('MarkSearch'))
+  }
+  else{
+    const msSearchServerLinkContent = 'MarkSearch'
+    const msSearchServerLink = createMSserverSearchLink(msServerAddress, searchTerms, msSearchServerLinkContent)
+
+    resultsAmountDiv.appendChild(msSearchServerLink)
+  }
+
+  return resultsAmountDiv
 }
 
 export {
