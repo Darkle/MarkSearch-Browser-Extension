@@ -2,7 +2,8 @@ import '../../../nonInlineStyles/googleSearch_ContentScript.styl'
 import { checkIfInstantSearch, getSearchQueryFromUrl, getDateFilterFromUrl, searchPageIsDisplayed } from './googleSearchCSutils'
 import { renderMarkSearchResultsBoxResults } from '../renderMarkSearchResults'
 import { showMSresultsBox, hideMSresultsBox } from '../markSearchResultsBox'
-import { setUpMSresultsBoxForGoogle, setMSresultsBoxHeight } from './setUpMSresultsBoxForGoogle'
+import { setUpMSresultsBoxForGoogle, setMSresultsBoxHeight } from './msResultsBoxForGoogle'
+import { setUpMarkSearchSearchButton } from './msSearchButtonForGoogle'
 import { $ } from '../../utils'
 import { getSetting } from '../CS_utils'
 
@@ -36,6 +37,7 @@ function init(){
     //TODO when i set this up, check that I don't need any of the observers below, if i do, may need to rethink
     //TODO the if(!getSetting('msResultsBox')){ return
     //  setUpMarkSearchSearchButtons(isInstantSearch, onSearchPage)
+    setUpMarkSearchSearchButton()
   }
   /*****
   * If we are on the search page and it is not instant search, exit cause we dont want to show MarkSearch

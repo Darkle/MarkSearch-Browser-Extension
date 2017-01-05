@@ -3,6 +3,7 @@ import { getSettings } from '../utils'
 import { isWebUri } from 'valid-url'
 
 const extensionSettings = {}
+let marksearchServerAddress
 
 getSettings().then( settings => {
   Object.assign(extensionSettings, settings)
@@ -25,6 +26,10 @@ function setMSiconClass(msSidebarIcon, msSidebarIconTop){
 }
 
 function getMSserverAddress(){
+  if(marksearchServerAddress){
+    return marksearchServerAddress
+  }
+
   const extensionToken = getSetting('extensionToken')
 
   if(typeof extensionToken !== 'string'){
@@ -36,19 +41,28 @@ function getMSserverAddress(){
   if(!isWebUri(splitTokenToAddress)){
     return
   }
-  return splitTokenToAddress
+
+  marksearchServerAddress = splitTokenToAddress
+
+  return marksearchServerAddress
 }
 
-function createMSserverSearchLink(msServerAddress, searchTerms, msSearchServerLinkContent){
+function generateMSserverSearchUrl(msServerAddress, searchTerms){
   const encodedSearchTerms = encodeURIComponent(searchTerms.trim())
   /*****
   * Using new URL() here so always have a trailing slash.
   */
-  const msServerSearchAddress = `${ new URL(msServerAddress) }#markSearchSearchTerms=${ encodedSearchTerms }`
+  return `${ new URL(msServerAddress) }#markSearchSearchTerms=${ encodedSearchTerms }`
+}
+
+function createMSserverSearchLink(msServerAddress, searchTerms, msSearchServerLinkContent){
+  const msServerSearchAddress = generateMSserverSearchUrl(msServerAddress, searchTerms)
+
   const msSearchServerLink = document.createElement('a')
   msSearchServerLink.setAttribute('href', msServerSearchAddress)
   msSearchServerLink.setAttribute('target', '_blank')
   msSearchServerLink.setAttribute('rel', 'noopener noreferrer')
+
   if(msSearchServerLinkContent === 'MarkSearch'){
     msSearchServerLink.textContent = 'MarkSearch'
   }
@@ -82,4 +96,5 @@ export {
   generateMassTempResultsForDev,
   getMSserverAddress,
   createMSserverSearchLink,
+  generateMSserverSearchUrl,
 }

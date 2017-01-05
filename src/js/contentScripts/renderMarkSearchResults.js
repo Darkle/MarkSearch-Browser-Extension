@@ -10,7 +10,7 @@ function renderMarkSearchResultsBoxResults(markSearchResults, searchTerms){
 
   const msResultsBoxDocFragment = document.createDocumentFragment()
 
-  msResultsBoxDocFragment.appendChild(createResultsAmountElement(markSearchResults, searchTerms))
+  msResultsBoxDocFragment.appendChild(createResultsAmountElements(markSearchResults, searchTerms))
 
   if(markSearchResults.length > 0){
     /*****
@@ -36,7 +36,7 @@ function renderMarkSearchResultsBoxResults(markSearchResults, searchTerms){
 * We create a link for the top of the MS results (in the results amount details) so that the user can
 * click on it and have the current search be openined in the MarkSearch server search page.
 */
-function createResultsAmountElement(markSearchResults, searchTerms){
+function createResultsAmountElements(markSearchResults, searchTerms){
   const resultsAmountDiv = document.createElement('div')
   resultsAmountDiv.setAttribute('id', 'resultsBoxCount')
 
@@ -52,7 +52,7 @@ function createResultsAmountElement(markSearchResults, searchTerms){
 
   const msServerAddress = getMSserverAddress()
 
-  if(!msServerAddress){
+  if(!msServerAddress || !searchTerms){
     resultsAmountDiv.appendChild(document.createTextNode('MarkSearch'))
   }
   else{
