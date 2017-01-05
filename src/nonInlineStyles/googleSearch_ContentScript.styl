@@ -4,6 +4,7 @@
   position: absolute
   right: 0
   z-index: 99999
+  border-radius: 2px
   /*****
   * Setting the MS results box top value as a constant seems to work ok even if the page is zoomed in.
   * So have set it to top: 169px in the css.
@@ -50,7 +51,41 @@
   &:hover
     background-image: -webkit-linear-gradient(top,#f8f8f8,#f1f1f1)
     background-color: #f8f8f8
-    border: 1px solid #c6c6c6
+    // border: 1px solid #c6c6c6
+    // border: 1px solid #3498DB
+    border: 1px solid #2670A2
     box-shadow: 0 1px 1px rgba(0,0,0,0.1)
-    color: #222
+    // color: #222
+    // color: #3498DB
+    color: #2670A2
     text-decoration: none
+
+.msSearchButtonResultsPageGoogle
+  font-family: "exo_regular"
+  // outline: 1px solid green;
+  display: flex;
+  align-items: center
+  position: absolute
+  margin-left: 810px;
+  margin-top: 2px;
+  padding: 4px;
+  font-size: 29px;
+  border-radius: 2px
+  color: white
+  justify-content: space-between;
+  width: 70px;
+  background-color: #3498DB
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.08)
+  &:hover
+    text-decoration: none !important;
+    cursor: pointer
+    color: #77BBEB
+    box-shadow: 0 3px 8px 0 rgba(0,0,0,0.2), 0 0 0 1px rgba(0,0,0,0.08)
+    svg
+      fill: #77BBEB
+  svg
+    height: 28px;
+    fill: white
+
+.hp .msSearchButtonResultsPageGoogle
+  display: none

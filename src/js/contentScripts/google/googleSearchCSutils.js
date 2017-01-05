@@ -104,12 +104,12 @@ function findElementInNodeList(searchType, searchData, nodeList){
 }
 
 /*****
-* on non instant results page, #searchform has the classes: `jsrp big`
-* on non instant search page, #searchform has the classes: `jhp big`
-* on instant results page, #searchform has the class: `big` or the classes `big mdm`
-* on instant search page, #searchform has the classes: `jhp big`
+* The document body contains the class 'hp' when it is on the search
+* page (for both normal and instant search)
 */
-const searchPageIsDisplayed = searchForm => searchForm.classList.contains('jhp')
+function searchPageIsDisplayed(){
+  return document.body.classList.contains('hp')
+}
 
 export {
   getSearchQueryFromUrl,
