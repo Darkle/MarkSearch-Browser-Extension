@@ -59,15 +59,6 @@ function msSearchButtonsEventHandler(event){
   }
 }
 
-function updateMSsearchButtonLink(){
-  if(!msSearchButtonForSearchPage && !msSearchButtonForResultsPage){
-    return
-  }
-  msSearchButtonForSearchPage
-  msSearchButtonForResultsPage
-}
-
 export {
   setUpMarkSearchSearchButton,
-  updateMSsearchButtonLink,
 }
