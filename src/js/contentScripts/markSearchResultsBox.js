@@ -30,9 +30,6 @@ function createMSresultsBox(){
   if(getSetting('msResultsBox_Position') === 'left'){
     msResultsBoxElem.classList.add('showMsResultsBoxOnLeft')
   }
-  if(getSetting('msResultsBox_ShowViaAlwaysShow')){
-    msResultsBoxElem.classList.add('forceShowMsResultsBox')
-  }
 }
 
 function hideMSresultsBox(){

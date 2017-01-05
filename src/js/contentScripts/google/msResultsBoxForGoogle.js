@@ -13,7 +13,7 @@ import debounce from 'lodash.debounce'
 let msResultsBoxOldHeight
 let documentClientWidth
 
-function setUpMSresultsBoxForGoogle(onSearchPage){
+function setUpMSresultsBoxForGoogle(onGeneralResultsPage){
   createMSresultsBox()
   /*****
   * The msResultsBox_google class is for google specific styles for the MS results box.
@@ -23,7 +23,7 @@ function setUpMSresultsBoxForGoogle(onSearchPage){
   * If the search page is displayed and we're on instant search, hide the MS results
   * box for the moment.
   */
-  if(onSearchPage){
+  if(!onGeneralResultsPage){
     hideMSresultsBox()
   }
   /*
@@ -160,7 +160,7 @@ function setMSresultsBoxHeight(searchElement){
 
   if(searchElement){
     const searchElementClientHeight = searchElement.clientHeight
-    console.log('searchElementClientHeight', searchElementClientHeight)
+
     if(searchElementClientHeight !== 0 && searchElementClientHeight > 360){
       msResultsBoxNewHeight = `${ searchElementClientHeight }px`
     }

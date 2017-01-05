@@ -1,18 +1,19 @@
-import { safeGetObjectProperty } from '../../utils'
+import { showMSresultsBox} from '../markSearchResultsBox'
+import { safeGetObjectProperty, $ } from '../../utils'
 
 import moment from 'moment'
+import { parse as parseQueryString } from 'query-string'
 /*****
-* Originally I was using URLSearchParams() to check if the page was set to do instant search by
+* Originally I was using search params to check if the page was set to do instant search by
 * checking if there were search query params (e.g. search?q=skyrim) in the url, but unfortunately it's possible
 * to have search params present and still be in instant search; the url would look something
 * like this (logged out): https://www.google.co.uk/search?q=skyrim+walkthrough+ps3#q=skyrim+walkthrough+pdf
 * I cant seem to find anything in the cookies or local/session storage to indicate that it's instant search,
-* so gonna check the html on the page. (we can still use URLSearchParams() to get the search query quickly
+* so gonna check the html on the page. (we can still use search params to get the search query quickly
 * though)
-* Note: URLSearchParams is not available in Microsoft Edge yet, maybe use npm 'query-string'
-* Note: .slice(1) to remove the ? or # at the start.
+* Note: query-string automatically removes the ? or # at the start.
 */
-const pageQueryParams = new URLSearchParams(window.location.search.slice(1))
+const pageQueryParams = parseQueryString(window.location.search)
 let isInstantSearch = false
 
 function checkIfInstantSearch(){
@@ -23,14 +24,14 @@ function checkIfInstantSearch(){
 }
 
 function getPageHash(){
-  return new URLSearchParams(window.location.hash.slice(1))
+  return parseQueryString(window.location.hash)
 }
 
 function getSearchQueryFromUrl(){
   if(isInstantSearch){
-    return getPageHash().get('q')
+    return getPageHash().q
   }
-  return pageQueryParams.get('q')
+  return pageQueryParams.q
 }
 
 function parseDateFilter(dateFilter){
@@ -66,17 +67,17 @@ function parseDateFilter(dateFilter){
 }
 
 function getDateFilterFromUrl(){
-  let tbs = null
+  let dateFilterParams = null
   if(isInstantSearch){
-    tbs = getPageHash().get('tbs')
+    dateFilterParams = getPageHash().tbs
   }
   else{
-    tbs = pageQueryParams.get('tbs')
+    dateFilterParams = pageQueryParams.tbs
   }
-  if(!tbs || !tbs.length){
+  if(!dateFilterParams || !dateFilterParams.length){
     return
   }
-  return parseDateFilter(tbs)
+  return parseDateFilter(dateFilterParams)
 }
 
 function checkIfMutationOccuredOnTargetElement(mutations, targetId){
@@ -110,6 +111,29 @@ function findElementInNodeList(searchType, searchData, nodeList){
 function searchPageIsDisplayed(){
   return document.body.classList.contains('hp')
 }
+/*****
+* We dont have to bother checking Flights search ( https://www.google.co.uk/flights/?hl=en#search;f=_;q=test) or
+* Maps search, as they both are missing the '#lst-ib' search input element, which we check for at the start of the
+* googleSearch_ContentScript init().
+* For all others, if the navigation is there and the first one is selected (All), then it should be the general
+* results pagae.
+*/
+function generalResultsPageIsDisplayed(){
+  if(searchPageIsDisplayed()){
+    return false
+  }
+  const searchTypesNavigationAllSearch = $('#hdtb-msb>div>div:first-of-type')
+  if(searchTypesNavigationAllSearch && searchTypesNavigationAllSearch.classList.contains('hdtb-msel')){
+    return true
+  }
+}
+
+function showMSresultsBoxIfOnGeneralResultsPage(){
+  if(!generalResultsPageIsDisplayed()){
+    return
+  }
+  showMSresultsBox()
+}
 
 export {
   getSearchQueryFromUrl,
@@ -120,5 +144,6 @@ export {
   getAddedNodesForTargetElement,
   getRemovedNodesForTargetElement,
   findElementInNodeList,
-  searchPageIsDisplayed,
+  generalResultsPageIsDisplayed,
+  showMSresultsBoxIfOnGeneralResultsPage,
 }

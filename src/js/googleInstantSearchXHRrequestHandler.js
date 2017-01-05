@@ -3,13 +3,7 @@ import { getCurrentTabId } from './utils'
 import { parseDateFilter } from './contentScripts/google/googleSearchCSutils'
 import { errorLogger } from './errorLogger'
 
-function getDateFilterFromUrl(urlSearchParams){
-  const tbs = urlSearchParams.get('tbs')
-  if(!tbs || !tbs.length){
-    return
-  }
-  return parseDateFilter(tbs)
-}
+import { parse as parseQueryString } from 'query-string'
 
 /*****
 * request details object details here: https://developer.chrome.com/extensions/webRequest#event-onBeforeRequest
@@ -33,11 +27,11 @@ async function googleInstantSearchXHRrequestHandler({requestId, tabId, method, t
   chrome.tabs.sendMessage(currentTabId, {newGoogleInstantSearchOccured: true, requestId})
 
   const requestUrl = new URL(url)
-  const urlSearchParams = new URLSearchParams(requestUrl.search)
-  const searchTerms = urlSearchParams.get('q')
+  const urlSearchParams = parseQueryString(requestUrl.search)
+  const searchTerms = urlSearchParams.q
   const dateFilter = getDateFilterFromUrl(urlSearchParams)
-
   let searchResults = []
+
   try{
     searchResults = await searchMarkSearch(searchTerms, dateFilter)
   }
@@ -46,6 +40,14 @@ async function googleInstantSearchXHRrequestHandler({requestId, tabId, method, t
   }
 
   chrome.tabs.sendMessage(currentTabId, {searchResults, requestId, searchTerms})
+}
+
+function getDateFilterFromUrl(urlSearchParams){
+  const dateFilterParams = urlSearchParams.tbs
+  if(!dateFilterParams || !dateFilterParams.length){
+    return
+  }
+  return parseDateFilter(dateFilterParams)
 }
 
 export {

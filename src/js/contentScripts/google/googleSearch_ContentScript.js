@@ -1,7 +1,13 @@
 import '../../../nonInlineStyles/googleSearch_ContentScript.styl'
-import { checkIfInstantSearch, getSearchQueryFromUrl, getDateFilterFromUrl, searchPageIsDisplayed } from './googleSearchCSutils'
+import {
+  checkIfInstantSearch,
+  getSearchQueryFromUrl,
+  getDateFilterFromUrl,
+  generalResultsPageIsDisplayed,
+  showMSresultsBoxIfOnGeneralResultsPage
+} from './googleSearchCSutils'
 import { renderMarkSearchResultsBoxResults } from '../renderMarkSearchResults'
-import { showMSresultsBox, hideMSresultsBox } from '../markSearchResultsBox'
+import { hideMSresultsBox } from '../markSearchResultsBox'
 import { setUpMSresultsBoxForGoogle, setMSresultsBoxHeight } from './msResultsBoxForGoogle'
 import { setUpMarkSearchSearchButton } from './msSearchButtonForGoogle'
 import { $ } from '../../utils'
@@ -17,7 +23,6 @@ const observerSettings = {
 }
 let marksearchSearchRequestPort
 let latestInstantSearchRequestId = 0
-let searchForm
 
 function init(){
   /*****
@@ -29,22 +34,23 @@ function init(){
     return
   }
 
-  searchForm = $('#searchform')
   const isInstantSearch = checkIfInstantSearch()
-  const onSearchPage = searchPageIsDisplayed(searchForm)
+  const onGeneralResultsPage = generalResultsPageIsDisplayed()
+  console.log('onGeneralResultsPage', onGeneralResultsPage)
 
   if(getSetting('showMSsearchButton')){
     setUpMarkSearchSearchButton()
   }
   /*****
-  * If we are on the search page and it is not instant search, exit cause we dont want to show MarkSearch
-  * results on the search page, only on the results page.
+  * If it is not instant search and we are on either the search page, or a results page that is not the general
+  * results page (e.g. the news search results page), then exit, cause we dont want to show MarkSearch
+  * results on the search page, or on other search results pages, only on the general results page (i.e. the "All").
   */
-  if(!isInstantSearch && onSearchPage){
+  if(!isInstantSearch && !onGeneralResultsPage){
     return
   }
 
-  setUpMSresultsBoxForGoogle(onSearchPage)
+  setUpMSresultsBoxForGoogle(onGeneralResultsPage)
 
   marksearchSearchRequestPort = chrome.runtime.connect({name: 'googleContentScriptRequestMSsearch'})
 
@@ -134,25 +140,25 @@ function instantSeachMutationObserverHandler(mutations){
     * We hide the results box if the user is on a search page (either by regular page load or triggered in the
     * popstateListener by using the back button in the browser), so show it again when there are on the results page.
     */
-    showMSresultsBox()
+    showMSresultsBoxIfOnGeneralResultsPage()
   }
 }
 
 function popstateListener(){
   /*****
-  * If we go back to the search page, hide the MS results box and dont bother to do a search.
-  * Most of the time when the popstate event fires and the user is going back to the search page,
-  * the searchForm classes have not yet been changed, so fall back to seeing if getSearchQueryFromUrl()
-  * returns null. The hash in the url seems to be changed at this point so I think it should work - it
-  * should be null (i.e. no search terms if they are back on the search page).
+  * If we go back to the search page, or a non-general results page (e.g. news results), hide the MS results box
+  * and dont bother to do a search. Most of the time when the popstate event fires and the user is going back
+  * to the search page, the searchForm classes have not yet been changed, so fall back to seeing if
+  * getSearchQueryFromUrl() returns null. The hash in the url seems to be changed at this point so I think it
+  * should work - it should be null (i.e. no search terms if they are back on the search page).
   */
   const searchQuery = getSearchQueryFromUrl()
-  if(searchPageIsDisplayed(searchForm) || !searchQuery){
+  if(!generalResultsPageIsDisplayed() || !searchQuery){
     hideMSresultsBox()
     return
   }
 
-  showMSresultsBox()
+  showMSresultsBoxIfOnGeneralResultsPage()
 
   latestInstantSearchRequestId = 0
 

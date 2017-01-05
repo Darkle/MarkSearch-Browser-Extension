@@ -64,6 +64,7 @@
     "lodash.truncate": "^4.4.2",
     "moment": "^2.17.1",
     "notie": "^3.9.5",
+    "query-string": "^4.2.3",
     "schema-inspector": "^1.6.8",
     "valid-url": "^1.0.9",
     "validator": "^6.2.0"
