@@ -21,7 +21,7 @@ function setUpMarkSearchSearchButton(){
   msSearchButtonForResultsPage.setAttribute('title', 'Search And Open MarkSearch With These Search Terms')
   /*****
   * The 'hp' class is from the page. When it is the search page, the body has a class of 'hp', so gonna use that as
-  * it saves us having to manually check.
+  * it saves us having to manually check and hide/show.
   */
   msSearchButtonForResultsPage.setAttribute('class', 'msSearchButtonResultsPageGoogle hp')
 
