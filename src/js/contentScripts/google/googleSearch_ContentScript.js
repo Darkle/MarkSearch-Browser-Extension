@@ -34,9 +34,6 @@ function init(){
   const onSearchPage = searchPageIsDisplayed(searchForm)
 
   if(getSetting('showMSsearchButton')){
-    //TODO when i set this up, check that I don't need any of the observers below, if i do, may need to rethink
-    //TODO the if(!getSetting('msResultsBox')){ return
-    //  setUpMarkSearchSearchButtons(isInstantSearch, onSearchPage)
     setUpMarkSearchSearchButton()
   }
   /*****
