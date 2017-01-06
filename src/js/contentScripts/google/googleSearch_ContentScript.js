@@ -27,6 +27,12 @@ const observerSettings = {
 let marksearchSearchRequestPort
 let latestInstantSearchRequestId = 0
 
+/*****
+* Note: in our css, we hide the results box if the user is on a search page - we do this by using the 'hp' class that
+* is applied to the body element when its on the search page - our css has a rule to hide the MS results box if the 
+* body has a class of 'hp'.
+*/
+
 function init(){
   /*****
   * We wanna exit early if they dont have <searchEngine>SearchIntegration enabled in the extension settings
@@ -132,10 +138,7 @@ function instantSearchMutationObserverHandler(mutations){
   const searchElementMutation = checkIfMutationOccuredOnTargetElement(mutations, 'search')
   const searchTypeNavElementMutation = checkIfMutationOccuredOnTargetElement(mutations, 'top_nav')
   /*****
-  * We hide the results box if the user is on a search page - we do this by using the 'hp' class on the body element
-  * that is applied when its on the search page.
-  *
-  * Also, if #top_nav is the target of a mutation, then the user may have clicked on the search type navigation to change
+  * If #top_nav is the target of a mutation, then the user may have clicked on the search type navigation to change
   * the search type. If this occurs, we want to hide the MS results box as we don't want it to show if they are searching
   * for news, images etc.
   * #top_nav seems to be the lowest down we can go to get a mutation record for the search nav. I think all the
