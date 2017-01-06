@@ -14,6 +14,10 @@ import { $ } from '../../utils'
 
 import debounce from 'lodash.debounce'
 
+const centerColWidth = 632 + 140 + 55
+const minimumMSresultsBoxWidth = 490
+const msResultsBoxFallbackHeight = 'calc(100vh - 166px - 84px - 20px)'
+const msResultsBoxMinimumHeight = 360
 let msResultsBoxOldHeight
 let documentClientWidth
 
@@ -84,7 +88,7 @@ function showingOnLeft(){
 }
 
 function shouldShowMSresultsBoxAsTabOnLoad(){
-  return showingOnLeft() || !getSetting('msResultsBox_AutoExpand') || (documentClientWidth - (632 + 140 + 55)) < 490
+  return showingOnLeft() || !getSetting('msResultsBox_AutoExpand') || (documentClientWidth - centerColWidth) < minimumMSresultsBoxWidth
 }
 
 /*****
@@ -99,10 +103,9 @@ function setMSresultsBoxWidth(){
   * scrollbar interfering.
   * If we are showing the MS results box on the left, have the width be the width of the #center_col.
   */
-  const centerColWidth = 632 + 140 + 55
   const widthAvailableForMSresultsBox = documentClientWidth - centerColWidth
 
-  if(widthAvailableForMSresultsBox < 490){
+  if(widthAvailableForMSresultsBox < minimumMSresultsBoxWidth){
     msResultsBoxElem.style.width = `initial`
   }
   else{
@@ -168,13 +171,15 @@ function setMSresultsBoxHeight(searchElement){
   * Also, in the event that there is only say 1-2 search engine results, the #search element height is not really
   * enough for the MS results box to look decent, so if the #search element height is less than 360px, fall back
   * to the 'calc(100vh - 166px - 84px - 20px)'
+  * const msResultsBoxFallbackHeight = 'calc(100vh - 166px - 84px - 20px)'
+  * const msResultsBoxMinimumHeight = 360
   */
-  let msResultsBoxNewHeight = 'calc(100vh - 166px - 84px - 20px)'
+  let msResultsBoxNewHeight = msResultsBoxFallbackHeight
 
   if(searchElement){
     const searchElementClientHeight = searchElement.clientHeight
 
-    if(searchElementClientHeight !== 0 && searchElementClientHeight > 360){
+    if(searchElementClientHeight !== 0 && searchElementClientHeight > msResultsBoxMinimumHeight){
       msResultsBoxNewHeight = `${ searchElementClientHeight }px`
     }
   }
