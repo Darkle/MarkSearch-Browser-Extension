@@ -130,7 +130,7 @@ function xhrInstantSearchMessageListener({searchResults, requestId, newGoogleIns
 
 function instantSearchMutationObserverHandler(mutations){
   const searchElementMutation = checkIfMutationOccuredOnTargetElement(mutations, 'search')
-  const searchNavigationElementMutation = checkIfMutationOccuredOnTargetElement(mutations, 'top_nav')
+  const searchTypeNavElementMutation = checkIfMutationOccuredOnTargetElement(mutations, 'top_nav')
   /*****
   * We hide the results box if the user is on a search page - we do this by using the 'hp' class on the body element
   * that is applied when its on the search page.
@@ -156,7 +156,7 @@ function instantSearchMutationObserverHandler(mutations){
     */
     setMSresultsBoxHeight(searchElementMutation.target)
   }
-  if(searchNavigationElementMutation || searchElementMutation){
+  if(searchTypeNavElementMutation || searchElementMutation){
     instantSearchToggleMSresultsBoxVisibility()
   }
 }
