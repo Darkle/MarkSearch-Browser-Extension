@@ -30,7 +30,8 @@ let latestInstantSearchRequestId = 0
 function init(){
   /*****
   * We wanna exit early if they dont have <searchEngine>SearchIntegration enabled in the extension settings
-  * or if it's not a search/results page.
+  * or if it doesn't have the google search input (#lst-ib) - this also excludes the Maps and Flights search as
+  * they don't have the #lst-ib search input element.
   * Note: we also would not show the MarkSearch search button if <searchEngine>SearchIntegration is false.
   */
   if(!getSetting('googleSearchIntegration') || !$('#lst-ib')){
