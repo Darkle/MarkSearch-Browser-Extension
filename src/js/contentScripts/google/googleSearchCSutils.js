@@ -118,12 +118,13 @@ function findElementInNodeList(searchType, searchData, nodeList){
 *   * This is only for non-instant, as we cant rely on the tbm url param not being there on instant.
 *   * We dont have to bother checking Flights search or Maps search, as they both are missing the '#lst-ib'
 *   search input element, which we check for at the start of the googleSearch_ContentScript init().
-*   * The document body contains the class 'hp' when it is on the search page (for both normal and instant search),
-*   we have a css rule in our stylesheet to display: none for the MS results box, so that takes care of hiding it
-*   when it's on the search page.
+*   * The document body contains the class 'hp' when it is on the search page (for both normal and instant search).
+*   We have a css rule in our stylesheet to display: none for the MS results box, but we should check here for
+*   non-instant search because this can prevent the MS results box from being created and iserted as there is no
+*   need for it on the search page when it's not instant search.
 */
 function generalResultsPageIsDisplayedForNonInstantSearch(){
-  return !getPageHash().tbm && !getPageQuery().tbm
+  return !document.body.classList.contains('hp') && !getPageHash().tbm && !getPageQuery().tbm
 }
 
 export {
