@@ -121,7 +121,7 @@ function findElementInNodeList(searchType, searchData, nodeList){
 *   * The document body contains the class 'hp' when it is on the search page (for both normal and instant search).
 *   We have a css rule in our stylesheet to display: none for the MS results box when the page body has a class of
 *   'hp', but we should check here for that class because this can prevent the MS results box from being created
-*   and inserted, as there is no need for it on the search page when it's not instant search.
+*   and inserted, as there is no need for it to be inserted on the search page when it's not instant search.
 */
 function generalResultsPageIsDisplayedForNonInstantSearch(){
   return !document.body.classList.contains('hp') && !getPageHash().tbm && !getPageQuery().tbm
