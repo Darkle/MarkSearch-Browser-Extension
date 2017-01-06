@@ -23,6 +23,12 @@
     line-height: 1.6rem
   .MSresultDescription
     font-size: 1.12rem
+/*****
+* The 'hp' class is from the page. When it is the search page, the body has a class of 'hp', so gonna use that as
+* it saves us having to manually check and hide/show for the search page.
+*/
+body.hp .msResultsBox_google
+  display: none !important
 
 .msSearchButtonSearchPageGoogle
   height: auto
@@ -89,6 +95,9 @@
   svg
     height: 28px;
     fill: white
-
-.hp .msSearchButtonResultsPageGoogle
-  display: none
+/*****
+* The 'hp' class is from the page. When it is the search page, the body has a class of 'hp', so gonna use that as
+* it saves us having to manually check and hide/show for the search page.
+*/
+body.hp .msSearchButtonResultsPageGoogle
+  display: none !important

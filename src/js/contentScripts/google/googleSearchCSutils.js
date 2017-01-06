@@ -1,4 +1,3 @@
-import { showMSresultsBox} from '../markSearchResultsBox'
 import { safeGetObjectProperty, $ } from '../../utils'
 
 import moment from 'moment'
@@ -13,11 +12,11 @@ import { parse as parseQueryString } from 'query-string'
 * though)
 * Note: query-string automatically removes the ? or # at the start.
 */
-const pageQueryParams = parseQueryString(window.location.search)
+
 let isInstantSearch = false
 
 function checkIfInstantSearch(){
-  if(document.querySelector('#tsf>input[value="psy-ab"][name="sclient"]')){
+  if($('#tsf>input[value="psy-ab"][name="sclient"]')){
     isInstantSearch = true
   }
   return isInstantSearch
@@ -27,11 +26,15 @@ function getPageHash(){
   return parseQueryString(window.location.hash)
 }
 
+function getPageQuery(){
+  return parseQueryString(window.location.search)
+}
+
 function getSearchQueryFromUrl(){
   if(isInstantSearch){
     return getPageHash().q
   }
-  return pageQueryParams.q
+  return getPageQuery().q
 }
 
 function parseDateFilter(dateFilter){
@@ -72,7 +75,7 @@ function getDateFilterFromUrl(){
     dateFilterParams = getPageHash().tbs
   }
   else{
-    dateFilterParams = pageQueryParams.tbs
+    dateFilterParams = getPageQuery().tbs
   }
   if(!dateFilterParams || !dateFilterParams.length){
     return
@@ -103,36 +106,19 @@ function findElementInNodeList(searchType, searchData, nodeList){
     return Array.from(nodeList).find(elem => elem.id === searchData)
   }
 }
-
-/*****
-* The document body contains the class 'hp' when it is on the search
-* page (for both normal and instant search)
-*/
-function searchPageIsDisplayed(){
-  return document.body.classList.contains('hp')
-}
 /*****
 * We dont have to bother checking Flights search ( https://www.google.co.uk/flights/?hl=en#search;f=_;q=test) or
 * Maps search, as they both are missing the '#lst-ib' search input element, which we check for at the start of the
 * googleSearch_ContentScript init().
-* For all others, if the navigation is there and the first one is selected (All), then it should be the general
-* results pagae.
+* For all others (for non-instant), we check the url params for the 'tbm' key.
+* This is only for non-instant, as we cant rely on the tbm url param not being there on instant.
+*
+* Note: the document body contains the class 'hp' when it is on the search page (for both normal and instant search),
+* we have a css rule in our stylesheet to display: none for the MS results box, so that takes care of hiding
+* it when it's on the search page.
 */
-function generalResultsPageIsDisplayed(){
-  if(searchPageIsDisplayed()){
-    return false
-  }
-  const searchTypesNavigationAllSearch = $('#hdtb-msb>div>div:first-of-type')
-  if(searchTypesNavigationAllSearch && searchTypesNavigationAllSearch.classList.contains('hdtb-msel')){
-    return true
-  }
-}
-
-function showMSresultsBoxIfOnGeneralResultsPage(){
-  if(!generalResultsPageIsDisplayed()){
-    return
-  }
-  showMSresultsBox()
+function generalResultsPageIsDisplayedForNonInstantSearch(){
+  return !getPageHash().tbm && !getPageQuery().tbm
 }
 
 export {
@@ -144,6 +130,5 @@ export {
   getAddedNodesForTargetElement,
   getRemovedNodesForTargetElement,
   findElementInNodeList,
-  generalResultsPageIsDisplayed,
-  showMSresultsBoxIfOnGeneralResultsPage,
+  generalResultsPageIsDisplayedForNonInstantSearch,
 }

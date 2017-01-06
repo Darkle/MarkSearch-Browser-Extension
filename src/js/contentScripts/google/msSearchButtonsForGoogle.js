@@ -5,7 +5,7 @@ import { getMSserverAddress, generateMSserverSearchUrl } from '../CS_utils'
 let msSearchButtonForSearchPage
 let msSearchButtonForResultsPage
 
-function setUpMarkSearchSearchButton(){
+function setUpMarkSearchSearchButtons(){
   const searchPageCenteredButtons = $('#tsf>div:not(#tophf)>div>center')
   /*****
   * Setting them as <a> elements so that they don't accidentally trigger the google search form it is inside.
@@ -19,11 +19,7 @@ function setUpMarkSearchSearchButton(){
 
   msSearchButtonForResultsPage = document.createElement('a')
   msSearchButtonForResultsPage.setAttribute('title', 'Search And Open MarkSearch With These Search Terms')
-  /*****
-  * The 'hp' class is from the page. When it is the search page, the body has a class of 'hp', so gonna use that as
-  * it saves us having to manually check and hide/show.
-  */
-  msSearchButtonForResultsPage.setAttribute('class', 'msSearchButtonResultsPageGoogle hp')
+  msSearchButtonForResultsPage.setAttribute('class', 'msSearchButtonResultsPageGoogle')
 
   const msSearchButtonForResultsPageText = document.createElement('span')
   msSearchButtonForResultsPageText.textContent = 'MS'
@@ -60,5 +56,5 @@ function msSearchButtonsEventHandler(event){
 }
 
 export {
-  setUpMarkSearchSearchButton,
+  setUpMarkSearchSearchButtons,
 }

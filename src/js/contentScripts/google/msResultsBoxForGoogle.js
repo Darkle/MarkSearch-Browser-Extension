@@ -1,10 +1,14 @@
 import {
   msResultsBoxElem,
   resultsBoxSideBar,
-  hideMSresultsBox,
   createMSresultsBox,
-  setUpMSresultsBoxIcon
+  setUpMSresultsBoxIcon,
+  hideMSresultsBox,
+  showMSresultsBox,
 } from '../markSearchResultsBox'
+import {
+  generalResultsPageIsDisplayedForNonInstantSearch,
+} from './googleSearchCSutils'
 import { getSetting } from '../CS_utils'
 import { $ } from '../../utils'
 
@@ -13,20 +17,28 @@ import debounce from 'lodash.debounce'
 let msResultsBoxOldHeight
 let documentClientWidth
 
-function setUpMSresultsBoxForGoogle(onGeneralResultsPage){
+function setUpMSresultsBoxForGoogle(isInstantSearch){
   createMSresultsBox()
   /*****
   * The msResultsBox_google class is for google specific styles for the MS results box.
   */
   msResultsBoxElem.classList.add('msResultsBox_google')
   /*****
-  * If the search page is displayed and we're on instant search, hide the MS results
-  * box for the moment.
+  * We hide the MS results box by default (it's easier that way).
   */
-  if(!onGeneralResultsPage){
-    hideMSresultsBox()
+  msResultsBoxElem.classList.add('msResultsBoxHide')
+  /*****
+  * If it's not instant search and we are not on the search page and we are on the general results page,
+  * then show the MS results box for non instant search.
+  *
+  * For instant search, we need to rely on both the 'hp' class that the body has when its the search page and
+  * on the instant search mutation observer (instantSearchMutationObserver) to hide the MS results box if it's
+  * not a general search (e.g. news search)
+  */
+  if(!isInstantSearch && generalResultsPageIsDisplayedForNonInstantSearch()){
+    showMSresultsBox()
   }
-  /*
+  /*****
   * Gonna do computedMsSidebarIconTop as a constant rather than computed as it wont change and
   * still seems to work ok even if the page is zoomed in.
   */
@@ -174,7 +186,26 @@ function setMSresultsBoxHeight(searchElement){
   }
 }
 
+function instantSearchToggleMSresultsBoxVisibility() {
+  /*****
+  * We just check if the first search nav element (All) has the class that indicates it's selected.
+  *
+  * Note: we don't have to check if it's a search page, as we have a css rule that hides the MS results
+  * box if the body element has a class of 'hp'
+  *
+  */
+  const allSearchNavElem = $('#hdtb-msb>div>div')
+
+  if(allSearchNavElem && allSearchNavElem.classList.contains('hdtb-msel')){
+    showMSresultsBox()
+  }
+  else{
+    hideMSresultsBox()
+  }
+}
+
 export {
   setUpMSresultsBoxForGoogle,
   setMSresultsBoxHeight,
+  instantSearchToggleMSresultsBoxVisibility,
 }

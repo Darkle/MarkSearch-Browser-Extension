@@ -3,13 +3,16 @@ import {
   checkIfInstantSearch,
   getSearchQueryFromUrl,
   getDateFilterFromUrl,
-  generalResultsPageIsDisplayed,
-  showMSresultsBoxIfOnGeneralResultsPage
+  generalResultsPageIsDisplayedForNonInstantSearch,
+  checkIfMutationOccuredOnTargetElement,
 } from './googleSearchCSutils'
 import { renderMarkSearchResultsBoxResults } from '../renderMarkSearchResults'
-import { hideMSresultsBox } from '../markSearchResultsBox'
-import { setUpMSresultsBoxForGoogle, setMSresultsBoxHeight } from './msResultsBoxForGoogle'
-import { setUpMarkSearchSearchButton } from './msSearchButtonForGoogle'
+import {
+  setUpMSresultsBoxForGoogle,
+  setMSresultsBoxHeight,
+  instantSearchToggleMSresultsBoxVisibility,
+} from './msResultsBoxForGoogle'
+import { setUpMarkSearchSearchButtons } from './msSearchButtonsForGoogle'
 import { $ } from '../../utils'
 import { getSetting } from '../CS_utils'
 
@@ -35,22 +38,20 @@ function init(){
   }
 
   const isInstantSearch = checkIfInstantSearch()
-  const onGeneralResultsPage = generalResultsPageIsDisplayed()
-  console.log('onGeneralResultsPage', onGeneralResultsPage)
 
   if(getSetting('showMSsearchButton')){
-    setUpMarkSearchSearchButton()
+    setUpMarkSearchSearchButtons()
   }
   /*****
   * If it is not instant search and we are on either the search page, or a results page that is not the general
   * results page (e.g. the news search results page), then exit, cause we dont want to show MarkSearch
   * results on the search page, or on other search results pages, only on the general results page (i.e. the "All").
   */
-  if(!isInstantSearch && !onGeneralResultsPage){
+  if(!isInstantSearch && !generalResultsPageIsDisplayedForNonInstantSearch()){
     return
   }
 
-  setUpMSresultsBoxForGoogle(onGeneralResultsPage)
+  setUpMSresultsBoxForGoogle(isInstantSearch)
 
   marksearchSearchRequestPort = chrome.runtime.connect({name: 'googleContentScriptRequestMSsearch'})
 
@@ -62,11 +63,11 @@ function init(){
     */
     chrome.runtime.onMessage.addListener(xhrInstantSearchMessageListener)
 
-    const observer = new MutationObserver(instantSeachMutationObserverHandler)
+    const instantSearchMutationObserver = new MutationObserver(instantSearchMutationObserverHandler)
     /*****
     * #main is the lowest down element in the tree (of what we want) that's available on DOMContentLoaded.
     */
-    observer.observe($('#main'), observerSettings)
+    instantSearchMutationObserver.observe($('#main'), observerSettings)
 
     window.addEventListener('popstate', popstateListener)
   }
@@ -128,43 +129,45 @@ function xhrInstantSearchMessageListener({searchResults, requestId, newGoogleIns
   }
 }
 
-function instantSeachMutationObserverHandler(mutations){
-  const mutationRecordWithSearchElemAsTarget = mutations.find(({target: {id}}) => id === 'search')
-  if(mutationRecordWithSearchElemAsTarget){
+function instantSearchMutationObserverHandler(mutations){
+  const searchElementMutation = checkIfMutationOccuredOnTargetElement(mutations, 'search')
+  const searchNavigationElementMutation = checkIfMutationOccuredOnTargetElement(mutations, 'top_nav')
+  /*****
+  * We hide the results box if the user is on a search page - we do this by using the 'hp' class on the body element
+  * that is applied when its on the search page.
+  *
+  * Also, if #top_nav is the target of a mutation, then the user may have clicked on the search type navigation to change
+  * the search type. If this occurs, we want to hide the MS results box as we don't want it to show if they are searching
+  * for news, images etc.
+  * #top_nav seems to be the lowest down we can go to get a mutation record for the search nav. I think all the
+  * #top_nav child elements are replaced.
+  * Notes:
+  *   * We cant use the xhr instant search listener because an xhr request isn't called on click if you have
+  *   previously clicked on that search for the current search terms - it just uses a cache of the previous results
+  *   that I is stored somewhere.
+  *   * We also cant use the url query params cause they aren't always removed when you click to go back to the 'All'
+  *   search.
+  *   * We also can't use the popstate listener as that event isn't fired
+  *   * Gonna favour mutation observer over click events in case the user is using the keyboard to select that search.
+  */
+  if(searchElementMutation){
     /*****
     * We re-set the MS results box height here on insertion of new search engine results as new resutls have
     * different snippets (or amount of results), which makes the page height different.
     */
-    setMSresultsBoxHeight(mutationRecordWithSearchElemAsTarget.target)
-    /*****
-    * We hide the results box if the user is on a search page (either by regular page load or triggered in the
-    * popstateListener by using the back button in the browser), so show it again when there are on the results page.
-    */
-    showMSresultsBoxIfOnGeneralResultsPage()
+    setMSresultsBoxHeight(searchElementMutation.target)
+  }
+  if(searchNavigationElementMutation || searchElementMutation){
+    instantSearchToggleMSresultsBoxVisibility()
   }
 }
 
 function popstateListener(){
-  /*****
-  * If we go back to the search page, or a non-general results page (e.g. news results), hide the MS results box
-  * and dont bother to do a search. Most of the time when the popstate event fires and the user is going back
-  * to the search page, the searchForm classes have not yet been changed, so fall back to seeing if
-  * getSearchQueryFromUrl() returns null. The hash in the url seems to be changed at this point so I think it
-  * should work - it should be null (i.e. no search terms if they are back on the search page).
-  */
-  const searchQuery = getSearchQueryFromUrl()
-  if(!generalResultsPageIsDisplayed() || !searchQuery){
-    hideMSresultsBox()
-    return
-  }
-
-  showMSresultsBoxIfOnGeneralResultsPage()
-
   latestInstantSearchRequestId = 0
 
   marksearchSearchRequestPort.postMessage(
     {
-      searchTerms: searchQuery,
+      searchTerms: getSearchQueryFromUrl(),
       dateFilter: getDateFilterFromUrl()
     }
   )
