@@ -49,12 +49,17 @@ function parseDateFilter(dateFilter){
     m: 'month',
     y: 'year'
   }
-
+  /*****
+  * 'qdr:' is one of the date shortcuts that's available (i.e. not a custom range)
+  */
   if(dateFilter.startsWith('qdr:')){
     dateFilterRange.endDate = moment().valueOf()
     const startDateShortcutText = startDateShortcuts[dateFilter.split('qdr:')[1]]
     dateFilterRange.startDate = moment().subtract(1, startDateShortcutText).valueOf()
   }
+  /*****
+  * 'cdr:' is a custom date range
+  */
   if(dateFilter.startsWith('cdr:')){
     /*****
     * cdr example: cdr:1,cd_min:30/10/2016,cd_max:23/11/2016
