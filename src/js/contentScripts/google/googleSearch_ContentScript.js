@@ -29,7 +29,7 @@ let latestInstantSearchRequestId = 0
 
 /*****
 * Note: in our css, we hide the MS results box if the user is on a search page - we do this by using the 'hp' class that
-* is applied to the body element when its on the search page - our css has a rule to hide the MS results box if the
+* is applied to the body element when its the search page - our css has a rule to hide the MS results box if the
 * body has a class of 'hp'.
 */
 
