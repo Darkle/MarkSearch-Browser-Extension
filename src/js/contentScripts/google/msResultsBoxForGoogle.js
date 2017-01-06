@@ -146,6 +146,7 @@ function windowResizeHandler(){
 */
 function setMSresultsBoxHeight(searchElement){
   /*****
+  * const msResultsBoxFallbackHeight = 'calc(100vh - 166px - 84px - 20px)'
   * On DOMContentLoaded (for instant search) the searchElement is not yet there so fall back to a height of
   * calc(100vh - 166px - 84px - 20px).
   *
@@ -168,11 +169,10 @@ function setMSresultsBoxHeight(searchElement){
   * on page load. Also, a lot of the page dom is removed and recreated/inserted when the user clicks the back/forward
   * browser buttons (with instant search), so we would have to keep recreating/re-inserting the MS results box.
   *
+  * const msResultsBoxMinimumHeight = 360
   * Also, in the event that there is only say 1-2 search engine results, the #search element height is not really
   * enough for the MS results box to look decent, so if the #search element height is less than 360px, fall back
   * to the 'calc(100vh - 166px - 84px - 20px)'
-  * const msResultsBoxFallbackHeight = 'calc(100vh - 166px - 84px - 20px)'
-  * const msResultsBoxMinimumHeight = 360
   */
   let msResultsBoxNewHeight = msResultsBoxFallbackHeight
 
