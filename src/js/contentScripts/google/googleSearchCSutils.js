@@ -3,7 +3,7 @@ import { safeGetObjectProperty, $ } from '../../utils'
 import moment from 'moment'
 import { parse as parseQueryString } from 'query-string'
 /*****
-* Originally I was using search params to check if the page was set to do instant search by
+* Originally I was using the url search params to check if the page was set to do instant search by
 * checking if there were search query params (e.g. search?q=skyrim) in the url, but unfortunately it's possible
 * to have search params present and still be in instant search; the url would look something
 * like this (logged out): https://www.google.co.uk/search?q=skyrim+walkthrough+ps3#q=skyrim+walkthrough+pdf
