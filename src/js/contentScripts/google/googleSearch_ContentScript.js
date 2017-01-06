@@ -54,7 +54,6 @@ function init(){
 
   setUpMSresultsBoxForGoogle(isInstantSearch)
 
-  marksearchSearchRequestPort = chrome.runtime.connect({name: 'googleContentScriptRequestMSsearch'})
 
   if(isInstantSearch){
     /*****
@@ -73,6 +72,12 @@ function init(){
     window.addEventListener('popstate', popstateListener)
   }
 
+  marksearchSearchRequestPort = chrome.runtime.connect({name: 'googleContentScriptRequestMSsearch'})
+  /*****
+  * Messages back to the marksearchSearchRequestPort port from the background script send back a requestId
+  * of 0.
+  */
+  marksearchSearchRequestPort.onMessage.addListener(onReceivedMarkSearchResults)
   /*****
   * We send a request for a MarkSearch search on page load for both non-instant search and instant search.
   *
@@ -88,12 +93,6 @@ function init(){
       dateFilter: getDateFilterFromUrl()
     }
   )
-
-  /*****
-  * Messages back to the marksearchSearchRequestPort port from the background script send back a requestId
-  * of 0.
-  */
-  marksearchSearchRequestPort.onMessage.addListener(onReceivedMarkSearchResults)
 }
 /*****
 * The marksearchSearchRequestPort sends messages to the background requesting it to search the MarkSearch
