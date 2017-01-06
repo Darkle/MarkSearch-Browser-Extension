@@ -22,19 +22,30 @@ function checkIfInstantSearch(){
   return isInstantSearch
 }
 
-function getPageHash(){
+function getUrlHashParams(){
   return parseQueryString(window.location.hash)
 }
 
-function getPageQuery(){
+function getUrlQueryParams(){
   return parseQueryString(window.location.search)
 }
 
 function getSearchQueryFromUrl(){
+  const urlHashParams = getUrlHashParams().q
+  const urlQueryParams = getUrlQueryParams().q
+  /*****
+  * Normally instant search uses hash params for the search, but on occasion, it will use the query
+  * params (?q=foo) instead, so return that if it's there and there is not a hash search param.
+  */
   if(isInstantSearch){
-    return getPageHash().q
+    if(urlHashParams){
+      return urlHashParams
+    }
+    if(urlQueryParams){
+      return urlQueryParams
+    }
   }
-  return getPageQuery().q
+  return urlQueryParams
 }
 
 function parseDateFilter(dateFilter){
@@ -77,10 +88,10 @@ function parseDateFilter(dateFilter){
 function getDateFilterFromUrl(){
   let dateFilterParams = null
   if(isInstantSearch){
-    dateFilterParams = getPageHash().tbs
+    dateFilterParams = getUrlHashParams().tbs
   }
   else{
-    dateFilterParams = getPageQuery().tbs
+    dateFilterParams = getUrlQueryParams().tbs
   }
   if(!dateFilterParams || !dateFilterParams.length){
     return
@@ -124,7 +135,7 @@ function findElementInNodeList(searchType, searchData, nodeList){
 *   and inserted, as there is no need for it to be inserted on the search page when it's not instant search.
 */
 function generalResultsPageIsDisplayedForNonInstantSearch(){
-  return !document.body.classList.contains('hp') && !getPageHash().tbm && !getPageQuery().tbm
+  return !document.body.classList.contains('hp') && !getUrlHashParams().tbm && !getUrlQueryParams().tbm
 }
 
 export {
