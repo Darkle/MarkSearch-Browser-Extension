@@ -155,7 +155,7 @@ function instantSearchMutationObserverHandler(mutations){
   */
   if(searchElementMutation){
     /*****
-    * We re-set the MS results box height here on insertion of new search engine results as new resutls have
+    * We re-set the MS results box height here on insertion of new search engine results as new results have
     * different snippets (or amount of results), which makes the page height different.
     */
     setMSresultsBoxHeight(searchElementMutation.target)

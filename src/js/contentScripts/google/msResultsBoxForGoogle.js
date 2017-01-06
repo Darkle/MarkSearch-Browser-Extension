@@ -56,8 +56,9 @@ function setUpMSresultsBoxForGoogle(isInstantSearch){
   * We show the MS results box as a tab on load if:
   *   1: They have it set in the extension options to show the MS results box on the left - we show as a
   *   tab so that it doesn't obscure the search engine results.
-  *   2: They do not have it set in the extension options to Autoexpand the results box.
-  *   3: They have it set in the extension options to show the MS results box on the left, but the width
+  *   2: They have it set in the extension options to show the MS results box on the right and they do not
+  *   have it set in the extension options to Autoexpand the results box.
+  *   3: They have it set in the extension options to show the MS results box on the right, but the width
   *   of the page is too small to show the MS results box without obscuring the search engine results.
   *     The minimum width we want the MS results box to have is 490px.
   */
