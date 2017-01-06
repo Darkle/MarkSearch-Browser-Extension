@@ -54,7 +54,6 @@ function init(){
 
   setUpMSresultsBoxForGoogle(isInstantSearch)
 
-
   if(isInstantSearch){
     /*****
     * The webRequest listener in the background sends the content script notifications that an instant search xhr
