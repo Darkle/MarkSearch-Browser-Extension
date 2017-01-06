@@ -146,7 +146,7 @@ function instantSearchMutationObserverHandler(mutations){
   * Notes:
   *   * We cant use the xhr instant search listener because an xhr request isn't called on click if you have
   *   previously clicked on that search for the current search terms - it just uses a cache of the previous results
-  *   that I is stored somewhere.
+  *   that is stored somewhere.
   *   * We also cant use the url query params cause they aren't always removed when you click to go back to the 'All'
   *   search.
   *   * We also can't use the popstate listener as that event isn't fired
