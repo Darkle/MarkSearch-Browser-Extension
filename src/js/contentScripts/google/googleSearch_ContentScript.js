@@ -166,11 +166,17 @@ function instantSearchMutationObserverHandler(mutations){
 }
 
 function popstateListener(){
+  const searchQuery = getSearchQueryFromUrl()
+
+  if(!searchQuery){
+    return
+  }
+
   latestInstantSearchRequestId = 0
 
   marksearchSearchRequestPort.postMessage(
     {
-      searchTerms: getSearchQueryFromUrl(),
+      searchTerms: searchQuery,
       dateFilter: getDateFilterFromUrl()
     }
   )
