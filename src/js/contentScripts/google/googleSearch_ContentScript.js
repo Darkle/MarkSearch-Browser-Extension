@@ -150,8 +150,8 @@ function instantSearchMutationObserverHandler(mutations){
   *   * We also cant use the url query params cause they aren't always removed when you click to go back to the 'All'
   *   search.
   *   * We also can't use the popstate listener as that event isn't fired
-  *   * Gonna favour using this mutation observer over using a click event listener for the search nav in case the
-  *   user is using the keyboard to select that search.
+  *   * Gonna favour using this mutation observer over using a seperate click event listener for the search nav in case
+  *   the user is using the keyboard to select that search.
   */
   if(searchElementMutation){
     /*****
