@@ -35,7 +35,7 @@ function getSearchQueryFromUrl(){
   const urlQueryParams = getUrlQueryParams().q
   /*****
   * Normally instant search uses hash params for the search, but on occasion it will use the query
-  * params (?q=foo) instead, so if there is not a hash param and there is a query param, return it.
+  * params (?q=foo) instead, so if there is not a hash param for instant search, return the query param.
   */
   if(isInstantSearch && urlHashParams){
     return urlHashParams
