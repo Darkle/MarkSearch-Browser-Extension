@@ -156,7 +156,7 @@ function setMSresultsBoxHeight(searchElement){
   *
   * So there are two conditions here:
   *   1 - the searchElement is not yet available (searchElement is null/undefined).
-  *   2 - the searchElement has a .clientHeight of 0.
+  *   2 - the searchElement has a .clientHeight of 0 or less than 360px.
   *
   * Note: the calc height is a bit of a guess, but should be ok for most occasions. It is
   * 100vh minus the bottom (aka .getBoundingClientRect().bottom) of the '#appbar' element (which is 166) minus
