@@ -13,7 +13,7 @@ html
       #settings
         section#lookAndBehaviour
           .flexrow#optionsHelpLink
-            span You Can Get Help And Information About These Settings Here: 
+            span You Can Get Help And Information About These Settings Here:
             a(href='https://github.com/Darkle/MarkSearch#chromeExtensionOptions') MarkSearch Chrome Extension Help
           h3 Search Engines
           .settingsGroup#searchEngines
@@ -23,10 +23,10 @@ html
                 label
                   input(type='checkbox', name='googleSearchCheckbox', id='googleSearchCheckbox', data-setting-key='googleSearchIntegration')
                   span Google
-              .checkbox
-                label
-                  input(type='checkbox', name='duckduckgoSearchCheckbox', id='duckduckgoSearchCheckbox', data-setting-key='duckduckgoSearchIntegration')
-                  span DuckDuckGo
+              //- .checkbox
+              //-   label
+              //-     input(type='checkbox', name='duckduckgoSearchCheckbox', id='duckduckgoSearchCheckbox', data-setting-key='duckduckgoSearchIntegration')
+              //-     span DuckDuckGo
           h3 MarkSearch Results Box
           .settingsGroup#msResultsBox
             .selectBoxContainer
@@ -57,32 +57,32 @@ html
           h3 MarkSearch Extension Token
           .input-box
             input#extensionToken(type='text', spellcheck='false', data-setting-key='extensionToken')
-          div (You can get the extension token from the MarkSearch desktop app settings. The MarkSearch desktop app 
-              | settings can be accessed by right-clicking on the MarkSearch icon in the system tray on Windows &amp; Linux, or 
+          div (You can get the extension token from the MarkSearch desktop app settings. The MarkSearch desktop app
+              | settings can be accessed by right-clicking on the MarkSearch icon in the system tray on Windows &amp; Linux, or
               | by clicking the MarkSearch icon in the menu bar on OSX)
         section#helpAbout
           div#help
             h3 Help
             div
-              | Help for the extension is available here: 
+              | Help for the extension is available here:
               a(href='https://github.com/Darkle/MarkSearch#helpMenuExtention', target='_blank', rel='noopener') https://github.com/Darkle/MarkSearch#helpMenuExtention
             div
-              | Help for the desktop app is available here: 
+              | Help for the desktop app is available here:
               a(href='https://github.com/Darkle/MarkSearch#helpMenuMarkSearch', target='_blank', rel='noopener') https://github.com/Darkle/MarkSearch#helpMenuMarkSearch
           div#about
             h3 About
-            div#marksearchChromeExtensionVersionNumber MarkSearch Chrome Extension Version: 
+            div#marksearchChromeExtensionVersionNumber MarkSearch Chrome Extension Version:
             div
-              | MarkSearch Chrome Extension Repo: 
+              | MarkSearch Chrome Extension Repo:
               a(href='https://github.com/Darkle/MarkSearch-Chrome-Extension', target='_blank', rel='noopener') https://github.com/Darkle/MarkSearch-Chrome-Extension
             div
-              | MarkSearch Desktop App Repo:  
+              | MarkSearch Desktop App Repo:
               a(href='https://github.com/Darkle/MarkSearch', target='_blank', rel='noopener') https://github.com/Darkle/MarkSearch
           div#bugs
             h3 Bugs
             div
-              | You can report any bugs for the extension here:  
+              | You can report any bugs for the extension here:
               a(target='_blank', href='https://github.com/Darkle/MarkSearch-Chrome-Extension/issues', rel='noopener') https://github.com/Darkle/MarkSearch-Chrome-Extension/issues
               br
-              | You can report any bugs for the desktop app here:  
+              | You can report any bugs for the desktop app here:
               a(target='_blank', href='https://github.com/Darkle/MarkSearch/issues', rel='noopener') https://github.com/Darkle/MarkSearch/issues

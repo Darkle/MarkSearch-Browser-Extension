@@ -47,7 +47,7 @@ function init(){
   const isInstantSearch = checkIfInstantSearch()
 
   if(getSetting('showMSsearchButton')){
-    setUpMarkSearchSearchButtons(isInstantSearch)
+    setUpMarkSearchSearchButtons()
   }
   /*****
   * If it is not instant search and we are on either the search page, or a results page that is not the general

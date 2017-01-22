@@ -105,9 +105,6 @@ chrome.runtime.onConnect.addListener(port => {
         .catch(errorLogger)
     })
   }
-  // if(port.name === 'duckDuckGoInstantSearch'){
-  //   duckDuckGoContentScriptPort = port
-  // }
 })
 
 chrome.webRequest.onBeforeRequest.addListener(
@@ -117,15 +114,5 @@ chrome.webRequest.onBeforeRequest.addListener(
     types: ['main_frame', 'xmlhttprequest']
   }
 )
-
-// chrome.webRequest.onBeforeRequest.addListener(
-//   ({tabId: requestTabId, method, type, url}) => {
-//     duckDuckGoSearchRequestHandler(duckDuckGoContentScriptPort, requestTabId, method, type, url)
-//   },
-//   {
-//     urls: duckDuckGoUrlPatterns,
-//     types: ['main_frame', 'xmlhttprequest']
-//   }
-// )
 
 chrome.contextMenus.onClicked.addListener(contextMenuOnClickedHandler)
