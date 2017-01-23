@@ -17,11 +17,14 @@ import { parse as parseQueryString } from 'query-string'
 * Note: query-string automatically removes the ? or # at the start.
 */
 
-function checkIfInstantSearch(){
-  return getSetting('isInstantSearch') === 'instant'
-}
+let isInstantSearch
 
-const isInstantSearch = checkIfInstantSearch()
+function checkIfInstantSearch(){
+  if(typeof isInstantSearch === 'undefined'){
+    isInstantSearch = getSetting('googleSearchType')
+  }
+  return isInstantSearch === 'instant'
+}
 
 function getUrlHashParams(){
   return parseQueryString(window.location.hash)

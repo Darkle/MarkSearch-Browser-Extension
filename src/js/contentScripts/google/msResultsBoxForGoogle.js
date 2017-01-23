@@ -20,10 +20,13 @@ const msResultsBoxFallbackHeight = 'calc(100vh - 166px - 84px - 20px)'
 const msResultsBoxMinimumHeight = 360
 let msResultsBoxOldHeight
 let documentClientWidth
+let googleSearchIsUsingRTLlanguage
 
 function setUpMSresultsBoxForGoogle(isInstantSearch){
-  console.log('setUpMSresultsBoxForGoogle')
   createMSresultsBox()
+
+  googleSearchIsUsingRTLlanguage = document.querySelector('html').getAttribute('dir') === 'rtl'
+
   /*****
   * The msResultsBox_google class is for google specific styles for the MS results box.
   */
@@ -32,6 +35,15 @@ function setUpMSresultsBoxForGoogle(isInstantSearch){
   * We hide the MS results box by default (it's easier that way).
   */
   msResultsBoxElem.classList.add('msResultsBoxHide')
+  /*****
+  * Set the MS results box position to the left or right of the page - we check if its a rtl language too
+  */
+  if(sideToShowMSresultsBoxOn() === 'left'){
+    msResultsBoxElem.classList.add('msResultsBoxShowOnLeft')
+  }
+  else{
+    msResultsBoxElem.classList.add('msResultsBoxShowOnRight')
+  }
   /*****
   * If it's not instant search and we are not on the search page and we are on the general results page,
   * then show the MS results box for non instant search.
@@ -51,10 +63,6 @@ function setUpMSresultsBoxForGoogle(isInstantSearch){
   const computedMsSidebarIconTop = 167
 
   setUpMSresultsBoxIcon(computedMsSidebarIconTop)
-
-  if(showingOnLeft()){
-    msResultsBoxElem.classList.add('msResultsBoxShowOnLeft')
-  }
 
   documentClientWidth = document.documentElement.clientWidth
   /*****
@@ -84,12 +92,33 @@ function setUpMSresultsBoxForGoogle(isInstantSearch){
   document.body.appendChild(msResultsBoxElem)
 }
 
-function showingOnLeft(){
-  return getSetting('msResultsBox_Position') === 'left'
+function sideToShowMSresultsBoxOn(){
+  let side = getSetting('msResultsBox_Position')
+
+  if(googleSearchIsUsingRTLlanguage){
+    side = side === 'left' ? 'right' : 'left'
+  }
+  return side
+}
+
+/*****
+* We need to check if the MS results box is being shown on the left for ltr languages (e.g. English)
+* or rtl languages (e.g. Arabic). We do this so that we can show the results as a tab if the results box is
+* set to be shown on the right for rtl languages or on the left for ltr languages so as not to obscure
+* the google results on page load.
+*/
+function resultsBoxIsOnSideThatCouldObscureResults(){
+  if(googleSearchIsUsingRTLlanguage && sideToShowMSresultsBoxOn() === 'right'){
+    return true
+  }
+  if(!googleSearchIsUsingRTLlanguage && sideToShowMSresultsBoxOn() === 'left'){
+    return true
+  }
+  return false
 }
 
 function shouldShowMSresultsBoxAsTabOnLoad(){
-  return showingOnLeft() || !getSetting('msResultsBox_AutoExpand') || (documentClientWidth - centerColWidth) < minimumMSresultsBoxWidth
+  return resultsBoxIsOnSideThatCouldObscureResults() || !getSetting('msResultsBox_AutoExpand') || (documentClientWidth - centerColWidth) < minimumMSresultsBoxWidth
 }
 
 /*****
@@ -119,7 +148,7 @@ function setMSresultsBoxWidth(){
 */
 function toggleShowMSresultBoxAsTab(){
   msResultsBoxElem.classList.toggle('msResultsBoxShowTabOnly')
-  if(!showingOnLeft() && !msResultsBoxElem.classList.contains('msResultsBoxShowTabOnly')){
+  if(!resultsBoxIsOnSideThatCouldObscureResults() && !msResultsBoxElem.classList.contains('msResultsBoxShowTabOnly')){
     setMSresultsBoxWidth()
   }
 }
@@ -128,7 +157,7 @@ function toggleShowMSresultBoxAsTab(){
 * Change the width of the MS results box if the user resizes the browser window.
 */
 function windowResizeHandler(){
-  if(showingOnLeft()){
+  if(resultsBoxIsOnSideThatCouldObscureResults()){
     return
   }
   documentClientWidth = document.documentElement.clientWidth
@@ -216,4 +245,5 @@ export {
   setMSresultsBoxHeight,
   instantSearchToggleMSresultsBoxVisibility,
   msResultsBoxElem,
+  toggleShowMSresultBoxAsTab,
 }

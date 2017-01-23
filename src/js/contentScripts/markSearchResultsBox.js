@@ -1,4 +1,4 @@
-import { getSetting, setMSiconClass } from './CS_utils'
+import { setMSiconClass } from './CS_utils'
 
 let msResultsBoxResultsContainer
 let msResultsBoxElem
@@ -8,6 +8,7 @@ let resultsBoxSideBar
 function createMSresultsBox(){
   msResultsBoxElem = document.createElement('div')
   msResultsBoxElem.setAttribute('id', 'msResultsBox')
+  msResultsBoxElem.classList.add('normalizeCSS')
 
   resultsBoxSideBar = document.createElement('div')
   resultsBoxSideBar.setAttribute('id', 'msResultsBoxSidebar')
@@ -26,10 +27,6 @@ function createMSresultsBox(){
   msResultsBoxResultsContainer = document.createElement('div')
   msResultsBoxResultsContainer.setAttribute('id', 'msResultsBoxResultsContainer')
   msResultsBoxElem.appendChild(msResultsBoxResultsContainer)
-
-  if(getSetting('msResultsBox_Position') === 'left'){
-    msResultsBoxElem.classList.add('showMsResultsBoxOnLeft')
-  }
 }
 
 function hideMSresultsBox(){

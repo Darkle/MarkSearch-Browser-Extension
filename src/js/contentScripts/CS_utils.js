@@ -1,5 +1,4 @@
 import { getSettings } from '../utils'
-
 import { isWebUri } from 'valid-url'
 
 const extensionSettings = {}

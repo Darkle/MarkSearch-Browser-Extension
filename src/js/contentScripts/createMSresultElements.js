@@ -67,14 +67,14 @@ function createResultDescription(result, searchTerms){
     /*****
     * Remove the preceding elipse and/or opening span tag so we can test if the first letter is a capital letter.
     */
-    if(snippetTestCopy.startsWith('...')){
+    if(snippetTestCopy.startsWith('...<span class="searchHighlight">')){
+      snippetTestCopy = snippetTestCopy.slice(33)
+    }
+    else if(snippetTestCopy.startsWith('...')){
       snippetTestCopy = snippetTestCopy.slice(3)
     }
-    if(snippetTestCopy.startsWith('<span class="searchHighlight">')){
-      snippetTestCopy = snippetTestCopy.slice(30)
-    }
 
-    if(snippetTestCopy[0] === snippetTestCopy[0].toUpperCase()){
+    if(!snippetTestCopy.startsWith('<span') && snippetTestCopy[0] === snippetTestCopy[0].toUpperCase()){
       result.snippet = result.snippet.slice(3)
     }
 

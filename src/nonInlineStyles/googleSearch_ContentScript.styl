@@ -2,7 +2,6 @@
 
 .msResultsBox_google
   position: absolute
-  right: 0
   z-index: 99999
   border-radius: 2px
   /*****
@@ -70,12 +69,13 @@ body.hp .msResultsBox_google
     text-decoration: none
 
 .msSearchButtonResultsPageGoogle
+  @import 'normalize'
   font-family: "exo_regular"
   // outline: 1px solid green;
   display: flex;
   align-items: center
   position: absolute
-  margin-left: 810px;
+  margin-left: 662px;
   margin-top: 2px;
   padding: 4px;
   font-size: 29px;
@@ -95,6 +95,13 @@ body.hp .msResultsBox_google
   svg
     height: 28px;
     fill: white
+/*****
+* This is for RTL languages like Arabic where the text layout will be right-to-left, so we need to have
+* the MS search button on the left of the search input box.
+*/
+html[dir="rtl"] .msSearchButtonResultsPageGoogle
+  margin-left: 0px;
+  margin-right:  662px;
 /*****
 * The 'hp' class is from the page. When it is the search page, the body has a class of 'hp', so gonna use that as
 * it saves us having to manually check and hide/show for the search page.

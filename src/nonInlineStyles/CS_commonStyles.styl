@@ -41,6 +41,13 @@
 //   font-family: 'opensans_semibold'
 //   src: url('../fonts/OpenSans-Semibold.woff2') format('woff2')
 
+.normalizeCSS
+  /*
+  * Cause we are existing in 3 browsers, gonna use normalize.css
+  * We add the .normalizeCSS css class to the #msResultsBox and to the 
+  * MS search button on the results page
+  */
+  @import 'normalize'
 
 break-long-words()
   word-wrap: break-word
@@ -49,10 +56,6 @@ break-long-words()
   hyphens: auto
 
 #msResultsBox
-  /*
-  * Cause we are existing in 3 browsers, gonna use normilize.css
-  */
-  @import 'normalize'
   display: flex
   overflow: hidden
   // width: 620px
@@ -65,6 +68,9 @@ break-long-words()
   width: 40px !important
 .msResultsBoxShowOnLeft
   left: 0 !important
+  width: calc(632px + 140px + 55px)
+.msResultsBoxShowOnRight
+  right: 0 !important
   width: calc(632px + 140px + 55px)
 
 #msResultsBoxSidebar
