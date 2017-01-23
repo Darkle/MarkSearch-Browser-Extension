@@ -10,6 +10,7 @@ import { hotReloadInit } from './hotReload'
 import { extensionOptionsDefaultValues } from './extensionOptionsDefaultValues'
 import { searchMarkSearch } from './searchMarkSearch'
 import { checkIfPageIsSavedAndUpdateIcon } from './checkIfPageIsSavedAndUpdateIcon'
+import { setUpOmniboxIntegration } from './omnibox'
 
 /*****
 * Note: using chrome.storage.local in the extension rather than storage.sync in case they have MarkSearch
@@ -49,6 +50,14 @@ checkIfDev().then(isDevelopment => {
   }
 })
 
+/*****
+* Omnibox
+*/
+setUpOmniboxIntegration()
+
+/*****
+* Context Menu
+*/
 chrome.contextMenus.create(
   {
     id: 'marksearchOpenSearchPage',
@@ -56,6 +65,17 @@ chrome.contextMenus.create(
     contexts: ['browser_action']
   }
 )
+
+/*****
+* Keyboard Shortcuts
+*/
+chrome.commands.onCommand.addListener(command => {
+  if(command === 'toggleMarksearchResultsBox'){
+    getCurrentTabId().then(currentTabId => {
+      chrome.tabs.sendMessage(currentTabId, { shortcutCommand: command })
+    })
+  }
+})
 
 /*****
 * Event listeners

@@ -2,7 +2,7 @@
   "name": "MarkSearch Chrome Extension",
   "manifest_version": 2,
   "version": "0.1",
-  "description": "Chrome extension for the MarkSearch bookmarking desktop app",
+  "description": "Browser extension for the MarkSearch bookmarking desktop app",
   "icons": {
     "128": "images/MSlargeIcon.png"
   },
@@ -29,6 +29,17 @@
     "page": "html/options.html",
     "chrome_style": true
   },
+  "commands": {
+    "toggleMarksearchResultsBox": {
+      "suggested_key": {
+        "default": "Ctrl+M",
+        "mac": "MacCtrl+M"
+      },
+      "description": "Toggle The MarkSearch Results Box",
+      "global": false
+    }
+  },
+  "omnibox": { "keyword" : "ms" },
   "content_scripts": [
     {
       "js": ["js/googleSearch_ContentScript.build.js"],

@@ -13,6 +13,7 @@ import {
   instantSearchToggleMSresultsBoxVisibility,
 } from './msResultsBoxForGoogle'
 import { setUpMarkSearchSearchButtons } from './msSearchButtonsForGoogle'
+import { setUpKeyboardShortcuts } from './googleSearchMSkeyboardShortcuts'
 import { $ } from '../../utils'
 import { getSetting } from '../CS_utils'
 
@@ -98,6 +99,8 @@ function init(){
       dateFilter: getDateFilterFromUrl()
     }
   )
+
+  setUpKeyboardShortcuts()
 }
 /*****
 * The marksearchSearchRequestPort sends messages to the background requesting it to search the MarkSearch

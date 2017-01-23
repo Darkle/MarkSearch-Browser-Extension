@@ -214,4 +214,5 @@ export {
   setUpMSresultsBoxForGoogle,
   setMSresultsBoxHeight,
   instantSearchToggleMSresultsBoxVisibility,
+  msResultsBoxElem,
 }
