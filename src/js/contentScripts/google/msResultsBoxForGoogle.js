@@ -22,6 +22,7 @@ let msResultsBoxOldHeight
 let documentClientWidth
 
 function setUpMSresultsBoxForGoogle(isInstantSearch){
+  console.log('setUpMSresultsBoxForGoogle')
   createMSresultsBox()
   /*****
   * The msResultsBox_google class is for google specific styles for the MS results box.

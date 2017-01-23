@@ -1,4 +1,5 @@
-import { safeGetObjectProperty, $ } from '../../utils'
+import { getSetting } from '../CS_utils'
+import { safeGetObjectProperty } from '../../utils'
 
 import moment from 'moment'
 import { parse as parseQueryString } from 'query-string'
@@ -7,20 +8,20 @@ import { parse as parseQueryString } from 'query-string'
 * checking if there were search query params (e.g. search?q=skyrim) in the url, but unfortunately it's possible
 * to have search params present and still be in instant search; the url would look something
 * like this (logged out): https://www.google.co.uk/search?q=skyrim+walkthrough+ps3#q=skyrim+walkthrough+pdf
-* I cant seem to find anything in the cookies or local/session storage to indicate that it's instant search,
-* so gonna check the html on the page. (we can still use search params to get the search query quickly
-* though)
+* I cant seem to find anything in the cookies or local/session storage to indicate that it's instant search either.
+* Then I was going to check the html on the page as it seemed that if it was instant search, the
+* #tsf>input[value="psy-ab"][name="sclient"] element would be on the page, but I found that seemed to only be the
+* case for English based google search pages, so gonna fall back to the user setting the search type in the extension
+* settings.
+* Note: we can still use search params to get the search query quickly though.
 * Note: query-string automatically removes the ? or # at the start.
 */
 
-let isInstantSearch = false
-
 function checkIfInstantSearch(){
-  if($('#tsf>input[value="psy-ab"][name="sclient"]')){
-    isInstantSearch = true
-  }
-  return isInstantSearch
+  return getSetting('isInstantSearch') === 'instant'
 }
+
+const isInstantSearch = checkIfInstantSearch()
 
 function getUrlHashParams(){
   return parseQueryString(window.location.hash)
@@ -134,10 +135,10 @@ function generalResultsPageIsDisplayedForNonInstantSearch(){
 }
 
 export {
+  checkIfInstantSearch,
   getSearchQueryFromUrl,
   getDateFilterFromUrl,
   parseDateFilter,
-  checkIfInstantSearch,
   checkIfMutationOccuredOnTargetElement,
   getAddedNodesForTargetElement,
   getRemovedNodesForTargetElement,

@@ -13,7 +13,7 @@ html
       #settings
         section#lookAndBehaviour
           .flexrow#optionsHelpLink
-            span You Can Get Help And Information About These Settings Here:
+            span You Can Get Help And Information About These Settings Here:&nbsp;
             a(href='https://github.com/Darkle/MarkSearch#chromeExtensionOptions') MarkSearch Browser Extension Help
           h3 Search Engines
           .settingsGroup#searchEngines
@@ -23,6 +23,11 @@ html
                 label
                   input(type='checkbox', name='googleSearchCheckbox', id='googleSearchCheckbox', data-setting-key='googleSearchIntegration')
                   span Google
+              .selectBoxContainer
+                span Search Type:
+                select#googleSearchType(data-setting-key='googleSearchType')
+                  option(value="instant") Instant Search
+                  option(value="nonInstant") Non Instant Search
               //- .checkbox
               //-   label
               //-     input(type='checkbox', name='duckduckgoSearchCheckbox', id='duckduckgoSearchCheckbox', data-setting-key='duckduckgoSearchIntegration')
@@ -64,25 +69,25 @@ html
           div#help
             h3 Help
             div
-              | Help for the extension is available here:
+              | Help for the extension is available here:&nbsp;
               a(href='https://github.com/Darkle/MarkSearch#helpMenuExtention', target='_blank', rel='noopener') https://github.com/Darkle/MarkSearch#helpMenuExtention
             div
-              | Help for the desktop app is available here:
+              | Help for the desktop app is available here:&nbsp;
               a(href='https://github.com/Darkle/MarkSearch#helpMenuMarkSearch', target='_blank', rel='noopener') https://github.com/Darkle/MarkSearch#helpMenuMarkSearch
           div#about
             h3 About
-            div#marksearchChromeExtensionVersionNumber MarkSearch Browser Extension Version:
+            div#marksearchChromeExtensionVersionNumber MarkSearch Browser Extension Version:&nbsp;
             div
-              | MarkSearch Browser Extension Repo:
-              a(href='https://github.com/Darkle/MarkSearch-Chrome-Extension', target='_blank', rel='noopener') https://github.com/Darkle/MarkSearch-Chrome-Extension
+              | MarkSearch Browser Extension Repo:&nbsp;
+              a(href='https://github.com/Darkle/MarkSearch-Browser-Extension', target='_blank', rel='noopener') https://github.com/Darkle/MarkSearch-Browser-Extension
             div
-              | MarkSearch Desktop App Repo:
+              | MarkSearch Desktop App Repo:&nbsp;
               a(href='https://github.com/Darkle/MarkSearch', target='_blank', rel='noopener') https://github.com/Darkle/MarkSearch
           div#bugs
             h3 Bugs
             div
-              | You can report any bugs for the extension here:
-              a(target='_blank', href='https://github.com/Darkle/MarkSearch-Chrome-Extension/issues', rel='noopener') https://github.com/Darkle/MarkSearch-Chrome-Extension/issues
+              | You can report any bugs for the extension here:&nbsp;
+              a(target='_blank', href='https://github.com/Darkle/MarkSearch-Browser-Extension/issues', rel='noopener') https://github.com/Darkle/MarkSearch-Browser-Extension/issues
               br
-              | You can report any bugs for the desktop app here:
+              | You can report any bugs for the desktop app here:&nbsp;
               a(target='_blank', href='https://github.com/Darkle/MarkSearch/issues', rel='noopener') https://github.com/Darkle/MarkSearch/issues
