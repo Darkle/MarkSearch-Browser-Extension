@@ -49,7 +49,7 @@ function setInitialDOMoptionValues(options) {
 }
 
 function setUpHelpAboutPage() {
-  const versionText = `MarkSearch Chrome Extension Version: ${ chrome.runtime.getManifest().version }`
+  const versionText = `MarkSearch Browser Extension Version: ${ chrome.runtime.getManifest().version }`
   $('#marksearchChromeExtensionVersionNumber').innerText = versionText
 }
 
@@ -89,7 +89,7 @@ function setUpEventListeners() {
   $('#optionsPanel nav').addEventListener('click', evt => settingsTabsBehaviour(evt.target))
 
   Array.from(optionElements).forEach(inputElem => {
-    
+
     inputElem.addEventListener('change', saveOptions)
 
     if(inputElem.dataset.settingKey === 'extensionToken'){
