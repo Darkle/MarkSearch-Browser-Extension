@@ -1,7 +1,7 @@
 {
-  "name": "marksearch-chrome-extension",
-  "version": "2017.1.15",
-  "description": "MarkSearch Chrome Extension",
+  "name": "marksearch-browser-extension",
+  "version": "2017.1.23",
+  "description": "MarkSearch Browser Extension",
   "scripts": {
     "start": "webpack --progress --colors --watch",
     "analyseBundle": "cross-env runBundleAnalyzer=true webpack --progress --colors --watch",
@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Darkle/MarkSearch-Chrome-Extension.git"
+    "url": "git+https://github.com/Darkle/MarkSearch-Browser-Extension.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Darkle/MarkSearch-Chrome-Extension/issues"
+    "url": "https://github.com/Darkle/MarkSearch-Browser-Extension/issues"
   },
-  "homepage": "https://github.com/Darkle/MarkSearch-Chrome-Extension#readme",
+  "homepage": "https://github.com/Darkle/MarkSearch-Browser-Extension#readme",
   "devDependencies": {
     "babel-cli": "^6.18.0",
     "babel-core": "^6.21.0",
