@@ -2,3 +2,6 @@
 
 # Ignore bundle files
 build/
+chromeBuild/
+firefoxBuild/
+edgeBuild/

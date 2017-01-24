@@ -3,7 +3,9 @@
   "version": "2017.1.23",
   "description": "MarkSearch Browser Extension",
   "scripts": {
-    "start": "webpack --progress --colors --watch",
+    "chrome": "cross-env browser=chrome webpack --progress --colors --watch",
+    "firefox": "cross-env browser=firefox webpack --progress --colors --watch",
+    "edge": "cross-env browser=edge webpack --progress --colors --watch",
     "analyseBundle": "cross-env runBundleAnalyzer=true webpack --progress --colors --watch",
     "analyseMinifiedBundle": "cross-env NODE_ENV=production runBundleAnalyzer=true webpack --progress --colors",
     "production": "cross-env NODE_ENV=production webpack --progress --colors ",

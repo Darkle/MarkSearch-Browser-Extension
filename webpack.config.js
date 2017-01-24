@@ -10,6 +10,14 @@ const BabiliPlugin = require('babili-webpack-plugin')
 const WebpackCleanupPlugin = require('webpack-cleanup-plugin')
 // const merge = require('webpack-merge')
 
+const browserBuildFolders = {
+  chrome: 'chromeBuild',
+  firefox: 'firefoxBuild',
+  edge: 'edgeBuild'
+}
+
+const browserBuildFolder = browserBuildFolders[process.env.browser] || 'chromeBuild'
+
 const paths = {
   srcBase: path.join(__dirname, 'src'),
   srcJS: path.join(__dirname, 'src', 'js'),
@@ -20,12 +28,12 @@ const paths = {
   srcFonts: path.join(__dirname, 'src', 'fonts'),
   inlineStyles: path.join(__dirname, 'src', 'inlineStyles'),
   nonInlineStyles: path.join(__dirname, 'src', 'nonInlineStyles'),
-  buildBase: path.join(__dirname, 'build'),
-  buildJS: path.join(__dirname, 'build', 'js'),
-  buildHTML: path.join(__dirname, 'build', 'html'),
-  buildImages: path.join(__dirname, 'build', 'images'),
-  buildFonts: path.join(__dirname, 'build', 'fonts'),
-  buildStylesheets: path.join(__dirname, 'build', 'stylesheets'),
+  buildBase: path.join(__dirname, browserBuildFolder),
+  buildJS: path.join(__dirname, browserBuildFolder, 'js'),
+  buildHTML: path.join(__dirname, browserBuildFolder, 'html'),
+  buildImages: path.join(__dirname, browserBuildFolder, 'images'),
+  buildFonts: path.join(__dirname, browserBuildFolder, 'fonts'),
+  buildStylesheets: path.join(__dirname, browserBuildFolder, 'stylesheets'),
 }
 
 const webpackConfig = {
