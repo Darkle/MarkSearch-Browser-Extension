@@ -36,10 +36,10 @@ let latestInstantSearchRequestId = 0
 
 function init(){
   /*****
-  * We wanna exit early if they dont have <searchEngine>SearchIntegration enabled in the extension settings
+  * We wanna exit early if they dont have googleSearchIntegration enabled in the extension settings
   * or if it isn't a google search page - which would mean it doesn't have the google search input (#lst-ib) - this
   * also excludes the Maps and Flights search as they don't have the #lst-ib search input element.
-  * Note: we also would not show the MarkSearch search button if <searchEngine>SearchIntegration is false.
+  * Note: we also would not show the MarkSearch search button if googleSearchIntegration is false.
   */
   if(!getSetting('googleSearchIntegration') || !$('#lst-ib')){
     return
@@ -69,12 +69,19 @@ function init(){
     */
     chrome.runtime.onMessage.addListener(xhrInstantSearchMessageListener)
 
-    const instantSearchMutationObserver = new MutationObserver(instantSearchMutationObserverHandler)
     /*****
+    * We use a mutation observer on the page to be notified when new google search results have been
+    * inserted in to the page so that we can adjust the heigt of the MS results box to be the same height
+    * of the results & also to be notified if they have changed the search type (e.g. News) so we can hide
+    * the MS for that type of search.
+    *
     * #main is the lowest down element in the tree (of what we want) that's available on DOMContentLoaded.
     */
+    const instantSearchMutationObserver = new MutationObserver(instantSearchMutationObserverHandler)
     instantSearchMutationObserver.observe($('#main'), observerSettings)
-
+    /*****
+    * Popstate listener is for when the user clicks the browser back/forward button.
+    */
     window.addEventListener('popstate', popstateListener)
   }
 
@@ -149,7 +156,7 @@ function instantSearchMutationObserverHandler(mutations){
   * Notes:
   *   * We cant use the xhr instant search listener because an xhr request isn't called on click if you have
   *   previously clicked on that search for the current search terms - it just uses a cache of the previous results
-  *   that is stored somewhere.
+  *   that is stored in session storage.
   *   * We also cant use the url query params cause they aren't always removed when you click to go back to the 'All'
   *   search.
   *   * We also can't use the popstate listener as that event isn't fired
