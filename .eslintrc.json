@@ -7,7 +7,8 @@
     "webextensions": true
   },
   "globals": {
-    "localStorage": true
+    "localStorage": true,
+    "browserVendor": true
   },
   "extends": "eslint:recommended",
   "parserOptions": {

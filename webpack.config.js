@@ -10,13 +10,17 @@ const BabiliPlugin = require('babili-webpack-plugin')
 const WebpackCleanupPlugin = require('webpack-cleanup-plugin')
 // const merge = require('webpack-merge')
 
-const browserBuildFolders = {
-  chrome: 'chromeBuild',
-  firefox: 'firefoxBuild',
-  edge: 'edgeBuild'
+const browsers = {
+  chrome: 'Chrome',
+  firefox: 'Firefox',
+  edge: 'Edge',
+  opera: 'Opera'
 }
-const browserBuildFolder = browserBuildFolders[process.env.browser] || 'chromeBuild'
+
+const browserBuildingFor = browsers[process.env.browser] || 'Chrome'
+const browserBuildFolder = `${ browserBuildingFor }Build`
 const isProduction = process.env.NODE_ENV === 'production'
+
 const paths = {
   srcBase: path.join(__dirname, 'src'),
   srcJS: path.join(__dirname, 'src', 'js'),
@@ -150,7 +154,7 @@ const webpackConfig = {
           ]
         }),
       },
-      /*****  
+      /*****
       * This is a bit hackey, but there doesnt seem to be an easy way to disable url-loading for a single font import.
       * Need to have this font non-inlined cause this is for the notification box and it runs on all pages and
       * some pages (e.g. github) have a CSP that disables inline data uri's (the inline font looks
@@ -197,6 +201,9 @@ const webpackConfig = {
     extensions: ['.js', '.styl', '.sass', '.woff2', '.woff2NonInline']
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'browserVendor': browserBuildingFor
+    }),
     new ExtractTextPlugin({filename: '../stylesheets/[name].css'}),
     new CopyWebpackPlugin(
       [
@@ -249,9 +256,7 @@ if(isProduction){
   webpackConfig.plugins.push(new WebpackCleanupPlugin())
   webpackConfig.plugins.push(
     new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('production')
-      }
+      'process.env.NODE_ENV': JSON.stringify('production')
     })
   )
   // https://github.com/babel/babili

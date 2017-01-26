@@ -5,3 +5,7 @@ build/
 chromeBuild/
 firefoxBuild/
 edgeBuild/
+ChromeBuild/
+FirefoxBuild/
+EdgeBuild/
+OperaBuild/
