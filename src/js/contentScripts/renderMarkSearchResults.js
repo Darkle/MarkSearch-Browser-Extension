@@ -4,10 +4,6 @@ import { createMSresultElements } from './createMSresultElements'
 import { getMSserverAddress, createMSserverSearchLink } from './CS_utils'
 
 function renderMarkSearchResultsBoxResults(markSearchResults, searchTerms){
-  // console.log('renderMarkSearchResultsBoxResults')
-  // console.log('renderMarkSearchResultsBoxResults markSearchResults:', markSearchResults)
-  // console.log('renderMarkSearchResultsBoxResults searchTerms:', searchTerms)
-
   const msResultsBoxDocFragment = document.createDocumentFragment()
 
   msResultsBoxDocFragment.appendChild(createResultsAmountElements(markSearchResults, searchTerms))
