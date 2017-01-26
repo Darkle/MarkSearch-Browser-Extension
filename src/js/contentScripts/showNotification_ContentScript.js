@@ -3,7 +3,32 @@ import '../../inlineStyles/showNotification_ContentScript.styl'
 
 import { alert as notieAlert, setOptions as notieSetOptions } from 'notie'
 
+/*****
+* We need to create a stylsheet manually here because we can't inline the font for the notification because
+* it runs on all pages and some pages (e.g. github) restrict the use of inlining stuff with their CSP.
+* We need to do this here dynamically because we need to use the chrome.extension.getURL api to get the
+* internal url of the font file. (we also added the font file path to the web_accessible_resources in
+* the manifest)
+* Note: some more details in comments in webpack config
+*/
+function insertStylsheet(){
+  const styleEl = document.createElement('style')
+  styleEl.setAttribute('id', 'markSearchStyleSheet')
+  styleEl.textContent = `
+    @font-face {
+    	font-family: 'opensans_regular';
+    	src: url("${ chrome.extension.getURL('fonts/opensans-regular.woff2') }") format('woff2');
+    	font-weight: normal;
+    	font-style: normal;
+    }
+  `
+  document.head.appendChild(styleEl)
+}
+
 function showNotification(action, actionSucceeded, errorMessage){
+  if(!document.querySelector('#markSearchStyleSheet')){
+    insertStylsheet()
+  }
   const notificationMessage = action === 'savePage' ? 'Page Saved To MarkSearch' : 'Page Removed From MarkSearch'
   if(!actionSucceeded){
     /*****

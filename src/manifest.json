@@ -40,6 +40,9 @@
     }
   },
   "omnibox": { "keyword" : "ms" },
+  "web_accessible_resources": [
+   "fonts/opensans-regular.woff2"
+ ],
   "content_scripts": [
     {
       "js": ["js/googleSearch_ContentScript.build.js"],

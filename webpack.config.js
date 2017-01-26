@@ -151,6 +151,22 @@ const webpackConfig = {
         }),
       },
       /*****
+      * This is a bit hackey, but there doesnt seem to be an easy way to disable url-loading for a single font import.
+      * Need to have this font non-inlined cause this is for the notification box and it runs on all pages and
+      * some pages (e.g. github) have a CSP that disables inline data uri's (the inline font looks
+      * like data:application/font-woff2;base64,...`)
+      */
+      {
+        test: /\.woff2NonInline$/,
+        include: [
+          paths.srcFonts
+        ],
+        loader: 'file-loader',
+        options: {
+          name: '../fonts/[name].woff2'
+        }
+      },
+      /*****
       * url-loader lets us load the opensans-regular.woff2 font file as a base64 data:application/font-woff2
       * url.
       */
@@ -178,7 +194,7 @@ const webpackConfig = {
   },
   resolve: {
     // modules: [path.resolve('src' 'nonInlineStyles'), 'node_modules'],
-    extensions: ['.js', '.styl', '.sass', '.woff2']
+    extensions: ['.js', '.styl', '.sass', '.woff2', '.woff2NonInline']
   },
   plugins: [
     new ExtractTextPlugin({filename: '../stylesheets/[name].css'}),
