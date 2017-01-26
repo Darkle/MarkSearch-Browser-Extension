@@ -15,9 +15,8 @@ const browserBuildFolders = {
   firefox: 'firefoxBuild',
   edge: 'edgeBuild'
 }
-
 const browserBuildFolder = browserBuildFolders[process.env.browser] || 'chromeBuild'
-
+const isProduction = process.env.NODE_ENV === 'production'
 const paths = {
   srcBase: path.join(__dirname, 'src'),
   srcJS: path.join(__dirname, 'src', 'js'),
@@ -62,7 +61,11 @@ const webpackConfig = {
       {
         enforce: 'pre',
         test: /\.js$/,
-        loader: 'eslint-loader',
+        use: [
+          {
+            loader: 'eslint-loader'
+          },
+        ],
         include: [
           paths.srcJS
         ],
@@ -73,10 +76,14 @@ const webpackConfig = {
         include: [
           paths.srcPug
         ],
-        loader: 'pug-loader',
-        options: {
-          pretty: true
-        }
+        use: [
+          {
+            loader: 'pug-loader',
+            options: {
+              pretty: true
+            }
+          },
+        ],
       },
       /*****
       * These are inline styles. We execute the now notification script dynamically, so putting the CSS in the JS
@@ -90,7 +97,20 @@ const webpackConfig = {
         exclude: [
           paths.nonInlineStyles
         ],
-        loader: 'style-loader!css-loader?sourceMap!stylus-loader'
+        use: [
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true
+            }
+          },
+          {
+            loader: 'stylus-loader',
+          },
+        ]
       },
       /*****
       * These styles are for the main content scripts for google and duckduckgo. We don't run them dynamically, so
@@ -104,18 +124,32 @@ const webpackConfig = {
         exclude: [
           paths.inlineStyles
         ],
+        /*****
+        * Note: at the moment (as of 2.0.0-beta.5 of extract-text-webpack-plugin), you have to attach it to the
+        * old "loader" key rather than the new "use" key to get it to work.
+        * https://github.com/webpack-contrib/extract-text-webpack-plugin/issues/330
+        * Note: need to use 'query' for loader options for the moment, although that should change to 'options'
+        * when the v2 of the extract-text-webpack-plugin comes out of beta: http://bit.ly/2j6P85H
+        */
         loader: ExtractTextPlugin.extract({
           fallbackLoader: 'style-loader',
-          loader: `css-loader?sourceMap!stylus-loader?paths=${ paths.nonInlineStyles }`
-        })
+          loader: [
+            {
+              loader: 'css-loader',
+              query: {
+                minimize: isProduction,
+                sourceMap: !isProduction,
+              }
+            },
+            {
+              loader: 'stylus-loader',
+              query: {
+                paths: paths.nonInlineStyles
+              }
+            }
+          ]
+        }),
       },
-      // {
-      //   test: /\.css$/,
-      //   loader: ExtractTextPlugin.extract({
-      //     fallbackLoader: 'style-loader',
-      //     loader: 'css-loader'
-      //   })
-      // },
       /*****
       * url-loader lets us load the opensans-regular.woff2 font file as a base64 data:application/font-woff2
       * url.
@@ -180,9 +214,19 @@ const webpackConfig = {
   ]
 }
 
-if(process.env.NODE_ENV === 'production'){
+if(isProduction){
   console.log('Running production.')
+  /*****
+  * https://webpack.js.org/configuration/devtool/#for-production
+  * http://cheng.logdown.com/posts/2016/03/25/679045
+  */
+  webpackConfig.devtool = 'cheap-module-source-map'
   webpackConfig.performance.hints = 'error'
+  /*****
+  * Note: we do a check when setting up the ExtractTextPlugin if its production
+  * so we can enable minimizing - we do it there as its easier than finding that rule manually here.
+  */
+  // console.log(webpackConfig.module.rules.find())
   /*****
   * Remove the source maps before build for production.
   */
@@ -196,7 +240,6 @@ if(process.env.NODE_ENV === 'production'){
   )
   // https://github.com/babel/babili
   // http://babeljs.io/blog/2016/08/30/babili
-  // delete webpackConfig.devtool
   // webpackConfig.module.rules.push(
   //   {
   //     test: /\.js$/,
