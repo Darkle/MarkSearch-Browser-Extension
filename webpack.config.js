@@ -150,7 +150,7 @@ const webpackConfig = {
           ]
         }),
       },
-      /*****
+      /***** 
       * This is a bit hackey, but there doesnt seem to be an easy way to disable url-loading for a single font import.
       * Need to have this font non-inlined cause this is for the notification box and it runs on all pages and
       * some pages (e.g. github) have a CSP that disables inline data uri's (the inline font looks
