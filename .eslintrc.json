@@ -8,7 +8,8 @@
   },
   "globals": {
     "localStorage": true,
-    "browserVendor": true
+    "global__browserVendor": true,
+    "global__isProduction": true
   },
   "extends": "eslint:recommended",
   "parserOptions": {

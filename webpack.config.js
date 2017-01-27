@@ -202,7 +202,8 @@ const webpackConfig = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      'browserVendor': browserBuildingFor
+      'global__browserVendor': browserBuildingFor,
+      'global__isProduction': isProduction
     }),
     new ExtractTextPlugin({filename: '../stylesheets/[name].css'}),
     new CopyWebpackPlugin(
