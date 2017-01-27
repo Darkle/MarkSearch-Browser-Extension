@@ -41,9 +41,12 @@ function createResultDescription(result, searchTerms){
         .toLowerCase()
         .split(' ')
         .filter( searchTerm =>
-          searchTerm.length > 1 && !searchTerm.startsWith('site:') && !lunrStopwordList[searchTerm]
+          searchTerm.length > 1 && !searchTerm.startsWith('site:') && !searchTerm.startsWith('-') && !lunrStopwordList[searchTerm]
         )
         .forEach( searchWord => {
+          if(searchWord.startsWith('|')){
+            searchWord = searchWord.slice(1)  // eslint-disable-line no-param-reassign
+          }
           const stemmedSearchWord = stem(searchWord)
           const regex = new RegExp(`(${ stemmedSearchWord }[a-z]*)`, 'gi')
           const replacement = `${ highlightOpeningSpan }$1</span>`
@@ -51,7 +54,7 @@ function createResultDescription(result, searchTerms){
         })
     }
     /*****
-    * The preceding ellipse (...) for the snippets doesn't look as good in the results box as it does on the MarkSearch
+    * The preceding ellipse  (...) for the snippets doesn't look as good in the results box as it does on the MarkSearch
     * server search page, so gonna remove it if the first letter is a capital letter.
     * Start of the snippet could be one of the following:
     *    1. `A`
