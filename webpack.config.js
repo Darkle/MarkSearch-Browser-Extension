@@ -8,6 +8,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 const BabiliPlugin = require('babili-webpack-plugin')
 const WebpackCleanupPlugin = require('webpack-cleanup-plugin')
+const bell = require('bell-on-bundler-error-plugin')
 // const merge = require('webpack-merge')
 
 const browsers = {
@@ -234,7 +235,8 @@ const webpackConfig = {
     }),
     // To remove the locale files from moment cause they are huge!
     // https://github.com/moment/moment-timezone/issues/356#issuecomment-225258637
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    new bell()
   ]
 }
 
