@@ -202,6 +202,7 @@ const webpackConfig = {
     extensions: ['.js', '.styl', '.sass', '.woff2', '.woff2NonInline']
   },
   plugins: [
+    new bell(),
     new webpack.DefinePlugin({
       'global__browserVendor': browserBuildingFor,
       'global__isProduction': isProduction
@@ -235,8 +236,7 @@ const webpackConfig = {
     }),
     // To remove the locale files from moment cause they are huge!
     // https://github.com/moment/moment-timezone/issues/356#issuecomment-225258637
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    new bell()
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
   ]
 }
 
