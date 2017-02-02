@@ -1,1 +1,1 @@
-Provide a link here and info to check the help section of the MarkSearch page
+Browser extension for the MarkSearch desktop app. More info here: https://darkle.github.io/MarkSearch/
