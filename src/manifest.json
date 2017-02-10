@@ -1,12 +1,12 @@
 {
-  "name": "MarkSearch",
+  "name": "MarkSearch Browser Extension",
   "manifest_version": 2,
   "version": "2017.1.23",
   "description": "Browser extension for the MarkSearch bookmarking desktop app",
   "icons": {
     "128": "images/MSlargeIcon.png"
   },
-  "homepage_url": "https://github.com/Darkle/MarkSearch-Chrome-Extension",
+  "homepage_url": "https://darkle.github.io/MarkSearch/",
   "permissions": [
     "http://*/*",
     "https://*/*",
