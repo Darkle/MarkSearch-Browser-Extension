@@ -1,7 +1,7 @@
 {
   "name": "MarkSearch Browser Extension",
   "manifest_version": 2,
-  "version": "2017.1.23",
+  "version": "2017.1.24",
   "description": "Browser extension for the MarkSearch bookmarking desktop app",
   "icons": {
     "128": "images/MSlargeIcon.png"
