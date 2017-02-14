@@ -9,7 +9,7 @@ const basePath = path.resolve(__dirname, '..')
 
 const extManifestFilePath = path.join(basePath, 'src', 'manifest.json')
 
-const newVersionString = `${ moment().year() }.${ moment().month() + 1 }.${ moment().date() }`
+const newVersionString = `${ moment().year() }.${ moment().month() + 1 }.${ moment().date() }.${ moment().hour() }`
 
 gulp.task('bumpVersion', () => {
   /*****
@@ -17,6 +17,9 @@ gulp.task('bumpVersion', () => {
   */
   console.log(`bumping version in npm package.json and in extension manifest'`)
   exeq(`npm --no-git-tag-version --force version ${ newVersionString }`)
+    .catch(function(err) {
+      console.error('npm --no-git-tag-version --force version errored (still gonna bump manifest though)', err)
+    })
     .then(() => fsExtra.readJsonAsync(extManifestFilePath))
     .then(exManifestObj =>
       fsExtra.writeJsonAsync(
