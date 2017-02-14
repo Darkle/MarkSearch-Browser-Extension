@@ -1,7 +1,7 @@
 {
   "name": "MarkSearch Browser Extension",
   "manifest_version": 2,
-  "version": "2017.1.24",
+  "version": "2017.2.14",
   "description": "Browser extension for the MarkSearch bookmarking desktop app",
   "icons": {
     "128": "images/MSlargeIcon.png"
@@ -19,7 +19,9 @@
   "incognito": "not_allowed",
   "background": {
     "persistent": true,
-    "scripts": ["js/background.build.js"]
+    "scripts": [
+      "js/background.build.js"
+    ]
   },
   "browser_action": {
     "default_icon": "images/MSlargeIcon.png",
@@ -39,14 +41,20 @@
       "global": false
     }
   },
-  "omnibox": { "keyword" : "ms" },
+  "omnibox": {
+    "keyword": "ms"
+  },
   "web_accessible_resources": [
-   "fonts/opensans-regular.woff2"
- ],
+    "fonts/opensans-regular.woff2"
+  ],
   "content_scripts": [
     {
-      "js": ["js/googleSearch_ContentScript.build.js"],
-      "css": ["stylesheets/googleSearch_ContentScript.css"],
+      "js": [
+        "js/googleSearch_ContentScript.build.js"
+      ],
+      "css": [
+        "stylesheets/googleSearch_ContentScript.css"
+      ],
       "run_at": "document_start",
       "matches": [
         "https://encrypted.google.com/*",

@@ -1,6 +1,6 @@
 {
   "name": "marksearch-browser-extension",
-  "version": "2017.1.23",
+  "version": "2017.2.14",
   "description": "MarkSearch Browser Extension",
   "scripts": {
     "chrome": "cross-env browser=chrome webpack --progress --colors --watch",
@@ -12,7 +12,10 @@
     "buildFirefox": "cross-env browser=firefox NODE_ENV=production webpack --progress --colors ",
     "buildEdge": "cross-env browser=edge NODE_ENV=production webpack --progress --colors ",
     "generateStats": "cross-env browser=chrome webpack --profile --json > stats.json",
-    "serve": "webpack-dev-server"
+    "serve": "webpack-dev-server",
+    "packageForChromeWebstore": "npm run bumpVersion && npm run buildChrome && npm run zipBuild",
+    "bumpVersion": "gulp bumpVersion",
+    "zipBuild": "gulp zipBuild"
   },
   "repository": {
     "type": "git",
@@ -36,15 +39,19 @@
     "babel-preset-es2015": "^6.18.0",
     "babel-preset-react": "^6.11.1",
     "babili-webpack-plugin": "0.0.7",
+    "bauer-zip": "^1.0.2",
     "bell-on-bundler-error-plugin": "^1.0.8",
+    "bluebird": "^3.4.7",
     "copy-webpack-plugin": "^4.0.1",
     "cross-env": "^3.1.3",
     "css-loader": "^0.26.1",
     "dompurify": "^0.8.4",
     "eslint": "^3.14.1",
     "eslint-loader": "^1.6.1",
+    "exeq": "^3.0.0",
     "extract-text-webpack-plugin": "^2.0.0-beta.5",
     "file-loader": "^0.9.0",
+    "gulp": "^3.9.1",
     "html-webpack-plugin": "^2.24.1",
     "json-loader": "^0.5.4",
     "pug": "^2.0.0-beta6",
@@ -54,7 +61,7 @@
     "stylus": "^0.54.5",
     "stylus-loader": "^2.4.0",
     "url-loader": "^0.5.7",
-    "webpack": "^2.2.0",
+    "webpack": "^2.2.1",
     "webpack-bundle-analyzer": "^2.2.0",
     "webpack-cleanup-plugin": "^0.4.0",
     "webpack-dev-server": "^1.16.2",
