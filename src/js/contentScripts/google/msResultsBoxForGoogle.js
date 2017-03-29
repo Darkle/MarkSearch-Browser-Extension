@@ -230,7 +230,7 @@ function instantSearchToggleMSresultsBoxVisibility() {
   * box if the body element has a class of 'hp'
   *
   */
-  const allSearchNavElem = $('#hdtb-msb>div>div')
+  const allSearchNavElem = $('#hdtb-msb-vis>div')
 
   if(allSearchNavElem && allSearchNavElem.classList.contains('hdtb-msel')){
     showMSresultsBox()

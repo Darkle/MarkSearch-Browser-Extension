@@ -1,6 +1,6 @@
 {
   "name": "marksearch-browser-extension",
-  "version": "2017.2.15",
+  "version": "2017.3.30",
   "description": "MarkSearch Browser Extension",
   "scripts": {
     "chrome": "cross-env browser=chrome webpack --progress --colors --watch",
